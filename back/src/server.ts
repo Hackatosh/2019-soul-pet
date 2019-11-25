@@ -1,7 +1,7 @@
 import { app } from './app';
 import http from 'http';
 
-const port = 3000;
+const port = 8000;
 
 app.set('port', port);
 

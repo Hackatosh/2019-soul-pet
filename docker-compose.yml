@@ -1,0 +1,42 @@
+version: "3.3"
+services:
+  back:
+    build:
+      context: back
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      SERVER_PORT: 8000
+    volumes:
+      - ./back:/usr/app/src
+  front:
+    build:
+      context: front
+    ports:
+      - "3000:3000"
+    restart: always
+    volumes:
+      - ./front:/usr/app/src
+  db:
+    image: mariadb:10.4
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      MYSQL_ROOT_PASSWORD: strongpassword
+      MYSQL_DATABASE: 3d_vis
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/mariadb/data
+  admin:
+    image: adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+volumes:
+  db-data:
