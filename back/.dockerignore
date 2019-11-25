@@ -1,0 +1,3 @@
+dist/
+.gitignore
+node_modules
