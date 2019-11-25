@@ -21,22 +21,28 @@ services:
   db:
     image: mariadb:10.4
     ports:
-      - "5432:5432"
+      - "3306:3306"
     restart: always
     environment:
       POSTGRES_USER: admin
       MYSQL_ROOT_PASSWORD: strongpassword
-      MYSQL_DATABASE: 3d_vis
+      MYSQL_DATABASE: soul_pet
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     volumes:
       - db-data:/var/lib/mariadb/data
   admin:
-    image: adminer
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: "phpmyadmin"
     restart: always
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+    links:
+      - db
     depends_on:
       - db
     ports:
-      - "8080:8080"
+      - "8080:80"
 volumes:
   db-data:
