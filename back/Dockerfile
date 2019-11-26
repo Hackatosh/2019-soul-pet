@@ -1,5 +1,5 @@
 FROM node:10.16
-WORKDIR /usr/app/src/
+WORKDIR /usr/routes/src/
 COPY package.json .
 COPY yarn.lock .
 RUN yarn install
