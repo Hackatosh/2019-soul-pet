@@ -12,10 +12,11 @@ authenticationRouter.post('/register',async (req: Request, res: Response) => {
     const password = req.body.password;
     const email = req.body.email;
     try{
-        let user = await User.create({username:username,hashedPassword: hashPassword(password), email:email});
+        let user = await User.create({username:username,hashedPassword: await hashPassword(password), email:email});
         user.hashedPassword = null;
         res.status(200).json({user:user})
     } catch(e) {
+        console.log(e)
         res.status(400).json({errorMessage:"Unable to register"})
     }
 
@@ -28,10 +29,10 @@ authenticationRouter.post('/login',async (req: Request, res: Response) => {
     if(!user){
         res.status(401).json({errorMessage:"Authentication failed. User not found"})
     }
-    if(!compareUserPassword(user,password)){
+    if(!(await compareUserPassword(user,password))){
         res.status(401).json({errorMessage:"Authentication failed. User not found"})
     } else {
-        res.status(200).json({token:sign(new AuthenticationInfos(user.id,user.username,user.email), env.SECRET_KEY)})
+        res.status(200).json({token:sign(Object.assign({},new AuthenticationInfos(user.id,user.username,user.email)), env.SECRET_KEY)})
     }
 });
 

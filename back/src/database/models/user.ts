@@ -36,3 +36,5 @@ User.init({
     tableName: 'users',
     sequelize: db,
 });
+
+User.sync();

@@ -1,6 +1,7 @@
 version: "3.3"
 services:
   back:
+    container_name: "soul-pet-back"
     build:
       context: back
     ports:
@@ -8,7 +9,7 @@ services:
     restart: always
     environment:
       SERVER_PORT: 8000
-      DB_HOST: 'localhost'
+      DB_HOST: soul-pet-db
       DB_PORT: 3306
       DB_USER: 'user'
       DB_PASSWORD: 'password'
@@ -17,6 +18,7 @@ services:
     volumes:
       - ./back:/usr/routes/src
   front:
+    container_name: "soul-pet-front"
     build:
       context: front
     ports:
@@ -26,11 +28,11 @@ services:
       - ./front:/usr/routes/src
   db:
     image: mariadb:10.4
+    container_name: "soul-pet-db"
     ports:
       - "3306:3306"
     restart: always
     environment:
-      POSTGRES_USER: admin
       MYSQL_ROOT_PASSWORD: strongpassword
       MYSQL_DATABASE: soul_pet
       MYSQL_USER: user
@@ -39,7 +41,7 @@ services:
       - db-data:/var/lib/mariadb/data
   admin:
     image: phpmyadmin/phpmyadmin:latest
-    container_name: "phpmyadmin"
+    container_name: "soul-pet-phpmyadmin"
     restart: always
     environment:
       - PMA_ARBITRARY=1
