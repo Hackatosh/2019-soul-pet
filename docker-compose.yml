@@ -16,7 +16,7 @@ services:
       DB_NAME: 'soul_pet'
       SECRET_KEY: '7CMl4AhyElECTWaUqRjxbl7FsmtYunqf'
     volumes:
-      - ./back:/usr/routes/src
+      - ./back:/usr/app/src
   front:
     container_name: "soul-pet-front"
     build:
@@ -25,7 +25,7 @@ services:
       - "3000:3000"
     restart: always
     volumes:
-      - ./front:/usr/routes/src
+      - ./front:/usr/app/src
   db:
     image: mariadb:10.4
     container_name: "soul-pet-db"
