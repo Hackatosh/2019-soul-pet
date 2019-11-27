@@ -1,3 +1,6 @@
+if (process.env.SERVER_PORT === undefined)
+	require('dotenv').config();
+
 const SERVER_PORT = process.env.SERVER_PORT;
 const DB_HOST = process.env.DB_HOST;
 const DB_PORT = process.env.DB_PORT;
