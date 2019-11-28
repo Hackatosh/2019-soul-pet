@@ -10,6 +10,10 @@ const db = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
         min: 0,
         acquire: 30000,
         idle: 10000
+    },
+    logging: false,
+    dialectOptions: {
+        timezone: 'Etc/GMT0'
     }
 });
 
