@@ -2,28 +2,28 @@ Welcome to Soul Pet Repository !
 
 **First of all you need yarn :** 
 
-npm install yarn -g
+`npm install yarn -g`
 
 **Launch back without Docker**
 
-cd ./back
+`cd ./back`
 
-yarn install
+`yarn install`
 
-yarn dev
+`yarn dev`
 
 **Build front**
 
-cd ./front
+`cd ./front`
 
-yarn install
+`yarn install`
 
-yarn build
+`yarn build`
 
 **Run front** 
 
-cd ./front
+`cd ./front`
 
-yarn install
+`yarn install`
 
-yarn start
+`yarn start`
