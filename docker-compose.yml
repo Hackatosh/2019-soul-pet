@@ -3,7 +3,8 @@ services:
   back:
     container_name: "soul-pet-back"
     build:
-      context: back
+      context: ./back
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     restart: always
@@ -16,16 +17,19 @@ services:
       DB_NAME: 'soul_pet'
       SECRET_KEY: '7CMl4AhyElECTWaUqRjxbl7FsmtYunqf'
     volumes:
-      - ./back:/usr/app/src
+      - ./back:/usr/app/
+      - /usr/app/node_modules
   front:
     container_name: "soul-pet-front"
     build:
-      context: front
+      context: ./front
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     restart: always
     volumes:
-      - ./front:/usr/app/src
+      - ./front:/usr/app/
+      - /usr/app/node_modules
   db:
     image: mariadb:10.4
     container_name: "soul-pet-db"

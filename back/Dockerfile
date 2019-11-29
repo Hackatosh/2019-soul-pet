@@ -1,5 +1,6 @@
-FROM node:10.16
-WORKDIR /usr/app/src/
+FROM node:12.2.0-alpine
+WORKDIR /usr/app/
+ENV PATH /usr/app/node_modules/.bin:$PATH
 COPY package.json .
 RUN yarn install
 COPY . .
