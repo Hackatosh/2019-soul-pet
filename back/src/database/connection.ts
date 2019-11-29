@@ -18,8 +18,4 @@ const db = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
     }
 });
 
-const initDB = async function(){
-    await User.sync();
-};
-
-export { db, initDB }
+export { db}

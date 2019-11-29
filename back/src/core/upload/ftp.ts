@@ -22,13 +22,13 @@ const testFTPConnection = async function ():Promise<void> {
     }
 };
 
-const uploadToSFTP = async function(src:string,destPath:string):Promise<void>{
+const uploadToSFTP = async function(src:Buffer,destPath:string):Promise<void>{
     if(destPath.indexOf("/") !== -1){
         throw new Error("Can not create new path in distant SFTP")
     }
     let sftp = new Client();
     await sftp.connect(config);
-    await sftp.fastPut(src,`${env.FTP_PATH}/${destPath}`);
+    await sftp.put(src,`${env.FTP_PATH}/${destPath}`);
     await sftp.end();
 };
 

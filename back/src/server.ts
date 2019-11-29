@@ -1,11 +1,9 @@
 import {app} from './routes/app';
 import http from 'http';
 import {env} from './config/env'
-import {initDB} from "./database/connection";
 
 const launchServer = async function () {
     try {
-        await initDB();
         app.set('port', env.SERVER_PORT);
         const server = http.createServer(app);
         await server.listen(env.SERVER_PORT);

@@ -37,3 +37,4 @@ User.init({
     sequelize: db,
 });
 
+User.sync();
