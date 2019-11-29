@@ -18,4 +18,4 @@ const db = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
     }
 });
 
-export { db}
+export { db }
