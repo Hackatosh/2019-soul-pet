@@ -17,6 +17,11 @@ const putOptions:WriteStreamOptions = {
     mode: 0o666,
 };
 
+export interface SFTPStream {
+    stream:string | NodeJS.ReadableStream | Buffer;
+    end:()=>Promise<void>;
+}
+
 const testFTPConnection = async function ():Promise<void> {
     try {
         console.log(config);
@@ -40,4 +45,10 @@ const uploadToSFTP = async function(src:Buffer,destPath:string):Promise<void>{
     await sftp.end();
 };
 
-export { uploadToSFTP }
+const pipeIntoSFTP = async function(remoteSrc:string):Promise<SFTPStream>{
+    let sftp = new Client();
+    await sftp.connect(config);
+    return {stream: await sftp.get(join(env.FTP_PATH,remoteSrc)), end: sftp.end};
+};
+
+export { uploadToSFTP, pipeIntoSFTP }
