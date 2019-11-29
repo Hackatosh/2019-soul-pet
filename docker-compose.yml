@@ -22,7 +22,7 @@ services:
       FTP_PORT: 22
       FTP_USER: nodejs
       FTP_PASSWORD: password
-      FTP_PATH: photos
+      FTP_PATH: pictures
     volumes:
       - ./back:/usr/app/
       - /usr/app/node_modules
@@ -64,15 +64,14 @@ services:
     ports:
       - "8080:80"
   sftp:
-    image: atmoz/sftp:latest
+    image: atmoz/sftp
     container_name: 'soul-pet-sftp'
     volumes:
-      - sftp-photos:/home/nodejs/photos
+      - ./ftp/sftp.d:/etc/sftp.d/
+      - sftp-pictures:/home/nodejs/pictures
     ports:
       - "2222:22"
-    command:
-    - "nodejs:password:::photos"
-    - "chown nodejs /home/nodejs/photos"
+    command: nodejs:password:::pictures
 volumes:
   db-data:
-  sftp-photos:
+  sftp-pictures:
