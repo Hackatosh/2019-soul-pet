@@ -1,12 +1,20 @@
 import Client from 'ssh2-sftp-client';
 import {ConnectConfig} from 'ssh2'
+import {WriteStreamOptions} from 'ssh2-streams'
 import {env} from '../../config/env'
+import {join} from 'path';
 
 const config:ConnectConfig = {
     host: env.FTP_HOST,
     port: parseInt(env.FTP_PORT),
     username: env.FTP_USER,
     password: env.FTP_PASSWORD,
+};
+
+const putOptions:WriteStreamOptions = {
+    flags: 'w',
+    encoding: null,
+    mode: 0o666,
 };
 
 const testFTPConnection = async function ():Promise<void> {
@@ -28,7 +36,7 @@ const uploadToSFTP = async function(src:Buffer,destPath:string):Promise<void>{
     }
     let sftp = new Client();
     await sftp.connect(config);
-    await sftp.put(src,`${env.FTP_PATH}/${destPath}`);
+    await sftp.put(src,join(env.FTP_PATH,destPath), putOptions);
     await sftp.end();
 };
 
