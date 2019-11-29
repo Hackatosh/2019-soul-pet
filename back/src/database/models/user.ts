@@ -12,29 +12,33 @@ export class User extends Model {
     public readonly updatedAt!: Date;
 }
 
-User.init({
-    id: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true,
-    },
-    username: {
-        type: new DataTypes.STRING(128),
-        allowNull: false,
-        unique: true
-    },
-    email: {
-        type: new DataTypes.STRING(128),
-        allowNull: false,
-        unique: true
-    },
-    hashedPassword: {
-        type: new DataTypes.STRING(128),
-        allowNull: false
-    },
-}, {
-    tableName: 'users',
-    sequelize: db,
-});
+const initModelUser = async function() {
+    await User.init({
+        id: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        username: {
+            type: new DataTypes.STRING(128),
+            allowNull: false,
+            unique: true
+        },
+        email: {
+            type: new DataTypes.STRING(128),
+            allowNull: false,
+            unique: true
+        },
+        hashedPassword: {
+            type: new DataTypes.STRING(128),
+            allowNull: false
+        },
+    }, {
+        tableName: 'users',
+        sequelize: db,
+    });
 
-User.sync();
+    await User.sync();
+};
+
+export { initModelUser }

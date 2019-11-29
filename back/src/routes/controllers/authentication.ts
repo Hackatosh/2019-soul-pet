@@ -1,9 +1,9 @@
 import { Request, Response, Router } from 'express';
 import { User } from '../../database/models/user'
-import {compareUserPassword, hashPassword} from "../../core/password";
+import {compareUserPassword, hashPassword} from "../../core/authentication/password";
 import {sign} from 'jsonwebtoken';
 import {env} from "../../config/env";
-import {AuthenticationInfos} from "../../core/authenticationInterfaces";
+import {AuthenticationInfos} from "../../core/authentication/authenticationInterfaces";
 
 const authenticationRouter = Router();
 

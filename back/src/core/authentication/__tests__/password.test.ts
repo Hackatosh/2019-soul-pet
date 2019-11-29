@@ -1,5 +1,5 @@
 import {compareUserPassword} from '../password';
-import { User } from '../../database/models/user';
+import { User } from '../../../database/models/user';
 
 const user = new User();
     user.hashedPassword = '$2a$10$Vc1hBNQoUvXNPqPrnj/FV.RmE0ZY3Eo5mNF4/wxs0kxz5wdGph8gy';

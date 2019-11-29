@@ -42,7 +42,7 @@ build/Release
 node_modules/
 jspm_packages/
 
-# TypeScript v1 declaration files
+# TypeScript v1 declaration upload
 typings/
 
 # TypeScript cache
@@ -83,7 +83,7 @@ typings/
 .nuxt
 dist
 
-# Gatsby files
+# Gatsby upload
 .cache/
 # Comment in the public line in if your project uses Gatsby and *not* Next.js
 # https://nextjs.org/blog/next-9-1#public-directory-support
@@ -98,7 +98,7 @@ dist
 # FuseBox cache
 .fusebox/
 
-# DynamoDB Local files
+# DynamoDB Local upload
 .dynamodb/
 
 # TernJS port file

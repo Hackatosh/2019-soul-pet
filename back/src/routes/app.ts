@@ -2,8 +2,8 @@ import express, {Router, Response} from 'express';
 import { healthRouter } from './controllers/health';
 import {loginRequiredMW} from "./middlewares/loginRequired";
 import {authenticationRouter} from "./controllers/authentication";
-import {AuthenticatedRequest} from "../core/authenticationInterfaces";
-import * as bodyParser from "body-parser";
+import {AuthenticatedRequest} from "../core/authentication/authenticationInterfaces";
+import * as bodyParser from 'body-parser';
 
 const app = express();
 const apiRouter = Router();
