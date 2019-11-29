@@ -2,7 +2,6 @@ import {app} from './routes/app';
 import http from 'http';
 import {env} from './config/env'
 import {initDB} from "./database/connection";
-import {testConnection} from "./core/upload/ftp";
 
 const launchServer = async function () {
     try {
@@ -17,5 +16,4 @@ const launchServer = async function () {
     }
 };
 
-//launchServer();
-testConnection();
+launchServer();

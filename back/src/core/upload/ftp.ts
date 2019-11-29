@@ -9,7 +9,7 @@ const config:ConnectConfig = {
     password: env.FTP_PASSWORD,
 };
 
-const testConnection = async function ():Promise<void> {
+const testFTPConnection = async function ():Promise<void> {
     try {
         console.log(config);
         let sftp = new Client();
@@ -22,4 +22,14 @@ const testConnection = async function ():Promise<void> {
     }
 };
 
-export { testConnection }
+const uploadToSFTP = async function(src:string,destPath:string):Promise<void>{
+    if(destPath.indexOf("/") !== -1){
+        throw new Error("Can not create new path in distant SFTP")
+    }
+    let sftp = new Client();
+    await sftp.connect(config);
+    await sftp.fastPut(src,`${env.FTP_PATH}/${destPath}`);
+    await sftp.end();
+};
+
+export { uploadToSFTP }

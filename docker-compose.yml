@@ -20,6 +20,7 @@ services:
       FTP_PORT: 22
       FTP_USER: admin
       FTP_PASSWORD: password
+      FTP_PATH: /sftp-data
     volumes:
       - ./back:/usr/app/
       - /usr/app/node_modules

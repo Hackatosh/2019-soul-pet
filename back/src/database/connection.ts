@@ -1,6 +1,6 @@
 import {Sequelize} from 'sequelize';
 import {env} from '../config/env'
-import {initModelUser} from "./models/user";
+import {User} from "./models/user";
 
 const db = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
     host: env.DB_HOST,
@@ -19,7 +19,7 @@ const db = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
 });
 
 const initDB = async function(){
-    await initModelUser();
+    await User.sync();
 };
 
 export { db, initDB }
