@@ -1,3 +1,6 @@
+/*** This file binds the ENV variables defined in docker-compose.yml or in dotenv (for local debugging)
+ * to constants exported through the env object***/
+
 if (process.env.SERVER_PORT === undefined)
 	require('dotenv').config();
 
@@ -12,7 +15,7 @@ const FTP_HOST = process.env.FTP_HOST;
 const FTP_PORT = process.env.FTP_PORT;
 const FTP_USER = process.env.FTP_USER;
 const FTP_PASSWORD = process.env.FTP_PASSWORD;
-const FTP_PATH = process.env.FTP_PATH;
+const FTP_PATH_PICTURES = process.env.FTP_PATH_PICTURES;
 
 if (SERVER_PORT == undefined || isNaN(parseInt(SERVER_PORT))) {
     throw new Error('SERVER_PORT is not a valid env variable');
@@ -58,8 +61,8 @@ if (FTP_PASSWORD == undefined) {
     throw new Error('FTP_PASSWORD is not a valid env variable');
 }
 
-if (FTP_PATH == undefined) {
-    throw new Error('FTP_PATH is not a valid env variable');
+if (FTP_PATH_PICTURES == undefined) {
+    throw new Error('FTP_PATH_PICTURES is not a valid env variable');
 }
 
 const env = {
@@ -74,7 +77,7 @@ const env = {
     FTP_PORT,
     FTP_USER,
     FTP_PASSWORD,
-    FTP_PATH,
+    FTP_PATH_PICTURES,
 };
 
 export { env };

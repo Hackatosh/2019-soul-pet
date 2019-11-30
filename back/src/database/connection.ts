@@ -1,3 +1,5 @@
+/*** This file set up the DB using Sequelize***/
+
 import {Sequelize} from 'sequelize';
 import {env} from '../config/env'
 import {User} from "./models/user";

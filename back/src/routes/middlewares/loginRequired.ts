@@ -3,6 +3,8 @@ import {env} from '../../config/env'
 import {verify} from 'jsonwebtoken'
 import {AuthenticatedRequest, AuthenticationInfos} from "../../core/authentication/authenticationInterfaces";
 
+/*** Middleware to require an authentication through an Authorization header with a JWT Token ***/
+
 const loginRequiredMW = async function (req:AuthenticatedRequest,res:Response,next:NextFunction) {
     if(req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] == 'JWT'){
         try {

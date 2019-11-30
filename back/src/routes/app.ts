@@ -1,3 +1,5 @@
+/*** This file mounts middlewares and the routers created in controllers into the express application ***/
+
 import express, {Router, Response} from 'express';
 import { healthRouter } from './controllers/health';
 import {loginRequiredMW} from "./middlewares/loginRequired";

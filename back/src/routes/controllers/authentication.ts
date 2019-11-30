@@ -1,3 +1,5 @@
+/*** This files defines a router which DOES NOT REQUIRE ANY AUTHENTICATION and allows the user to register and login ***/
+
 import { Request, Response, Router } from 'express';
 import { User } from '../../database/models/user'
 import {compareUserPassword, hashPassword} from "../../core/authentication/password";
@@ -6,6 +8,8 @@ import {env} from "../../config/env";
 import {AuthenticationInfos} from "../../core/authentication/authenticationInterfaces";
 
 const authenticationRouter = Router();
+
+/*** POST route used to create a user in the DB ***/
 
 authenticationRouter.post('/register',async (req: Request, res: Response) => {
     const username = req.body.username;
@@ -21,6 +25,9 @@ authenticationRouter.post('/register',async (req: Request, res: Response) => {
     }
 
 });
+
+/*** POST route used to authenticate a user and send back a JWT token.
+ * A JWT token is created using the authentications infos of the user and the SECRET KEY defined in env object. ***/
 
 authenticationRouter.post('/login',async (req: Request, res: Response) => {
     const email = req.body.email;

@@ -1,44 +1,28 @@
-import { Request, Response, Router } from 'express';
-import {inMemoryStorage} from "../../core/files/inMemoryStorage";
-import {pipeIntoSFTP, uploadToSFTP} from "../../core/files/ftp";
+import {Request, Response, Router} from 'express';
+import {inMemoryStorage} from "../../core/files/localStorage";
+import {ContentType, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
 
 const uploadRouter = Router();
 
-// TODO : Size limit for photo
-// TODO : Generate random name
 uploadRouter.post('/pictures',inMemoryStorage.single("photo"),async (req:Request, res:Response) => {
     try {
-        await uploadToSFTP(req.file.buffer, req.file.originalname);
+        const buffer = req.file.buffer;
+        const filename = req.file.originalname;
+        await uploadToSFTP(buffer, Folder.Pictures, filename);
         res.sendStatus(200);
     } catch(e){
-        console.log(e);
-        res.status(400).send({errorMessage:"Couldn't files the file"})
+        res.status(400).send({errorMessage:"Couldn't upload the file"})
     }
 
 });
 
 uploadRouter.get('/pictures/:filename',async (req:Request, res:Response) => {
     try {
-        const pipe = await pipeIntoSFTP(req.params.filename);
-        if(typeof pipe.stream === 'string'){
-            const text = pipe.stream;
-            res.status(200).send({text:text});
-        } else if (pipe.stream instanceof Buffer){
-            res.writeHead(200, {
-                'Content-Type': 'image/png',
-                'Content-Length': pipe.stream.length
-            });
-            res.end(pipe.stream);
-        } else {
-            pipe.stream.pipe(res);
-            res.end();
-        }
-
+        const filename = req.params.filename;
+        await pipeSFTPIntoResponse(res,Folder.Pictures, filename, ContentType.PNG)
     } catch(e){
-        console.log(e);
         res.status(400).send({errorMessage:"Problem when downloading the file"})
     }
-
 });
 
 export { uploadRouter }

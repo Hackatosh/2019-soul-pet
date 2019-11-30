@@ -22,7 +22,7 @@ services:
       FTP_PORT: 22
       FTP_USER: nodejs
       FTP_PASSWORD: password
-      FTP_PATH: pictures
+      FTP_PATH_PICTURES: pictures
     volumes:
       - ./back:/usr/app/
       - /usr/app/node_modules
