@@ -24,8 +24,11 @@ uploadRouter.get('/pictures/:filename',async (req:Request, res:Response) => {
             const text = pipe.stream;
             res.status(200).send({text:text});
         } else if (pipe.stream instanceof Buffer){
-            const buffer = pipe.stream.toString('base64');
-            res.end(buffer);
+            res.writeHead(200, {
+                'Content-Type': 'image/png',
+                'Content-Length': pipe.stream.length
+            });
+            res.end(pipe.stream);
         } else {
             pipe.stream.pipe(res);
             res.end();
