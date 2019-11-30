@@ -9,7 +9,8 @@ export const authenticationService = {
 	login,
 	logout,
 	currentUser: currentUserSubject.asObservable(),
-	get currentUserValue () { return currentUserSubject.value }
+	get currentUserValue () { return currentUserSubject.value },
+	get isLoggedIn () { return this.currentUserValue && this.currentUserValue.id !== -1 }
 };
 
 async function login(email: string, password: string) {
