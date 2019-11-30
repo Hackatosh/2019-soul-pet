@@ -7,6 +7,14 @@ import * as bodyParser from "body-parser";
 
 const app = express();
 const apiRouter = Router();
+
+app.use(function (_, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    next();
+});
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 apiRouter.use('/', healthRouter);
