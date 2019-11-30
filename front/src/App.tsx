@@ -4,7 +4,7 @@ import { authenticationService } from './services';
 import { PrivateRoute } from './components';
 import { HomePage, LoginPage } from './pages';
 import { NavBar } from './components/NavBar';
-import history from './helpers/history';
+import { history } from './helpers';
 
 class App extends React.Component<{}, { currentUser: any }> {
     constructor(props: Readonly<{}>) {

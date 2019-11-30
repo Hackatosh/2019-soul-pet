@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { authenticationService } from '../services';
-import history from '../helpers/history';
+import { history } from '../helpers';
 
 class NavBar extends React.Component {
 	private logout() {

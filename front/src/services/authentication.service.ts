@@ -24,6 +24,8 @@ async function login(email: string, password: string) {
 		localStorage.setItem('currentUser', JSON.stringify(user));
 		currentUserSubject.next(user);
 		return user;
+	}, () => {
+		return Promise.reject('Identifiants incorrects');
 	});
 }
 
