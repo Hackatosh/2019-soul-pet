@@ -1,6 +1,7 @@
 /*** This file mounts middlewares and the routers created in controllers into the express application ***/
 
 import express, {Router, Response} from 'express';
+import helmet from 'helmet';
 import { healthRouter } from './controllers/health';
 import {loginRequiredMW} from "./middlewares/loginRequired";
 import {authenticationRouter} from "./controllers/authentication";
@@ -9,12 +10,14 @@ import * as bodyParser from 'body-parser';
 import {uploadRouter} from "./controllers/upload";
 import {handleError500} from "./middlewares/errorHandlers";
 
+/*** Basic middlewares mouting ***/
 const app = express();
-const apiRouter = Router();
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(helmet());
 
+/*** API routers mounting ***/
+const apiRouter = Router();
 apiRouter.use('/', healthRouter);
 apiRouter.use('/files',uploadRouter);
 apiRouter.use('/auth',authenticationRouter);

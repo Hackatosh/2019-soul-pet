@@ -6,7 +6,7 @@ services:
       context: ./back
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8001:8000"
     restart: always
     depends_on:
       - db
@@ -32,7 +32,7 @@ services:
       context: ./front
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3001:3000"
     restart: always
     volumes:
       - ./front:/usr/app/
@@ -41,7 +41,7 @@ services:
     image: mariadb:10.4
     container_name: "soul-pet-db"
     ports:
-      - "3306:3306"
+      - "3307:3306"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: strongpassword
