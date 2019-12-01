@@ -1,3 +1,8 @@
+/*** This file is the entrypoint of the application.
+ * It represents the high level operations needed to launch the server.
+ ***/
+
+
 import {app} from './routes/app';
 import http from 'http';
 import {env} from './config/env'

@@ -11,6 +11,7 @@ export class Token extends Model {
     public readonly updatedAt!: Date;
 }
 
+/*** Function used to initialize the Token Model ***/
 const initTokenModel = async function():Promise<void> {
 
     Token.init({

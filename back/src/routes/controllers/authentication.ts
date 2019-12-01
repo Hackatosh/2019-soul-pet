@@ -3,9 +3,6 @@
 import { Request, Response, Router } from 'express';
 import { User } from '../../database/models/user'
 import {compareUserPassword, hashPassword} from "../../core/authentication/password";
-import {sign} from 'jsonwebtoken';
-import {env} from "../../config/env";
-import {TokenPayload} from "../../core/authentication/authenticationInterfaces";
 import {inputValidationMW} from "../middlewares/inputValidation";
 import { check } from 'express-validator'
 import {generateTokenForUser} from "../../core/authentication/tokens";
@@ -51,9 +48,9 @@ authenticationRouter.post('/login', loginChecks, inputValidationMW, async (req: 
         res.status(401).json({errorMessage:"Authentication failed. User not found"})
     }
     if(!(await compareUserPassword(user,password))){
-        res.status(401).json({errorMessage:"Authentication failed. User not found"})
+        res.status(401).json({errorMessage:"Authentication failed. Uncorrect password"})
     } else {
-        res.status(200).json({token: await generateTokenForUser(user)})
+            res.status(200).json({token: await generateTokenForUser(user)})
     }
 });
 

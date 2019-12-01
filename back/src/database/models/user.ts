@@ -13,6 +13,7 @@ export class User extends Model {
     public readonly updatedAt!: Date;
 }
 
+/*** Function used to initialize the User Model ***/
 const initUserModel = async function():Promise<void> {
 
     User.init({

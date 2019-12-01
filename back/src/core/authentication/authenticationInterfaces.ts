@@ -2,6 +2,7 @@
 
 import { Request } from 'express';
 
+/*** Class representing the payload contained in JWT token***/
 class TokenPayload {
     userId:number;
     iat:number;
@@ -12,6 +13,7 @@ class TokenPayload {
     }
 }
 
+/*** Interface extending Express Request to include authentication infos decoded from JWT token ***/
 interface AuthenticatedRequest extends Request{
     rawToken:string;
     authInfos: TokenPayload;
