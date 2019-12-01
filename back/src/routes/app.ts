@@ -8,7 +8,7 @@ import {authenticationRouter} from "./controllers/authentication";
 import {AuthenticatedRequest} from "../core/authentication/authenticationInterfaces";
 import * as bodyParser from 'body-parser';
 import {uploadRouter} from "./controllers/upload";
-import {handleError500} from "./middlewares/errorHandlers";
+import {handleError500MW} from "./middlewares/errorHandlers";
 
 /*** Basic middlewares mouting ***/
 const app = express();
@@ -23,7 +23,7 @@ apiRouter.use('/files',uploadRouter);
 apiRouter.use('/auth',authenticationRouter);
 apiRouter.use('*',loginRequiredMW);
 apiRouter.use('/protected',(req:AuthenticatedRequest,res:Response) => {res.status(200).json({message:`Welcome ${req.user.username}`})});
-apiRouter.use('*',handleError500);
+apiRouter.use('*',handleError500MW);
 
 app.use('/api', apiRouter);
 
