@@ -5,7 +5,7 @@ import { User } from '../../database/models/user'
 import {compareUserPassword, hashPassword} from "../../core/authentication/password";
 import {sign} from 'jsonwebtoken';
 import {env} from "../../config/env";
-import {AuthenticationInfos} from "../../core/authentication/authenticationInterfaces";
+import {TokenPayload} from "../../core/authentication/authenticationInterfaces";
 import {inputValidationMW} from "../middlewares/inputValidation";
 import { check } from 'express-validator'
 import {generateTokenForUser} from "../../core/authentication/tokens";

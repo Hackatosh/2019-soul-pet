@@ -2,17 +2,19 @@
 
 import { Request } from 'express';
 
-class AuthenticationInfos {
+class TokenPayload {
     userId:number;
+    iat:number;
 
-    constructor(userId: number) {
+    constructor(userId: number,iat:number) {
         this.userId = userId;
+        this.iat = iat;
     }
 }
 
 interface AuthenticatedRequest extends Request{
-    token:string;
-    user: AuthenticationInfos;
+    rawToken:string;
+    authInfos: TokenPayload;
 }
 
-export { AuthenticationInfos, AuthenticatedRequest}
+export { TokenPayload, AuthenticatedRequest}
