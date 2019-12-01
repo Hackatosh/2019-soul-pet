@@ -11,18 +11,23 @@ export class Token extends Model {
     public readonly updatedAt!: Date;
 }
 
-Token.init({
-    token: {
-        type: DataTypes.STRING(128),
-        primaryKey: true,
-    },
-    userId: {
-        type: new DataTypes.INTEGER.UNSIGNED,
-        allowNull: false,
-    },
-}, {
-    tableName: 'tokens',
-    sequelize: db,
-});
+const initTokenModel = async function():Promise<void> {
 
-Token.sync();
+    Token.init({
+        token: {
+            type: DataTypes.STRING(128),
+            primaryKey: true,
+        },
+        userId: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: false,
+        },
+    }, {
+        tableName: 'tokens',
+        sequelize: db,
+    });
+
+    await Token.sync();
+};
+
+export { initTokenModel }
