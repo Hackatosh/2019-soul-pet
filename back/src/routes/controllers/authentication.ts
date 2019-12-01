@@ -8,6 +8,7 @@ import {env} from "../../config/env";
 import {AuthenticationInfos} from "../../core/authentication/authenticationInterfaces";
 import {inputValidationMW} from "../middlewares/inputValidation";
 import { check } from 'express-validator'
+import {generateTokenForUser} from "../../core/authentication/tokens";
 
 const authenticationRouter = Router();
 
@@ -28,7 +29,7 @@ authenticationRouter.post('/register',registerChecks, inputValidationMW, async (
         user.hashedPassword = null;
         res.status(200).json({user:user})
     } catch(e) {
-        console.log(e)
+        console.log(e);
         res.status(400).json({errorMessage:"Unable to register"})
     }
 
@@ -52,7 +53,7 @@ authenticationRouter.post('/login', loginChecks, inputValidationMW, async (req: 
     if(!(await compareUserPassword(user,password))){
         res.status(401).json({errorMessage:"Authentication failed. User not found"})
     } else {
-        res.status(200).json({token:sign(Object.assign({},new AuthenticationInfos(user.id,user.username,user.email)), env.SECRET_KEY)})
+        res.status(200).json({token: await generateTokenForUser(user)})
     }
 });
 
