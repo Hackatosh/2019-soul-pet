@@ -76,7 +76,7 @@ const generateContentLengthHeader = function (sftpPipe:SFTPPipe):Header {
     } else if (sftpPipe.stream instanceof Buffer){
         return new Header("Content-Length",sftpPipe.stream.length.toString())
     } else {
-        return null; //Readable Stream has no readable size
+        return null; //Readable Stream has no defined length
     }
 };
 

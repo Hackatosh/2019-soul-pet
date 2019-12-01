@@ -6,6 +6,7 @@ import {initDB} from "./database/initDB";
 const launchServer = async function () {
     try {
         await initDB();
+        console.log("Starting Server...");
         app.set('port', env.SERVER_PORT);
         const server = http.createServer(app);
         await server.listen(env.SERVER_PORT);

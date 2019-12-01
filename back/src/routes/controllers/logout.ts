@@ -6,7 +6,7 @@ const logoutRouter = Router();
 
 /*** Basic route to revocate your token and logout ***/
 
-logoutRouter.get('/', async (req: AuthenticatedRequest, res: Response) => {
+logoutRouter.post('/', async (req: AuthenticatedRequest, res: Response) => {
     await revocateToken(req.token);
     res.sendStatus(200);
 });

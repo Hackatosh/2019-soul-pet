@@ -8,6 +8,8 @@ services:
     ports:
       - "8001:8000"
     restart: always
+    links:
+      - db
     depends_on:
       - db
     environment:
