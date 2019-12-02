@@ -5,6 +5,7 @@ if (process.env.SERVER_PORT === undefined)
 	require('dotenv').config();
 
 const SERVER_PORT = process.env.SERVER_PORT;
+const TOKEN_LIFETIME_SEC = process.env.TOKEN_LIFETIME_SEC;
 const DB_HOST = process.env.DB_HOST;
 const DB_PORT = process.env.DB_PORT;
 const DB_USER = process.env.DB_USER;
@@ -19,6 +20,10 @@ const FTP_PATH_PICTURES = process.env.FTP_PATH_PICTURES;
 
 if (SERVER_PORT == undefined || isNaN(parseInt(SERVER_PORT))) {
     throw new Error('SERVER_PORT is not a valid env variable');
+}
+
+if (TOKEN_LIFETIME_SEC == undefined || isNaN(parseInt(TOKEN_LIFETIME_SEC))) {
+    throw new Error('TOKEN_LIFETIME_SEC is not a valid env variable');
 }
 
 if (DB_HOST == undefined) {
@@ -67,8 +72,9 @@ if (FTP_PATH_PICTURES == undefined) {
 
 const env = {
     SERVER_PORT,
+    TOKEN_LIFETIME_SEC:parseInt(TOKEN_LIFETIME_SEC),
     DB_HOST,
-    DB_PORT,
+    DB_PORT:parseInt(DB_PORT),
     DB_USER,
     DB_PASSWORD,
     DB_NAME,

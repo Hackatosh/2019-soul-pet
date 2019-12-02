@@ -1,6 +1,7 @@
 import {OutgoingHttpHeaders} from "http";
 
-export class Header {
+/*** Class representing a HTTP header ***/
+export class HttpHeader {
     public readonly name:string;
     public readonly value:string;
 
@@ -11,7 +12,8 @@ export class Header {
     }
 }
 
-const objectifyHeadersArray = function (headers:Array<Header>):OutgoingHttpHeaders {
+/*** Flattens a list of HTTPHeader object into a OutgoingHttpHeaders***/
+const objectifyHeadersArray = function (headers:Array<HttpHeader>):OutgoingHttpHeaders {
     let result:OutgoingHttpHeaders = {};
     for(let header of headers){
         if(header !== null){
@@ -21,4 +23,9 @@ const objectifyHeadersArray = function (headers:Array<Header>):OutgoingHttpHeade
     return result;
 };
 
-export { objectifyHeadersArray }
+/*** Check if a string is invalid or empty ***/
+const isEmptyString = function(str:string){
+    return str === undefined || str === null || str.trim() === ""
+};
+
+export { objectifyHeadersArray, isEmptyString }
