@@ -1,11 +1,12 @@
-import { Model, DataTypes } from 'sequelize';
+import {Model, DataTypes} from 'sequelize';
 import {db} from '../connection'
 
+/*** Model used to represent a user in DB ***/
 export class User extends Model {
     public id!: number; // Note that the `null assertion` `!` is required in strict mode.
     public username!: string;
-    public email!:string;
-    public hashedPassword!:string;
+    public email!: string;
+    public hashedPassword!: string;
 
     // timestamps!
     public readonly createdAt!: Date;

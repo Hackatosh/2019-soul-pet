@@ -1,11 +1,17 @@
-import { app } from './routes/app';
+import {app} from './routes/app';
 import http from 'http';
 import {env} from './config/env'
 
-app.set('port', env.SERVER_PORT);
+const launchServer = async function () {
+    try {
+        app.set('port', env.SERVER_PORT);
+        const server = http.createServer(app);
+        await server.listen(env.SERVER_PORT);
+        console.log(`Listening on port ${env.SERVER_PORT}`);
+    } catch (e) {
+        console.log("CRITICAL ERROR WHILE STARTING SERVER !!!");
+        console.log(e)
+    }
+};
 
-const server = http.createServer(app);
-server.on('listening', () => {
-    console.log(`Listening on port ${env.SERVER_PORT}`);
-});
-server.listen(env.SERVER_PORT);
+launchServer();

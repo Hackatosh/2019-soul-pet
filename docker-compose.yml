@@ -8,6 +8,8 @@ services:
     ports:
       - "8000:8000"
     restart: always
+    depends_on:
+      - db
     environment:
       SERVER_PORT: 8000
       DB_HOST: soul-pet-db
@@ -16,6 +18,11 @@ services:
       DB_PASSWORD: 'password'
       DB_NAME: 'soul_pet'
       SECRET_KEY: '7CMl4AhyElECTWaUqRjxbl7FsmtYunqf'
+      FTP_HOST: soul-pet-sftp
+      FTP_PORT: 22
+      FTP_USER: nodejs
+      FTP_PASSWORD: password
+      FTP_PATH_PICTURES: pictures
     volumes:
       - ./back:/usr/app/
       - /usr/app/node_modules
@@ -56,5 +63,15 @@ services:
       - db
     ports:
       - "8080:80"
+  sftp:
+    image: atmoz/sftp
+    container_name: 'soul-pet-sftp'
+    volumes:
+      - ./ftp/sftp.d:/etc/sftp.d/
+      - sftp-pictures:/home/nodejs/pictures
+    ports:
+      - "2222:22"
+    command: nodejs:password:::pictures
 volumes:
   db-data:
+  sftp-pictures:

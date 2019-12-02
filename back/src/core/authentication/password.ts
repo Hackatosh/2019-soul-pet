@@ -1,4 +1,6 @@
-import {User} from "../database/models/user";
+/*** This file wraps basic password operation provided by bcrypt***/
+
+import {User} from "../../database/models/user";
 import bcrypt from "bcryptjs";
 
 const compareUserPassword = async function(user:User,password:string){

@@ -1,3 +1,5 @@
+/*** This file extends Express Request to add Authentication infos. This is used with the loginRequired middleware***/
+
 import { Request } from 'express';
 
 class AuthenticationInfos {
