@@ -1,3 +1,7 @@
+/*** This file is used to initialized all the constraints between table.
+ * This is kept in a separate file to avoid circular import problems.
+ */
+
 import {Animal} from "./models/animal";
 import {User} from "./models/user";
 import {Specie} from "./models/specie";
