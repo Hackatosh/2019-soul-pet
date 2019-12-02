@@ -2,7 +2,7 @@ import React from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
 import { authenticationService } from './services';
 import { PrivateRoute } from './components';
-import { HomePage, LoginPage } from './pages';
+import { HomePage, LoginPage, RegisterPage } from './pages';
 import { NavBar } from './components/NavBar';
 import { history } from './helpers';
 
@@ -28,6 +28,7 @@ class App extends React.Component<{}, { currentUser: any }> {
 						<Switch>
 							<PrivateRoute exact path="/" component={HomePage} />
 							<Route path="/login" component={LoginPage} />
+              <Route path="/register" component={RegisterPage} />
 						</Switch>
 					</div>
                 </div>

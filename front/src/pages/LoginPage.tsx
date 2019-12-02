@@ -1,12 +1,13 @@
 import React from 'react';
 import { authenticationService } from '../services';
+import { Link } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 import { history } from '../helpers';
 
 class LoginPage extends React.Component<any, {}> {
 	constructor(props: any) {
 		super(props);
-		
+
 		if (authenticationService.isLoggedIn) {
 			history.push('/');
 		}
@@ -15,6 +16,7 @@ class LoginPage extends React.Component<any, {}> {
 	render() {
 		return (
 			<div>
+				<div>
                 <h1>Bienvenue sur SoulPet&nbsp;!</h1>
                 <p>Connectez-vous pour retrouver tous nos conseils et événements pour vos animaux&nbsp;!</p>
                 <Formik initialValues={{ email: '', password: '' }} onSubmit={({ email, password }, { setStatus, setSubmitting }) => {
@@ -42,6 +44,11 @@ class LoginPage extends React.Component<any, {}> {
 						</Form>
 					)}
 				</Formik>
+				</div>
+				<div>
+				<p> Vous n'êtes pas encore inscrits ? Cliquez ici pour rejoindre notre communauté ! : </p>
+				<Link className="btn btn-success" to="/register">S'inscrire</Link>
+				</div>
             </div>
 		);
 	}

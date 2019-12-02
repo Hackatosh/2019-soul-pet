@@ -7,6 +7,7 @@ const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('
 
 export const authenticationService = {
 	login,
+	register,
 	logout,
 	currentUser: currentUserSubject.asObservable(),
 	get currentUserValue () { return currentUserSubject.value },
@@ -26,6 +27,18 @@ async function login(email: string, password: string) {
 		return user;
 	}, () => {
 		return Promise.reject('Identifiants incorrects');
+	});
+}
+
+async function register(username: string, email: string, password: string) {
+	const requestOptions = {
+		method: 'POST',
+		headers: {'Content-Type': 'application/json'},
+		body: JSON.stringify({ username, email, password })
+	};
+	console.log(`${config.apiUrl}/auth/register`);
+	return fetch(`${config.apiUrl}/auth/register`, requestOptions).then(handleResponse).then( () => {
+		return Promise.reject('Veuillez vérifier vos informations');
 	});
 }
 
