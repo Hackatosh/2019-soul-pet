@@ -49,7 +49,7 @@ authenticationRouter.post('/login', loginChecks, inputValidationMW, async (req: 
     } else if(!(await compareUserPassword(user, password))){
         res.status(401).json({errorMessage:"Authentication failed: invalid password"})
     } else {
-		res.status(200).json({username: user.username, email: user.email, token: sign(Object.assign({}, new AuthenticationInfos(user.id,user.username,user.email)), env.SECRET_KEY)})
+		res.status(200).json({username: user.username, email: user.email, token: generateTokenForUser(user)})
     }
 });
 

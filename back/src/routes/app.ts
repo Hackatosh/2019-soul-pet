@@ -10,18 +10,12 @@ import * as bodyParser from 'body-parser';
 import {uploadRouter} from "./controllers/upload";
 import {handleError500MW} from "./middlewares/errorHandlers";
 import {logoutRouter} from "./controllers/logout";
+import {allowFrontMW} from "./middlewares/allowFront";
 
 /*** Basic middlewares mouting ***/
 const app = express();
-const apiRouter = Router();
 
-app.use(function (_, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    next();
-});
-
+app.use(allowFrontMW);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(helmet());
