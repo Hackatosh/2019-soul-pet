@@ -1,13 +1,15 @@
-import { Request, Response, NextFunction} from 'express';
-import {env} from '../../config/env'
-import {verify} from 'jsonwebtoken'
-import {AuthenticatedRequest, AuthenticationInfos} from "../../core/authenticationInterfaces";
+import { Response, NextFunction} from 'express';
+import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
+import {getAuthInfosFromToken} from "../../core/authentication/tokens";
+
+/*** Middleware to require an authentication through an Authorization header with a JWT Token ***/
 
 const loginRequiredMW = async function (req:AuthenticatedRequest,res:Response,next:NextFunction) {
     if(req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] == 'JWT'){
         try {
-            const decode:any = await verify(req.headers.authorization.split(' ')[1],env.SECRET_KEY);
-            req.user = new AuthenticationInfos(decode.id,decode.username,decode.email);
+            const token = req.headers.authorization.split(' ')[1];
+            req.authInfos = await getAuthInfosFromToken(token);
+            req.rawToken = token;
             next();
         } catch(e){
             return res.status(401).json({errorMessage : "Unauthorized. Please login first."})

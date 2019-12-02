@@ -1,0 +1,1 @@
+chown nodejs /home/nodejs/pictures
