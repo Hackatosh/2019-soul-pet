@@ -25,6 +25,7 @@ const initTokenModel = async function():Promise<void> {
         },
     }, {
         tableName: 'tokens',
+        modelName: 'token',
         sequelize: db,
     });
 
