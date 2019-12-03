@@ -6,7 +6,7 @@ export class Animal extends Model {
     public id!: number;
     public userId!: number;
     public specieId!: number;
-    public birthday!: Date;
+    public birthdate!: Date;
     public name!: string;
 
     // timestamps!
