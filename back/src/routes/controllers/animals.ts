@@ -64,7 +64,7 @@ animalsRouter.post('/', postAnimalChecks, inputValidationMW, async (req: Authent
 const putAnimalChecks = [
     check('animalId').notEmpty().isNumeric(),
     check('specieId').notEmpty().isNumeric(),
-    check('name').notEmpty().isString,
+    check('name').notEmpty().isString(),
     check('birthdate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}),
 ];
 
@@ -85,16 +85,16 @@ animalsRouter.put('/:animalId', putAnimalChecks, inputValidationMW, async (req: 
     }
     let update:any = {};
     if(name){
-        update['name'] = name
+        update = {name:name, ...update}
     }
     if(birthdate) {
-        update['birthdate'] = birthdate
+        update = {birthdate:birthdate, ...update}
     }
     if(specieId) {
-        update['specieId'] = specieId
+        update = {specieId:specieId, ...update}
     }
-    const animal = await Animal.update(update,{where:{id:animalId}});
-    res.status(200).send(animal)
+    await Animal.update(update,{where:{id:animalId}});
+    res.status(200).send({update:update})
 });
 
 /*** This route is used to delete an animal profile***/
