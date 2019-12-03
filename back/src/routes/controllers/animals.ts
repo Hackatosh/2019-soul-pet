@@ -30,7 +30,7 @@ animalsRouter.get('/', getUserAnimalsChecks, inputValidationMW, async (req: Auth
     res.status(200).send({animals:animals})
 });
 
-/*** This route is used to create a new animal profile for a given user***/
+/*** This route is used to create a new animal profile ***/
 
 const postAnimalChecks = [
     check('userId').notEmpty().isNumeric(),
