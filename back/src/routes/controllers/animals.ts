@@ -22,7 +22,7 @@ const getUserAnimalsChecks = [
 ];
 
 animalsRouter.get('/', getUserAnimalsChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.query.userId;
+    const userId = parseInt(req.query.userId);
     if(userId !== req.authInfos.userId){
         res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."})
     }
@@ -33,17 +33,15 @@ animalsRouter.get('/', getUserAnimalsChecks, inputValidationMW, async (req: Auth
 /*** This route is used to create a new animal profile for a given user***/
 
 const postAnimalChecks = [
-    check('id').notEmpty().isNumeric(),
     check('userId').notEmpty().isNumeric(),
     check('specieId').notEmpty().isNumeric(),
-    check('name').notEmpty().isString,
+    check('name').notEmpty().isString(),
     check('birthdate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}),
 ];
 
-animalsRouter.post('/',postAnimalChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
-    const id = req.body.id;
-    const userId = req.body.userId;
-    const specieId = req.body.specieId;
+animalsRouter.post('/', postAnimalChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
+    const userId = parseInt(req.body.userId);
+    const specieId = parseInt(req.body.specieId);
     const name = req.body.name;
     const birthdate = req.body.birthdate;
     if(userId !== req.authInfos.userId){
@@ -52,8 +50,13 @@ animalsRouter.post('/',postAnimalChecks, inputValidationMW, async (req: Authenti
     if(!await Specie.findOne({where:{id:specieId}})){
         res.status(400).json({errorMessage:"Bad request. The specie you indicated is not registered in DB."})
     }
-    const animal = await Animal.create({id,userId,specieId,name,birthdate});
-    res.status(200).send(animal)
+    try {
+        const animal = await Animal.create({userId, specieId, name, birthdate});
+        res.status(200).send(animal)
+    } catch(e){
+        console.log(e);
+        res.status(400).send({errorMessage:"Unable to register the animal"})
+    }
 });
 
 /*** This route is used to edit an animal profile***/
@@ -66,8 +69,8 @@ const putAnimalChecks = [
 ];
 
 animalsRouter.put('/:animalId', putAnimalChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
-    const animalId = req.params.animalId;
-    const specieId = req.body.specieId;
+    const animalId = parseInt(req.params.animalId);
+    const specieId = parseInt(req.body.specieId);
     const name = req.body.name;
     const birthdate = req.body.birthdate;
     const animalFound = await Animal.findOne({where: {id:animalId}});
@@ -75,7 +78,7 @@ animalsRouter.put('/:animalId', putAnimalChecks, inputValidationMW, async (req: 
         res.status(404).json({errorMessage:"Not found. The animal you are trying to access does not exist."})
     }
     if(animalFound.userId !== req.authInfos.userId){
-        res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."})
+        res.status(403).json({errorMessage:"Forbidden. You don't have access to this animal."})
     }
     if(!await Specie.findOne({where:{id:specieId}})){
         res.status(400).json({errorMessage:"Bad request. The specie you indicated is not registered in DB."})
@@ -102,17 +105,14 @@ const deleteAnimalChecks = [
 ];
 
 animalsRouter.delete('/:animalId',deleteAnimalChecks,inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.query.userId;
-    const animalId = req.params.animalId;
-    if(userId !== req.authInfos.userId){
-        res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."})
-    }
+    const animalId = parseInt(req.params.animalId);
+
     const animal = await Animal.findOne({where: {id:animalId}});
     if(!animal){
         res.status(404).json({errorMessage:"Not found. The animal you are trying to access does not exist."})
     }
-    if(userId !== animal.userId){
-        res.status(403).json({errorMessage:"Forbidden. The animal does not belong to the request user."})
+    if(req.authInfos.userId !== animal.userId){
+        res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."})
     }
     await Animal.destroy({where: {id:animalId}});
     res.status(200).send({id:animalId})

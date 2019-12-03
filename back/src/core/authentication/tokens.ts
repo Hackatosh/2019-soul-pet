@@ -26,7 +26,7 @@ const getAuthInfosFromToken = async function(token:string): Promise<TokenPayload
     let tokenPayload:TokenPayload;
     try{
         const decode:any = await verify(token,env.SECRET_KEY);
-        tokenPayload = new TokenPayload(parseInt(decode.id),parseInt(decode.iat));
+        tokenPayload = new TokenPayload(parseInt(decode.userId),parseInt(decode.iat));
     } catch (e) {
         throw new Error("Invalid token");
     }
