@@ -23,7 +23,7 @@ export class Specie extends Model {
     public readonly animals?: Animal[];
 
     public static associations: {
-        projects: Association<Specie, Animal>;
+        animals: Association<Specie, Animal>;
     };
 
     // timestamps!
