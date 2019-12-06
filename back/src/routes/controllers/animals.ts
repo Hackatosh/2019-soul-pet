@@ -25,6 +25,7 @@ animalsRouter.get('/', getUserAnimalsChecks, inputValidationMW, async (req: Auth
     const userId = parseInt(req.query.userId);
     if(userId !== req.authInfos.userId){
         res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."})
+        return;
     }
     const animals = await Animal.findAll({where: {userId:userId}});
     res.status(200).send({animals:animals})
@@ -45,10 +46,12 @@ animalsRouter.post('/', postAnimalChecks, inputValidationMW, async (req: Authent
     const name = req.body.name;
     const birthdate = req.body.birthdate;
     if(userId !== req.authInfos.userId){
-        res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."})
+        res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."});
+        return;
     }
     if(!await Specie.findOne({where:{id:specieId}})){
-        res.status(400).json({errorMessage:"Bad request. The specie you indicated is not registered in DB."})
+        res.status(400).json({errorMessage:"Bad request. The specie you indicated is not registered in DB."});
+        return;
     }
     try {
         const animal = await Animal.create({userId, specieId, name, birthdate});
@@ -75,13 +78,16 @@ animalsRouter.put('/:animalId', putAnimalChecks, inputValidationMW, async (req: 
     const birthdate = req.body.birthdate;
     const animalFound = await Animal.findOne({where: {id:animalId}});
     if(!animalFound){
-        res.status(404).json({errorMessage:"Not found. The animal you are trying to access does not exist."})
+        res.status(404).json({errorMessage:"Not found. The animal you are trying to access does not exist."});
+        return;
     }
     if(animalFound.userId !== req.authInfos.userId){
-        res.status(403).json({errorMessage:"Forbidden. You don't have access to this animal."})
+        res.status(403).json({errorMessage:"Forbidden. You don't have access to this animal."});
+        return;
     }
     if(!await Specie.findOne({where:{id:specieId}})){
-        res.status(400).json({errorMessage:"Bad request. The specie you indicated is not registered in DB."})
+        res.status(400).json({errorMessage:"Bad request. The specie you indicated is not registered in DB."});
+        return;
     }
     let update:any = {};
     if(name){
@@ -109,10 +115,12 @@ animalsRouter.delete('/:animalId',deleteAnimalChecks,inputValidationMW, async (r
 
     const animal = await Animal.findOne({where: {id:animalId}});
     if(!animal){
-        res.status(404).json({errorMessage:"Not found. The animal you are trying to access does not exist."})
+        res.status(404).json({errorMessage:"Not found. The animal you are trying to access does not exist."});
+        return;
     }
     if(req.authInfos.userId !== animal.userId){
-        res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."})
+        res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."});
+        return;
     }
     await Animal.destroy({where: {id:animalId}});
     res.status(200).send({id:animalId})
