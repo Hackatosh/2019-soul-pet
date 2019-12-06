@@ -26,7 +26,7 @@ const getAuthInfosFromToken = async function(token:string): Promise<TokenPayload
     let tokenPayload:TokenPayload;
     try{
         const decode:any = await verify(token,env.SECRET_KEY);
-        tokenPayload = new TokenPayload(parseInt(decode.id),parseInt(decode.iat));
+        tokenPayload = new TokenPayload(parseInt(decode.userId),parseInt(decode.iat));
     } catch (e) {
         throw new Error("Invalid token");
     }
@@ -51,7 +51,7 @@ const revocateToken = async function (token:string):Promise<void> {
         throw new Error("Cannot revocate empty token");
     }
     try {
-        Token.destroy({where: {token: token}});
+        await Token.destroy({where: {token: token}});
     } catch (e) {
         throw new Error("Unable to destroy token.");
     }
@@ -60,7 +60,7 @@ const revocateToken = async function (token:string):Promise<void> {
 /*** Revocate all tokens for a given user using database persistence ***/
 const revocateAllTokensForUser = async function (userId:number) {
     try {
-        Token.destroy({where: {userId: userId}});
+        await Token.destroy({where: {userId: userId}});
     } catch (e) {
     throw new Error("Unable to destroy tokens.");
 }

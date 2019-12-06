@@ -10,6 +10,7 @@ import * as bodyParser from 'body-parser';
 import {uploadRouter} from "./controllers/upload";
 import {handleError500MW} from "./middlewares/errorHandlers";
 import {logoutRouter} from "./controllers/logout";
+import {animalsRouter} from "./controllers/animals";
 
 /*** Basic middlewares mouting ***/
 const app = express();
@@ -24,6 +25,7 @@ apiRouter.use('/files',uploadRouter);
 apiRouter.use('/auth',authenticationRouter);
 apiRouter.use('*',loginRequiredMW);
 apiRouter.get('/protected',(req:AuthenticatedRequest,res:Response) => {res.status(200).json({message:`Welcome`})});
+apiRouter.use('/animals',animalsRouter);
 apiRouter.use('/logout',logoutRouter);
 apiRouter.use('*',handleError500MW);
 
