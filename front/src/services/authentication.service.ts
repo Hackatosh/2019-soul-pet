@@ -35,8 +35,8 @@ async function register(username: string, email: string, password: string) {
 		headers: {'Content-Type': 'application/json'},
 		body: JSON.stringify({ username, email, password })
 	};
-	return fetch(`${config.apiUrl}/auth/register`, requestOptions).then(handleResponse).then( () => {
-		return Promise.reject('Veuillez vérifier vos informations');
+	return fetch(`${config.apiUrl}/auth/register`, requestOptions).then(handleResponse).then(null, () => {
+		return Promise.reject('Création du compte impossible ; veuillez réessayer.');
 	});
 }
 
