@@ -20,7 +20,6 @@ async function login(email: string, password: string) {
 		headers: { 'Content-Type': 'application/json'},
 		body: JSON.stringify({ email, password })
 	};
-	console.log(`${config.apiUrl}/auth/login`);
 	return fetch(`${config.apiUrl}/auth/login`, requestOptions).then(handleResponse).then((user: User) => {
 		localStorage.setItem('currentUser', JSON.stringify(user));
 		currentUserSubject.next(user);
@@ -36,7 +35,6 @@ async function register(username: string, email: string, password: string) {
 		headers: {'Content-Type': 'application/json'},
 		body: JSON.stringify({ username, email, password })
 	};
-	console.log(`${config.apiUrl}/auth/register`);
 	return fetch(`${config.apiUrl}/auth/register`, requestOptions).then(handleResponse).then( () => {
 		return Promise.reject('Veuillez vérifier vos informations');
 	});
