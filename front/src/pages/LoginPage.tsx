@@ -23,8 +23,7 @@ class LoginPage extends React.Component<RouteComponentProps, {}> {
 						<Formik initialValues={{ email: '', password: '' }} onSubmit={({ email, password }, { setStatus, setSubmitting }) => {
 							setStatus();
 							authenticationService.login(email, password).then(() => {
-								const { from } = this.props.location.state || { from: { pathname: "/" } };
-									this.props.history.push(from);
+									history.push('/');
 								},
 								error => {
 									setSubmitting(false);
