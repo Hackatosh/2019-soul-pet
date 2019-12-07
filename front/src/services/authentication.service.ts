@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { config } from '../config';
-import { handleResponse } from '../helpers';
+import { handleResponse, history } from '../helpers';
 import { User } from '../models';
 
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser') as string) as User);
@@ -23,6 +23,7 @@ async function login(email: string, password: string) {
 	return fetch(`${config.apiUrl}/auth/login`, requestOptions).then(handleResponse).then((user: User) => {
 		localStorage.setItem('currentUser', JSON.stringify(user));
 		currentUserSubject.next(user);
+		history.push('/');
 		return user;
 	}, () => {
 		return Promise.reject('Identifiants incorrects');
