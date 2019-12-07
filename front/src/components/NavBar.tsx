@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { authenticationService } from '../services';
 import { history } from '../helpers';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
 
 class NavBar extends React.Component {
 	private logout() {
@@ -11,16 +13,16 @@ class NavBar extends React.Component {
     
 	render() {
 		return (
-			<nav className="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-				<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
+			<Navbar expand="lg" bg="dark" variant="dark" fixed="top">
+				<Navbar.Toggle aria-controls="navbar" />
 				<Link to="/" className="navbar-brand">SoulPet</Link>
-				<div className="collapse navbar-collapse" id="navbar">
+				<Navbar.Collapse id="navbar">
 					{authenticationService.isLoggedIn &&
-						<ul className="navbar-nav">
-							<li className="nav-item"><Link to="/" className="nav-link">Mes animaux</Link></li>
-							<li className="nav-item"><Link to="/services" className="nav-link">Services</Link></li>
-							<li className="nav-item"><Link to="/events" className="nav-link">Événements</Link></li>
-						</ul>
+						<Nav>
+							<Link to="/" className="nav-link">Mes animaux</Link>
+							<Link to="/services" className="nav-link">Services</Link>
+							<Link to="/events" className="nav-link">Événements</Link>
+						</Nav>
 					}
 					<form className="form-inline ml-auto">
 						{
@@ -29,8 +31,8 @@ class NavBar extends React.Component {
 							: (<Link className="btn btn-success" to="/login">Connexion</Link>)
 						}
 					</form>
-				</div>
-			</nav>
+				</Navbar.Collapse>
+			</Navbar>
 		);
 	}
 }
