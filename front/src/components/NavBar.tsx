@@ -11,7 +11,7 @@ class NavBar extends React.Component {
     
 	render() {
 		return (
-			<nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+			<nav className="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
 				<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
 				<Link to="/" className="navbar-brand">SoulPet</Link>
 				<div className="collapse navbar-collapse" id="navbar">

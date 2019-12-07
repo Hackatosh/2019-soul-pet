@@ -22,16 +22,12 @@ class App extends React.Component<{}, { currentUser: any }> {
     render() {
         return (
             <Router history={history}>
-                <div>
-                    <NavBar />
-					<div className="container">
-						<Switch>
-							<PrivateRoute exact path="/" component={HomePage} />
-							<Route path="/login" component={LoginPage} />
-              <Route path="/register" component={RegisterPage} />
-						</Switch>
-					</div>
-                </div>
+				<NavBar />
+				<Switch>
+					<PrivateRoute exact path="/" component={HomePage} />
+					<Route path="/login" component={LoginPage} />
+					<Route path="/register" component={RegisterPage} />
+				</Switch>
             </Router>
         );
     }
