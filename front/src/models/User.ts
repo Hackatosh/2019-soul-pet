@@ -1,4 +1,4 @@
-class User {
+export class User {
 	id: number;
 	username: string;
 	email: string;
@@ -13,5 +13,3 @@ class User {
 		this.token = token;
 	}
 }
-
-export { User };
