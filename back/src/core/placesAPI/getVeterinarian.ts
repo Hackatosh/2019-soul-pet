@@ -34,9 +34,16 @@ function detailsVeterinarian(veterinarianId: string){
   });
 }
 
+async function addDetailsToEachVenue(result: any) { //WIP
+  await Promise.all(result.response.venues.map((venue: any) => detailsVeterinarian(venue.id).then(
+      (details: any) => venue["details"] = details
+  )));
+  return result;
+}
+
 function testPrint(result: any) {
   console.log(result.response.venues);
 }
 
-const promise = searchVeterinarian("45.676,4.82115", "10000").then(testPrint);
+const promise = searchVeterinarian("45.676,4.82115", "10000");
 
