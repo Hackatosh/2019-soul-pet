@@ -3,20 +3,15 @@ import {
     DataTypes,
     HasManyGetAssociationsMixin,
     HasManyAddAssociationMixin,
-    HasManyHasAssociationMixin,
-    HasManyCountAssociationsMixin,
-    HasManyCreateAssociationMixin,
-    Association
+    HasManyHasAssociationMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, Association
 } from 'sequelize';
 import {db} from '../connection'
 import {Animal} from "./animal";
 
-/*** Model used to represent a user in DB ***/
-export class User extends Model {
-    public id!: number; // Note that the `null assertion` `!` is required in strict mode.
-    public username!: string;
-    public email!: string;
-    public hashedPassword!: string;
+/*** Model used to represent a specie in DB ***/
+export class Specie extends Model {
+    public id!: number;
+    public name!: string;
 
     public getAnimals!: HasManyGetAssociationsMixin<Animal>; // Note the null assertions!
     public addAnimal!: HasManyAddAssociationMixin<Animal, number>;
@@ -28,7 +23,7 @@ export class User extends Model {
     public readonly animals?: Animal[];
 
     public static associations: {
-        animals: Association<User, Animal>;
+        animals: Association<Specie, Animal>;
     };
 
     // timestamps!
@@ -37,35 +32,26 @@ export class User extends Model {
 }
 
 /*** Function used to initialize the User Model ***/
-const initUserModel = async function():Promise<void> {
+const initSpecieModel = async function():Promise<void> {
 
-    User.init({
+    Specie.init({
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,
         },
-        username: {
+        name: {
             type: new DataTypes.STRING(128),
             allowNull: false,
             unique: true
-        },
-        email: {
-            type: new DataTypes.STRING(128),
-            allowNull: false,
-            unique: true
-        },
-        hashedPassword: {
-            type: new DataTypes.STRING(128),
-            allowNull: false
         },
     }, {
-        tableName: 'users',
-        modelName: 'user',
+        tableName: 'species',
+        modelName: 'specie',
         sequelize: db,
     });
 
-    await User.sync();
+    await Specie.sync();
 };
 
-export {initUserModel}
+export {initSpecieModel}

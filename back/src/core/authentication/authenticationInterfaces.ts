@@ -2,21 +2,21 @@
 
 import { Request } from 'express';
 
-class AuthenticationInfos {
-    id:number;
-    username:string;
-    email:string;
+/*** Class representing the payload contained in JWT token***/
+class TokenPayload {
+    userId:number;
+    iat:number;
 
-
-    constructor(id: number, username: string, email: string) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
+    constructor(userId: number,iat:number) {
+        this.userId = userId;
+        this.iat = iat;
     }
 }
 
+/*** Interface extending Express Request to include authentication infos decoded from JWT token ***/
 interface AuthenticatedRequest extends Request{
-    user: AuthenticationInfos;
+    rawToken:string;
+    authInfos: TokenPayload;
 }
 
-export { AuthenticationInfos, AuthenticatedRequest}
+export { TokenPayload, AuthenticatedRequest}
