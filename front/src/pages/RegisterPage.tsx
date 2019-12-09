@@ -20,8 +20,11 @@ class RegisterPage extends React.Component<RouteComponentProps, {}> {
 					<div>
 						<h1 className="display-2 mb-3">SoulPet</h1>
 						<p className="lead mb-5">Le site pour prendre soin de vos animaux&nbsp;!</p>
-						<Formik initialValues={{ username: '', email: '', password: '', confirmpassword:'' }} onSubmit={({ username, email, password }, { setStatus, setSubmitting }) => {
+						<Formik initialValues={{ username: '', email: '', password: '', confirmpassword:'' }} onSubmit={({ username, email, password, confirmpassword }, { setStatus, setSubmitting }) => {
 							setStatus();
+							if (confirmpassword !== password){
+								throw error;
+							}
 							authenticationService.register(username, email, password).then(() => {
 									const { from } = this.props.location.state || { from: { pathname: "/login", state: { fromRegistration: true } } };
 									this.props.history.push(from);
