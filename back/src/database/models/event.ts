@@ -3,7 +3,10 @@ import {
     DataTypes,
     BelongsToManyAddAssociationMixin,
     BelongsToManyGetAssociationsMixin,
-    BelongsToManyAddAssociationsMixin, BelongsToManySetAssociationsMixin, Association
+    BelongsToManyAddAssociationsMixin,
+    BelongsToManySetAssociationsMixin,
+    Association,
+    BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin
 } from 'sequelize';
 import {db} from '../connection'
 import {Animal} from "./animal";
@@ -27,6 +30,8 @@ export class PetEvent extends Model {
     public addAttendee!: BelongsToManyAddAssociationMixin<Animal, number>;
     public addAttendees!: BelongsToManyAddAssociationsMixin<Animal, number>;
     public setAttendees!: BelongsToManySetAssociationsMixin<Animal, number>;
+    public removeAttendee!:BelongsToManyRemoveAssociationMixin<Animal,number>;
+    public removeAttendees!:BelongsToManyRemoveAssociationsMixin<Animal,number>;
 
     // These will only be populated if you actively include a relation.
     public readonly attendees?: Animal[];
@@ -35,6 +40,8 @@ export class PetEvent extends Model {
     public addAuthorizedSpecie!: BelongsToManyAddAssociationMixin<Specie, number>;
     public addAuthorizedSpecies!: BelongsToManyAddAssociationsMixin<Specie, number>;
     public setAuthorizedSpecies!: BelongsToManySetAssociationsMixin<Specie, number>;
+    public removeAuthorizedSpecie!:BelongsToManyRemoveAssociationMixin<Specie,number>;
+    public removeAuthorizedSpecies!:BelongsToManyRemoveAssociationsMixin<Specie,number>;
 
     // These will only be populated if you actively include a relation.
     public readonly authorizedSpecies?: Specie[];

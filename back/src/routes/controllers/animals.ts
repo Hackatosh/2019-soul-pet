@@ -107,7 +107,6 @@ animalsRouter.put('/:animalId', putAnimalChecks, inputValidationMW, async (req: 
 
 const deleteAnimalChecks = [
     check('animalId').notEmpty().isNumeric(),
-    check('userId').notEmpty().isNumeric(),
 ];
 
 animalsRouter.delete('/:animalId',deleteAnimalChecks,inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {

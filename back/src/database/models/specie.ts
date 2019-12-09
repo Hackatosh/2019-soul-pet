@@ -3,10 +3,15 @@ import {
     DataTypes,
     HasManyGetAssociationsMixin,
     HasManyAddAssociationMixin,
-    HasManyHasAssociationMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, Association
+    HasManyHasAssociationMixin,
+    HasManyCountAssociationsMixin,
+    HasManyCreateAssociationMixin,
+    Association,
+    BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin
 } from 'sequelize';
 import {db} from '../connection'
 import {Animal} from "./animal";
+import {PetEvent} from "./event";
 
 /*** Model used to represent a specie in DB ***/
 export class Specie extends Model {
@@ -18,6 +23,7 @@ export class Specie extends Model {
     public hasAnimal!: HasManyHasAssociationMixin<Animal, number>;
     public countAnimals!: HasManyCountAssociationsMixin;
     public createAnimal!: HasManyCreateAssociationMixin<Animal>;
+
 
     // These will only be populated if you actively include a relation.
     public readonly animals?: Animal[];
