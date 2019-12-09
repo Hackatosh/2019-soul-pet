@@ -1,15 +1,10 @@
-import { Request, Response, Router } from 'express';
+import { Response, Router } from 'express';
 import { User } from '../../database/models/user'
-import {compareUserPassword, hashPassword} from "../../core/authentication/password";
-import {sign} from 'jsonwebtoken';
-import {env} from "../../config/env";
+import {hashPassword} from "../../core/authentication/password";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
-import {authenticationRouter} from "./authentication";
-import moment from "moment";
-import {Animal} from "../../database/models/animal";
-
+import {revocateAllTokensForUser} from "../../core/authentication/tokens";
 
 const accountRouter = Router();
 
@@ -17,7 +12,7 @@ const putAccountChecks = [
   check('userId').notEmpty().isNumeric(),
   check('newPassword').notEmpty().isString().optional(),
   check('username').notEmpty().isString().optional(),
-  check('email').notEmpty().isString().optional()
+  check('email').notEmpty().isEmail().optional()
 ];
 
 accountRouter.put('/:userId', putAccountChecks,inputValidationMW, async (req: AuthenticatedRequest,res: Response) => {
@@ -27,7 +22,7 @@ accountRouter.put('/:userId', putAccountChecks,inputValidationMW, async (req: Au
   const newUsername = req.body.username;
   const newEmail = req.body.email;
 
-  var update: any = {};
+  let update: any = {};
 
   if (newUsername) {
     update['username'] = newUsername;
@@ -42,12 +37,15 @@ accountRouter.put('/:userId', putAccountChecks,inputValidationMW, async (req: Au
 
   if (authenticatedId === userId) {
     try {
-      let user = await User.update(update, {where: {id: authenticatedId}});
+      await User.update(update, {where: {id: userId}});
       update["hashedPassword"]=null;
       res.status(200).json({update: update});
+      if (Object.keys(update).length !=0){
+        await revocateAllTokensForUser(userId);
+      }
     } catch (e) {
       console.log(e);
-      res.status(400).json({errorMessage: "Unable to register"});
+      res.status(400).json({errorMessage: "Unable to update the account"});
     }
   } else {
     res.status(403).json({errorMessage: "You don't have access to this user id"})
@@ -56,12 +54,13 @@ accountRouter.put('/:userId', putAccountChecks,inputValidationMW, async (req: Au
 );
 
 
-accountRouter.delete('/:userId', (req: AuthenticatedRequest, res: Response) => {
+accountRouter.delete('/:userId', async (req: AuthenticatedRequest, res: Response) => {
     const userId = parseInt(req.params.userId);
     const authenticatedId = req.authInfos.userId;
     if (userId === authenticatedId) {
-      let user = User.destroy({where: {id: authenticatedId}});
-      res.status(200).json({deletionMessage : "The account was deleted"});
+      User.destroy({where: {id: userId}});
+      res.status(200).json({AccountDeleted : userId});
+      await revocateAllTokensForUser(userId);
 
     } else {
       res.status(403).json({errorMessage: "You don't have access to this user id"})
