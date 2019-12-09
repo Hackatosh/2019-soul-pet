@@ -6,6 +6,7 @@ function getNearestVeterinarian(long, lat, radius) {
     request({
         url: 'https://api.foursquare.com/v2/venues/search',
         method: 'GET',
+        json: true,
         qs: {
             client_id: clientId,
             client_secret: clientSecret,
@@ -20,8 +21,9 @@ function getNearestVeterinarian(long, lat, radius) {
             console.error(err);
         }
         else {
-            console.log(typeof body);
+            return body.response.venues[0].id;
         }
     });
 }
-getNearestVeterinarian("45.676", "4.82115", "5000");
+var result = getNearestVeterinarian("45.676", "4.82115", "5000");
+console.log(result);
