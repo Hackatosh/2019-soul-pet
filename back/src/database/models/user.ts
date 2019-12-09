@@ -65,7 +65,6 @@ const initUserModel = async function():Promise<void> {
         sequelize: db,
     });
 
-    await User.sync();
 };
 
 export {initUserModel}

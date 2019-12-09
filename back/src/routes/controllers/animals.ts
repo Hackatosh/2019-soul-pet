@@ -66,9 +66,9 @@ animalsRouter.post('/', postAnimalChecks, inputValidationMW, async (req: Authent
 
 const putAnimalChecks = [
     check('animalId').notEmpty().isNumeric(),
-    check('specieId').notEmpty().isNumeric(),
-    check('name').notEmpty().isString(),
-    check('birthdate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}),
+    check('specieId').notEmpty().isNumeric().optional(),
+    check('name').notEmpty().isString().optional(),
+    check('birthdate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}).optional(),
 ];
 
 animalsRouter.put('/:animalId', putAnimalChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {

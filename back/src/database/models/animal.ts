@@ -1,5 +1,13 @@
-import {Model, DataTypes} from 'sequelize';
+import {
+    Model,
+    DataTypes,
+    BelongsToManyGetAssociationsMixin,
+    BelongsToManyAddAssociationMixin,
+    BelongsToManyAddAssociationsMixin, BelongsToManySetAssociationsMixin, Association
+} from 'sequelize';
 import {db} from '../connection'
+import {Specie} from "./specie";
+import {PetEvent} from "./event";
 
 /*** Model used to represent an animal in DB ***/
 export class Animal extends Model {
@@ -12,6 +20,18 @@ export class Animal extends Model {
     // timestamps!
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    public getEvents!: BelongsToManyGetAssociationsMixin<PetEvent>;
+    public addEvent!: BelongsToManyAddAssociationMixin<PetEvent, number>;
+    public addEvents!: BelongsToManyAddAssociationsMixin<PetEvent, number>;
+    public setEvents!: BelongsToManySetAssociationsMixin<PetEvent, number>;
+
+    // These will only be populated if you actively include a relation.
+    public readonly events?: PetEvent[];
+
+    public static associations: {
+        events: Association<PetEvent,Animal>;
+    }
 }
 
 /*** Function used to initialize the User Model ***/
@@ -46,7 +66,6 @@ const initAnimalModel = async function():Promise<void> {
         modelName: 'animal',
         sequelize: db,
     });
-    await Animal.sync();
 };
 
 export {initAnimalModel}

@@ -51,7 +51,6 @@ const initSpecieModel = async function():Promise<void> {
         sequelize: db,
     });
 
-    await Specie.sync();
 };
 
 export {initSpecieModel}
