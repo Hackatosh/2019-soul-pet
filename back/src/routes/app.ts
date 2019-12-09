@@ -10,10 +10,13 @@ import * as bodyParser from 'body-parser';
 import {uploadRouter} from "./controllers/upload";
 import {handleError500MW} from "./middlewares/errorHandlers";
 import {logoutRouter} from "./controllers/logout";
+import {allowFrontMW} from "./middlewares/allowFront";
 import {animalsRouter} from "./controllers/animals";
 
 /*** Basic middlewares mouting ***/
 const app = express();
+
+app.use(allowFrontMW);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(helmet());

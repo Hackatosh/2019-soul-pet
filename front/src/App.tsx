@@ -1,18 +1,35 @@
 import React from 'react';
-import logo from './resources/logo.svg';
-import './App.css';
+import { Router, Route, Switch } from 'react-router-dom';
+import { authenticationService } from './services';
+import { PrivateRoute, NavBar } from './components';
+import { HomePage, LoginPage, RegisterPage } from './pages';
+import { history } from './helpers';
 
-const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Welcome to Soul Pet !
-        </p>
-      </header>
-    </div>
-  );
+class App extends React.Component<{}, { currentUser: any }> {
+    constructor(props: Readonly<{}>) {
+        super(props);
+
+        this.state = {
+            currentUser: null
+        };
+    }
+
+    componentDidMount() {
+        authenticationService.currentUser.subscribe(x => this.setState({ currentUser: x }));
+    }
+
+    render() {
+        return (
+            <Router history={history}>
+				<NavBar />
+				<Switch>
+					<PrivateRoute exact path="/" component={HomePage} />
+					<Route path="/login" component={LoginPage} />
+					<Route path="/register" component={RegisterPage} />
+				</Switch>
+            </Router>
+        );
+    }
 }
 
-export default App;
+export { App };
