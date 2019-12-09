@@ -127,4 +127,3 @@ animalsRouter.delete('/:animalId',deleteAnimalChecks,inputValidationMW, async (r
 });
 
 export {animalsRouter}
->>>>>>> master
