@@ -11,6 +11,7 @@ import {uploadRouter} from "./controllers/upload";
 import {handleError500MW} from "./middlewares/errorHandlers";
 import {logoutRouter} from "./controllers/logout";
 import {animalsRouter} from "./controllers/animals";
+import {accountRouter} from "./controllers/account";
 
 /*** Basic middlewares mouting ***/
 const app = express();
@@ -24,6 +25,7 @@ apiRouter.use('/', healthRouter);
 apiRouter.use('/files',uploadRouter);
 apiRouter.use('/auth',authenticationRouter);
 apiRouter.use('*',loginRequiredMW);
+apiRouter.use('/account',accountRouter);
 apiRouter.get('/protected',(req:AuthenticatedRequest,res:Response) => {res.status(200).json({message:`Welcome`})});
 apiRouter.use('/animals',animalsRouter);
 apiRouter.use('/logout',logoutRouter);

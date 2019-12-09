@@ -3,55 +3,71 @@ import { User } from '../../database/models/user'
 import {compareUserPassword, hashPassword} from "../../core/authentication/password";
 import {sign} from 'jsonwebtoken';
 import {env} from "../../config/env";
-import {AuthenticatedRequest, AuthenticationInfos} from "../../core/authentication/authenticationInterfaces";
+import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
+import {check} from "express-validator";
+import {inputValidationMW} from "../middlewares/inputValidation";
+import {authenticationRouter} from "./authentication";
+import moment from "moment";
+import {Animal} from "../../database/models/animal";
 
 
-const usersRouter = Router();
+const accountRouter = Router();
 
-usersRouter.put('/:userId'),async (req: AuthenticatedRequest,updateReq: Request, res: Response) =>{
-  const authenticatedId = req.user.id;
-  const newPassword  = req.body.newPassword;
-  const userId = req.params.userId;
+const putAccountChecks = [
+  check('userId').notEmpty().isNumeric(),
+  check('newPassword').notEmpty().isString().optional(),
+  check('username').notEmpty().isString().optional(),
+  check('email').notEmpty().isString().optional()
+];
+
+accountRouter.put('/:userId', putAccountChecks,inputValidationMW, async (req: AuthenticatedRequest,res: Response) => {
+  const userId = parseInt(req.params.userId);
+  const authenticatedId = req.authInfos.userId;
+  const newPassword =  req.body.password;
   const newUsername = req.body.username;
   const newEmail = req.body.email;
-  var update:any = {};
 
+  var update: any = {};
 
-  if (newUsername){
-    update['username']= newUsername;
+  if (newUsername) {
+    update['username'] = newUsername;
   }
-  if (newEmail){
-    update["email"]= newEmail;
-  }
-
-  if (authenticatedId ===  userId){
-    try{
-      let user = User.update(update,{ where: {id: authenticatedId }});
-      if (newPassword){
-        let user = await User.update({hashedPassword: await hashPassword(newPassword)},{ where: {id: authenticatedId } });
-        user.hashedPassword = null;
-      };
-      res.status(200).json({user:user});
-      } catch(e) {
-        console.log(e);
-        res.status(400).json({errorMessage:"Unable to register"});
-      }
-    }
-    else{
-      res.status(403).json({errorMessage:"You don't have access to this user id"})
-    }
-
-
-  usersRouter.delete('/:userId'), (req: AuthenticatedRequest,res: Response) => {
-    const userId = req.params.userId;
-    const authenticatedId = req.user.id;
-    if (userId === authenticatedId){
-      user = User.destroy({where: {id: authenticatedId } });
-    }
-    else{
-      res.status(403).json({errorMessage:"You don't have access to this user id"})
-
-    };
+  if (newEmail) {
+    update["email"] = newEmail;
   }
 
-  //userName et email => exceptions unique
+  if (newPassword) {
+    update["hashedPassword"] = await hashPassword(newPassword);
+  }
+
+  if (authenticatedId === userId) {
+    try {
+      let user = await User.update(update, {where: {id: authenticatedId}});
+      update["hashedPassword"]=null;
+      res.status(200).json({update: update});
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({errorMessage: "Unable to register"});
+    }
+  } else {
+    res.status(403).json({errorMessage: "You don't have access to this user id"})
+  }
+}
+);
+
+
+accountRouter.delete('/:userId', (req: AuthenticatedRequest, res: Response) => {
+    const userId = parseInt(req.params.userId);
+    const authenticatedId = req.authInfos.userId;
+    if (userId === authenticatedId) {
+      let user = User.destroy({where: {id: authenticatedId}});
+      res.status(200).json({deletionMessage : "The account was deleted"});
+
+    } else {
+      res.status(403).json({errorMessage: "You don't have access to this user id"})
+
+    }
+
+  });
+
+export {accountRouter};
