@@ -30,7 +30,7 @@ const postEventChecks = [
     check('userId').notEmpty().isNumeric().optional(),
     check('location').notEmpty().isString(),
     check('description').notEmpty().isString(),
-    check('specieIds').isArray().custom(),
+    check('specieIds').isArray(),
     check('specieIds[*]').isNumeric(),
 ];
 
@@ -49,7 +49,7 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:Authentica
     for(let specieId of specieIds){
         let specieFound = await Specie.findOne({where:{id:specieId}});
         if(!specieFound){
-            res.status(400).status({error:"You're trying to use an unexisting specie"});
+            res.status(400).send({error:"You're trying to use an unexisting specie"});
             return;
         }
     }
@@ -71,7 +71,7 @@ const putEventChecks = [
     check('userId').notEmpty().isNumeric().optional().optional(),
     check('location').notEmpty().isString().optional(),
     check('description').notEmpty().isString().optional(),
-    check('specieIds').isArray().custom().optional(),
+    check('specieIds').isArray().optional(),
     check('specieIds[*]').isNumeric().optional(),
 ];
 
@@ -87,6 +87,7 @@ const deleteEventChecks = [
 
 eventsRouter.delete('/:eventId',deleteEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
     const eventId = parseInt(req.params.eventId);
+    const authenticatedId = req.authInfos.userId;
     let eventFound = await PetEvent.findOne({where: {id: eventId}});
     if(!eventFound){
         res.status(404).json({errorMessage:"Not found. The event you are trying to access does not exist."});
