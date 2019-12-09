@@ -23,7 +23,9 @@ class RegisterPage extends React.Component<RouteComponentProps, {}> {
 						<Formik initialValues={{ username: '', email: '', password: '', confirmpassword:'' }} onSubmit={({ username, email, password, confirmpassword }, { setStatus, setSubmitting }) => {
 							setStatus();
 							if (confirmpassword !== password){
-								throw error;
+								setSubmitting(false);
+								setStatus("Les mots de passe ne correspondent pas");
+								return;
 							}
 							authenticationService.register(username, email, password).then(() => {
 									const { from } = this.props.location.state || { from: { pathname: "/login", state: { fromRegistration: true } } };
