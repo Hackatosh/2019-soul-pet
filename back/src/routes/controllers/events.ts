@@ -6,6 +6,8 @@ import {PetEvent} from "../../database/models/event";
 import {Animal} from "../../database/models/animal";
 import {Specie} from "../../database/models/specie";
 import moment from "moment";
+import {User} from "../../database/models/user";
+import {revocateAllTokensForUser} from "../../core/authentication/tokens";
 
 const eventsRouter = Router();
 
@@ -84,7 +86,7 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
     const location = req.body.location;
     const description = req.body.description;
     const specieIds: Array<number> = req.body.specieIds.map((value:any) => parseInt(value));
-    let eventFound = await PetEvent.findOne({where: {id: eventId}});
+    let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[Animal]});
     if(!eventFound){
         res.status(404).json({errorMessage:"Not found. The event you are trying to access does not exist."});
         return;
@@ -92,6 +94,41 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
     if(eventFound.userId !== authenticatedId){
         res.status(403).json({errorMessage:"Forbidden. You don't have access to this event."});
         return;
+    }
+    for(let specieId of specieIds){
+        let specieFound = await Specie.findOne({where:{id:specieId}});
+        if(!specieFound){
+            res.status(400).send({error:"You're trying to use an unexisting specie"});
+            return;
+        }
+    }
+    let update:any = {};
+    if (name) {
+        update['name'] = name;
+    }
+    if (beginDate) {
+        update['beginDate'] = beginDate;
+    }
+    if (endDate) {
+        update['endDate'] = endDate;
+    }
+    if (location) {
+        update['location'] = location;
+    }
+    if (description) {
+        update['description'] = description;
+    }
+    try {
+        await eventFound.set(update);
+        eventFound.setAuthorizedSpecies(specieIds);
+        let attendees = eventFound.attendees.filter((value:Animal) => specieIds.indexOf(value.specieId) !== -1);
+        eventFound.setAttendees(attendees);
+        await eventFound.save();
+        update['specieIds'] = specieIds;
+        res.status(200).json({update: update});
+    } catch (e) {
+        console.log(e);
+        res.status(400).json({errorMessage: "Unable to update the event"});
     }
 });
 
