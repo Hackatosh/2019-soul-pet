@@ -1,5 +1,4 @@
 import { AuthenticationService } from '../services';
-import { handleResponse } from './handle-response';
 import { config } from '../config';
 
 /**
@@ -46,13 +45,24 @@ export class httpClient {
     }
 
     /**
+     * Handles an HTTP response depending on its status.
+     * @param response the Response to handle
+     * @returns A Promise containing the parsed JSON of the body
+     */
+    private static async handleResponse(response: Response): Promise<any> {
+        if (!response.ok)
+            return Promise.reject(response.text() || response.statusText);
+        return response.json();
+    }
+
+    /**
      * Performs an HTTP request.
      * @param endpoint The endpoint to send the request to, as a *non-absolute* URL
      * @param requestOptions A RequestInit object to configure the request
      * @returns A promise containing an object of type T
      */
     private static async request<T>(endpoint: string, requestOptions: RequestInit): Promise<T> {
-        return fetch(config.apiUrl + endpoint, requestOptions).then(handleResponse).then(data => {
+        return fetch(config.apiUrl + endpoint, requestOptions).then(httpClient.handleResponse).then(data => {
             return data as T;
         }).catch(message => {
             return Promise.reject(message);
