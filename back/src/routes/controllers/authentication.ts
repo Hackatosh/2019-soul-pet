@@ -22,7 +22,7 @@ authenticationRouter.post('/register',registerChecks, inputValidationMW, async (
     const password = req.body.password;
     const email = req.body.email;
     try{
-        let user = await User.create({username:username,hashedPassword: await hashPassword(password), email:email});
+        let user = await User.create({username:username, hashedPassword: await hashPassword(password), email:email});
         user.hashedPassword = null;
         res.status(200).json({user:user})
     } catch(e) {
@@ -45,12 +45,11 @@ authenticationRouter.post('/login', loginChecks, inputValidationMW, async (req: 
     const password = req.body.password;
     const user = await User.findOne(({where: {email: email}}));
     if(!user){
-        res.status(401).json({errorMessage:"Authentication failed. User not found"})
-    }
-    if(!(await compareUserPassword(user,password))){
-        res.status(401).json({errorMessage:"Authentication failed. Uncorrect password"})
+        res.status(401).json({errorMessage:"Authentication failed: user not found"})
+    } else if(!(await compareUserPassword(user, password))){
+        res.status(401).json({errorMessage:"Authentication failed: invalid password"})
     } else {
-            res.status(200).json({token: await generateTokenForUser(user)})
+		res.status(200).json({username: user.username, email: user.email, token: generateTokenForUser(user)})
     }
 });
 
