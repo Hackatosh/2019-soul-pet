@@ -22,8 +22,7 @@ export class LoginPage extends React.Component<RouteComponentProps, {}> {
 						<p className="lead mb-5">Le site pour prendre soin de vos animaux&nbsp;!</p>
 						<Formik initialValues={{ email: '', password: '' }} onSubmit={({ email, password }, { setStatus, setSubmitting }) => {
 							setStatus();
-							AuthenticationService.login(email, password).then(null,
-								error => {
+							AuthenticationService.login(email, password).catch(error => {
 									setSubmitting(false);
 									setStatus(error);
 								}
