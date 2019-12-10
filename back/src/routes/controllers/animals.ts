@@ -24,7 +24,7 @@ const getUserAnimalsChecks = [
 animalsRouter.get('/', getUserAnimalsChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const userId = parseInt(req.query.userId);
     if(userId !== req.authInfos.userId){
-        res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."})
+        res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."});
         return;
     }
     const animals = await Animal.findAll({where: {userId:userId}});

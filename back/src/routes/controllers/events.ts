@@ -12,7 +12,11 @@ const eventsRouter = Router();
 
 /*** This route is used to get informations about an event ***/
 
-eventsRouter.get('/:eventId', async (req:AuthenticatedRequest, res:Response) => {
+const getEventChecks = [
+    check('eventId').notEmpty().isNumeric(),
+]
+
+eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
     const eventId = parseInt(req.params.eventId);
     let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[Animal, Specie]});
     if(!eventFound){
@@ -28,7 +32,7 @@ const postEventChecks = [
     check('name').notEmpty().isString(),
     check('beginDate').notEmpty().custom( date => isDateValid(date)),
     check('endDate').notEmpty().custom( date => isDateValid(date)),
-    check('userId').notEmpty().isNumeric().optional(),
+    check('userId').notEmpty().isNumeric(),
     check('location').notEmpty().isString(),
     check('description').notEmpty().isString(),
     check('specieIds').isArray(),
@@ -37,13 +41,13 @@ const postEventChecks = [
 
 eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
     const name = req.body.name;
-    const beginDate = req.body.begindDate;
+    const beginDate = req.body.beginDate;
     const endDate = req.body.endDate;
-    const userId = parseInt(req.body.userId); // Can be null
+    const userId = parseInt(req.body.userId);
     const location = req.body.location;
     const description = req.body.description;
     const specieIds: Array<number> = req.body.specieIds.map((value:any) => parseInt(value));
-    if(userId && userId !== req.authInfos.userId){
+    if(userId !== req.authInfos.userId){
         res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."});
         return;
     }
@@ -55,8 +59,9 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:Authentica
         }
     }
     try {
-        const event = await PetEvent.create({name, beginDate, endDate, userId, location, description});
+        const event = await PetEvent.build({name, beginDate, endDate, userId, location, description});
         event.addAuthorizedSpecies(specieIds);
+        await event.save();
         res.status(200).send({event: event})
     } catch(e){
         console.log(e);
@@ -84,7 +89,7 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
     const endDate = req.body.endDate;
     const location = req.body.location;
     const description = req.body.description;
-    const specieIds: Array<number> = req.body.specieIds.map((value:any) => parseInt(value));
+    const specieIds: Array<number> = req.body.specieIds ? req.body.specieIds.map((value:any) => parseInt(value)) : undefined;
     let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[Animal]});
     if(!eventFound){
         res.status(404).json({errorMessage:"Not found. The event you are trying to access does not exist."});
@@ -94,11 +99,13 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
         res.status(403).json({errorMessage:"Forbidden. You don't have access to this event."});
         return;
     }
-    for(let specieId of specieIds){
-        let specieFound = await Specie.findOne({where:{id:specieId}});
-        if(!specieFound){
-            res.status(400).send({error:"You're trying to use an unexisting specie"});
-            return;
+    if(specieIds !== undefined) {
+        for (let specieId of specieIds) {
+            let specieFound = await Specie.findOne({where: {id: specieId}});
+            if (!specieFound) {
+                res.status(400).send({error: "You're trying to use an unexisting specie"});
+                return;
+            }
         }
     }
     let update:any = {};
@@ -119,11 +126,13 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
     }
     try {
         await eventFound.set(update);
-        eventFound.setAuthorizedSpecies(specieIds);
-        let attendees = eventFound.attendees.filter((value:Animal) => specieIds.indexOf(value.specieId) !== -1);
-        eventFound.setAttendees(attendees);
+        if(specieIds !== undefined) {
+            eventFound.setAuthorizedSpecies(specieIds);
+            let attendees = eventFound.attendees.filter((value: Animal) => specieIds.indexOf(value.specieId) !== -1);
+            eventFound.setAttendees(attendees);
+            update['specieIds'] = specieIds;
+        }
         await eventFound.save();
-        update['specieIds'] = specieIds;
         res.status(200).json({update: update});
     } catch (e) {
         console.log(e);
