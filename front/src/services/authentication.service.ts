@@ -1,6 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { config } from '../config';
-import { handleResponse, history } from '../helpers';
+import { history, http } from '../helpers';
 import { User } from '../models';
 
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser') as string) as User);
@@ -15,12 +14,7 @@ export const authenticationService = {
 };
 
 async function login(email: string, password: string) {
-	const requestOptions = {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json'},
-		body: JSON.stringify({ email, password })
-	};
-	return fetch(`${config.apiUrl}/auth/login`, requestOptions).then(handleResponse).then((user: User) => {
+	return http.post<User>('/auth/login', false, JSON.stringify({ email, password })).then((user: User) => {
 		localStorage.setItem('currentUser', JSON.stringify(user));
 		currentUserSubject.next(user);
 		history.push('/');
@@ -31,14 +25,7 @@ async function login(email: string, password: string) {
 }
 
 async function register(username: string, email: string, password: string) {
-	const requestOptions = {
-		method: 'POST',
-		headers: {'Content-Type': 'application/json'},
-		body: JSON.stringify({ username, email, password })
-	};
-	return fetch(`${config.apiUrl}/auth/register`, requestOptions).then(handleResponse).then(null, () => {
-		return Promise.reject('Création du compte impossible ; veuillez réessayer.');
-	});
+	return http.post('/auth/register', false, JSON.stringify({ username, email, password })).then(null, () => Promise.reject('Création du compte impossible ; veuillez réessayer.'));
 }
 
 function logout() {
