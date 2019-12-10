@@ -5,9 +5,8 @@ import { check } from 'express-validator'
 import {PetEvent} from "../../database/models/event";
 import {Animal} from "../../database/models/animal";
 import {Specie} from "../../database/models/specie";
-import moment from "moment";
-import {User} from "../../database/models/user";
-import {revocateAllTokensForUser} from "../../core/authentication/tokens";
+import {isDateValid} from "../../core/utils";
+
 
 const eventsRouter = Router();
 
@@ -27,8 +26,8 @@ eventsRouter.get('/:eventId', async (req:AuthenticatedRequest, res:Response) => 
 
 const postEventChecks = [
     check('name').notEmpty().isString(),
-    check('beginDate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}),
-    check('endDate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}),
+    check('beginDate').notEmpty().custom( date => isDateValid(date)),
+    check('endDate').notEmpty().custom( date => isDateValid(date)),
     check('userId').notEmpty().isNumeric().optional(),
     check('location').notEmpty().isString(),
     check('description').notEmpty().isString(),
@@ -69,8 +68,8 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:Authentica
 const putEventChecks = [
     check('eventId').notEmpty().isNumeric().optional(),
     check('name').notEmpty().isString().optional(),
-    check('beginDate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}).optional(),
-    check('endDate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}).optional(),
+    check('beginDate').notEmpty().custom( date => isDateValid(date)).optional(),
+    check('endDate').notEmpty().custom( date => isDateValid(date)).optional(),
     check('location').notEmpty().isString().optional(),
     check('description').notEmpty().isString().optional(),
     check('specieIds').isArray().optional(),

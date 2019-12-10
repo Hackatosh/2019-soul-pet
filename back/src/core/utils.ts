@@ -1,4 +1,5 @@
 import {OutgoingHttpHeaders} from "http";
+import moment from "moment";
 
 /*** Class representing a HTTP header ***/
 export class HttpHeader {
@@ -28,4 +29,9 @@ const isEmptyString = function(str:string){
     return str === undefined || str === null || str.trim() === ""
 };
 
-export { objectifyHeadersArray, isEmptyString }
+/*** Check if a string is a valid date***/
+const isDateValid = function (date:string) {
+    return moment(date, 'MM/DD/YYYY',true).isValid();
+};
+
+export { objectifyHeadersArray, isEmptyString, isDateValid }

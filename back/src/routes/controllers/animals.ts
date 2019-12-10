@@ -4,7 +4,7 @@ import {Animal} from "../../database/models/animal";
 import { check } from 'express-validator'
 import {inputValidationMW} from "../middlewares/inputValidation";
 import {Specie} from "../../database/models/specie";
-import moment from "moment";
+import {isDateValid} from "../../core/utils";
 
 const animalsRouter = Router();
 
@@ -37,7 +37,7 @@ const postAnimalChecks = [
     check('userId').notEmpty().isNumeric(),
     check('specieId').notEmpty().isNumeric(),
     check('name').notEmpty().isString(),
-    check('birthdate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}),
+    check('birthdate').notEmpty().custom( date => isDateValid(date)),
 ];
 
 animalsRouter.post('/', postAnimalChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -68,7 +68,7 @@ const putAnimalChecks = [
     check('animalId').notEmpty().isNumeric(),
     check('specieId').notEmpty().isNumeric().optional(),
     check('name').notEmpty().isString().optional(),
-    check('birthdate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}).optional(),
+    check('birthdate').notEmpty().custom( date => isDateValid(date)).optional(),
 ];
 
 animalsRouter.put('/:animalId', putAnimalChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
