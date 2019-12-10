@@ -5,7 +5,7 @@ import { config } from '../config';
 /**
  * A class designed to handle HTTP calls (`GET`, `POST`, `PUT` and `DELETE`)
  */
-export class http {
+export class httpClient {
     /**
      * Generates headers for an HTTP request.
      * @param authenticated Indicates whether the request should be authenticated or not.
