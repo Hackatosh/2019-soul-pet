@@ -10,14 +10,15 @@ import * as bodyParser from 'body-parser';
 import {uploadRouter} from "./controllers/upload";
 import {handleError500MW} from "./middlewares/errorHandlers";
 import {logoutRouter} from "./controllers/logout";
-import {allowFrontMW} from "./middlewares/allowFront";
+import {corsMW} from "./middlewares/allowFront";
 import {animalsRouter} from "./controllers/animals";
+import {accountRouter} from "./controllers/account";
 import {eventsRouter} from "./controllers/events";
 
 /*** Basic middlewares mouting ***/
 const app = express();
 
-app.use(allowFrontMW);
+app.use(corsMW);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(helmet());
@@ -29,6 +30,7 @@ apiRouter.use('/files',uploadRouter);
 apiRouter.use('/auth',authenticationRouter);
 apiRouter.use('*',loginRequiredMW);
 apiRouter.use('/events',eventsRouter);
+apiRouter.use('/account',accountRouter);
 apiRouter.use('/animals',animalsRouter);
 apiRouter.use('/logout',logoutRouter);
 apiRouter.use('*',handleError500MW);
