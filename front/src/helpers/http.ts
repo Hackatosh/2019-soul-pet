@@ -1,4 +1,4 @@
-import { authenticationService } from '../services';
+import { AuthenticationService } from '../services';
 import { handleResponse } from './handle-response';
 import { config } from '../config';
 
@@ -14,8 +14,8 @@ export class http {
      */
     private static headers(authenticated: boolean, body: boolean): Headers {
         const headers = new Headers();
-        if (authenticated && authenticationService.currentUserValue && authenticationService.currentUserValue.token) {
-            headers.append('Authorization', 'JWT ' + authenticationService.currentUserValue.token);
+        if (authenticated && AuthenticationService.isLoggedIn && AuthenticationService.user.token) {
+            headers.append('Authorization', 'JWT ' + AuthenticationService.user.token);
         }
         if (body) {
             headers.append('Content-Type', 'application/json');

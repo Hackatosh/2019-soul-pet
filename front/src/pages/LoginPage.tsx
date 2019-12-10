@@ -1,14 +1,14 @@
 import React from 'react';
-import { authenticationService } from '../services';
+import { AuthenticationService } from '../services';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 import { history, randomBackground } from '../helpers';
 
-class LoginPage extends React.Component<RouteComponentProps, {}> {
+export class LoginPage extends React.Component<RouteComponentProps, {}> {
 	constructor(props: RouteComponentProps) {
 		super(props);
 
-		if (authenticationService.isLoggedIn) {
+		if (AuthenticationService.isLoggedIn) {
 			history.push('/');
 		}
 	}
@@ -22,7 +22,7 @@ class LoginPage extends React.Component<RouteComponentProps, {}> {
 						<p className="lead mb-5">Le site pour prendre soin de vos animaux&nbsp;!</p>
 						<Formik initialValues={{ email: '', password: '' }} onSubmit={({ email, password }, { setStatus, setSubmitting }) => {
 							setStatus();
-							authenticationService.login(email, password).then(null,
+							AuthenticationService.login(email, password).then(null,
 								error => {
 									setSubmitting(false);
 									setStatus(error);
@@ -57,5 +57,3 @@ class LoginPage extends React.Component<RouteComponentProps, {}> {
 		);
 	}
 }
-
-export { LoginPage };
