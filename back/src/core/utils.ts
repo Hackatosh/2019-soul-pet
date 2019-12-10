@@ -1,5 +1,6 @@
 import {OutgoingHttpHeaders} from "http";
 import moment from "moment";
+import isNumeric from "validator/lib/isNumeric";
 
 /*** Class representing a HTTP header ***/
 export class HttpHeader {
@@ -29,9 +30,19 @@ const isEmptyString = function(str:string){
     return str === undefined || str === null || str.trim() === ""
 };
 
+/*** Check if an array is an array of Number ***/
+const isNumericArray = function(arr:Array<any>){
+    for(let e of arr){
+        if(!isNumeric(e)){
+            return false;
+        }
+    }
+   return true;
+};
+
 /*** Check if a string is a valid date***/
 const isDateValid = function (date:string) {
     return moment(date, 'MM/DD/YYYY',true).isValid();
 };
 
-export { objectifyHeadersArray, isEmptyString, isDateValid }
+export { objectifyHeadersArray, isEmptyString, isDateValid, isNumericArray  }

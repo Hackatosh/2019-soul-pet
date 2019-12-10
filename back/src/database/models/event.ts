@@ -62,27 +62,39 @@ const initPetEventModel = async function():Promise<void> {
             autoIncrement: true,
             primaryKey: true,
         },
-        userId: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: false,
-        },
-        specieId: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: false,
-        },
-        birthdate: {
-            type: new DataTypes.DATE,
-            allowNull: false,
-            unique: false,
-        },
         name: {
             type: new DataTypes.STRING(128),
             allowNull: false,
             unique: false,
         },
+        beginDate: {
+            type: new DataTypes.DATE,
+            allowNull: false,
+            unique: false,
+        },
+        endDate: {
+            type: new DataTypes.DATE,
+            allowNull: false,
+            unique: false,
+        },
+        userId: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: true,
+            unique:false,
+        },
+        location: {
+            type: new DataTypes.STRING(128),
+            allowNull: true,
+            unique: false,
+        },
+        description: {
+            type: new DataTypes.STRING(128),
+            allowNull: false,
+            unique: false,
+        },
     }, {
-        tableName: 'animals',
-        modelName: 'animal',
+        tableName: 'events',
+        modelName: 'event',
         sequelize: db,
     });
 };

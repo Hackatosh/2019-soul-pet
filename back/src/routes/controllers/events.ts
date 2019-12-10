@@ -5,7 +5,8 @@ import { check } from 'express-validator'
 import {PetEvent} from "../../database/models/event";
 import {Animal} from "../../database/models/animal";
 import {Specie} from "../../database/models/specie";
-import {isDateValid} from "../../core/utils";
+import {isDateValid, isNumericArray} from "../../core/utils";
+import {User} from "../../database/models/user";
 
 
 const eventsRouter = Router();
@@ -18,12 +19,16 @@ const getEventChecks = [
 
 eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
     const eventId = parseInt(req.params.eventId);
-    let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[Animal, Specie]});
-    if(!eventFound){
-        res.status(404).json({errorMessage:"Not found. The event you are trying to access does not exist."});
-        return;
+    try {
+        let eventFound = await PetEvent.findOne({where: {id: eventId}, include: [{model: Animal, as: "Attendees"},{ model: Specie, as: "AuthorizedSpecies"}]});
+        if (!eventFound) {
+            res.status(404).json({errorMessage: "Not found. The event you are trying to access does not exist."});
+            return;
+        }
+        res.status(200).send({event: eventFound})
+    } catch(e){
+        console.log(e)
     }
-    res.status(200).send({event:eventFound})
 });
 
 /*** This route is used to create a new event ***/
@@ -33,10 +38,10 @@ const postEventChecks = [
     check('beginDate').notEmpty().custom( date => isDateValid(date)),
     check('endDate').notEmpty().custom( date => isDateValid(date)),
     check('userId').notEmpty().isNumeric(),
-    check('location').notEmpty().isString(),
+    check('location').notEmpty().isString().optional(),
     check('description').notEmpty().isString(),
     check('specieIds').isArray(),
-    check('specieIds[*]').isNumeric(),
+    check('specieIds').custom(array => isNumericArray(array)),
 ];
 
 eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
@@ -47,9 +52,13 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:Authentica
     const location = req.body.location;
     const description = req.body.description;
     const specieIds: Array<number> = req.body.specieIds.map((value:any) => parseInt(value));
+    let userFound = await User.findOne({where:{id:userId}});
     if(userId !== req.authInfos.userId){
         res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."});
         return;
+    }
+    if(!userFound){
+        res.status(404).send({error:"userId doesn't match any user."})
     }
     for(let specieId of specieIds){
         let specieFound = await Specie.findOne({where:{id:specieId}});
@@ -59,7 +68,7 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:Authentica
         }
     }
     try {
-        const event = await PetEvent.build({name, beginDate, endDate, userId, location, description});
+        const event = await PetEvent.create({name, beginDate, endDate, userId, location, description});
         event.addAuthorizedSpecies(specieIds);
         await event.save();
         res.status(200).send({event: event})
@@ -78,7 +87,7 @@ const putEventChecks = [
     check('location').notEmpty().isString().optional(),
     check('description').notEmpty().isString().optional(),
     check('specieIds').isArray().optional(),
-    check('specieIds[*]').isNumeric().optional(),
+    check('specieIds').custom(array => isNumericArray(array)).optional(),
 ];
 
 eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, res:Response) => {
@@ -90,7 +99,7 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
     const location = req.body.location;
     const description = req.body.description;
     const specieIds: Array<number> = req.body.specieIds ? req.body.specieIds.map((value:any) => parseInt(value)) : undefined;
-    let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[Animal]});
+    let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[{model:Animal,as:"Animals"}]});
     if(!eventFound){
         res.status(404).json({errorMessage:"Not found. The event you are trying to access does not exist."});
         return;
