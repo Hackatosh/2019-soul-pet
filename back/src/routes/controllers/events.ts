@@ -41,7 +41,7 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:Authentica
     const userId = parseInt(req.body.userId); // Can be null
     const location = req.body.location;
     const description = req.body.description;
-    const specieIds: Array<number> = req.body.specieIds;
+    const specieIds: Array<number> = req.body.specieIds.map((value:any) => parseInt(value));
     if(userId && userId !== req.authInfos.userId){
         res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."});
         return;
@@ -55,6 +55,7 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:Authentica
     }
     try {
         const event = await PetEvent.create({name, beginDate, endDate, userId, location, description});
+        event.addAuthorizedSpecies(specieIds);
         res.status(200).send({event: event})
     } catch(e){
         console.log(e);
@@ -68,7 +69,6 @@ const putEventChecks = [
     check('name').notEmpty().isString().optional(),
     check('beginDate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}).optional(),
     check('endDate').notEmpty().custom( date => {return moment(date, 'MM/DD/YYYY',true).isValid()}).optional(),
-    check('userId').notEmpty().isNumeric().optional().optional(),
     check('location').notEmpty().isString().optional(),
     check('description').notEmpty().isString().optional(),
     check('specieIds').isArray().optional(),
@@ -76,7 +76,23 @@ const putEventChecks = [
 ];
 
 eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, res:Response) => {
- //What happens when you delete a specie ??
+    const eventId = parseInt(req.params.eventId);
+    const authenticatedId = req.authInfos.userId;
+    const name = req.body.name;
+    const beginDate = req.body.begindDate;
+    const endDate = req.body.endDate;
+    const location = req.body.location;
+    const description = req.body.description;
+    const specieIds: Array<number> = req.body.specieIds.map((value:any) => parseInt(value));
+    let eventFound = await PetEvent.findOne({where: {id: eventId}});
+    if(!eventFound){
+        res.status(404).json({errorMessage:"Not found. The event you are trying to access does not exist."});
+        return;
+    }
+    if(eventFound.userId !== authenticatedId){
+        res.status(403).json({errorMessage:"Forbidden. You don't have access to this event."});
+        return;
+    }
 });
 
 /*** This route is used to delete an event ***/
