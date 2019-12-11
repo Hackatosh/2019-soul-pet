@@ -2,7 +2,7 @@ name: Node CI
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types: [opened, synchronize, reopened]
 
 jobs:
   test-front:
@@ -14,11 +14,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - name: Install dependencies
+    - name: yarn install and test
       run: |
         cd front
         yarn install
-    - name: Perform tests
-      run: |
-        cd front
         yarn test --passWithNoTests
+      env:
+        CI: true
+        REACT_APP_BACK_URL: 'http://localhost:8001'
