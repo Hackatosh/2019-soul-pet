@@ -28,6 +28,7 @@ jobs:
         cd back
         yarn install
     - name: Perform tests
+      run: |
         yarn test --passWithNoTests
   test-front:
     name: Execute tests on the front
@@ -52,4 +53,5 @@ jobs:
         cd front
         yarn install
     - name: Perform tests
+      run: |
         yarn test --passWithNoTests
