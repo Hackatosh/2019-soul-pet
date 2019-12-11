@@ -9,7 +9,7 @@ jobs:
     name: Execute the tests on the back
     runs-on: ubuntu-latest
     steps:
-    - uses: Checkout
+    - uses: actions/checkout@v1
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
       with:
@@ -36,7 +36,7 @@ jobs:
     name: Execute tests on the front
     runs-on: ubuntu-latest
     steps:
-    - uses: Checkout
+    - uses: actions/checkout@v1
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
       with:
