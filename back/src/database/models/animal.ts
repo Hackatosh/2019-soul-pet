@@ -20,10 +20,6 @@ export class Animal extends Model {
     public birthdate!: Date;
     public name!: string;
 
-    // timestamps!
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-
     public getEvents!: BelongsToManyGetAssociationsMixin<PetEvent>;
     public addEvent!: BelongsToManyAddAssociationMixin<PetEvent, number>;
     public addEvents!: BelongsToManyAddAssociationsMixin<PetEvent, number>;
@@ -69,6 +65,7 @@ const initAnimalModel = async function():Promise<void> {
     }, {
         tableName: 'animals',
         modelName: 'animal',
+        timestamps: false,
         sequelize: db,
     });
 };

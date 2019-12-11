@@ -31,9 +31,6 @@ export class User extends Model {
         animals: Association<User, Animal>;
     };
 
-    // timestamps!
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
 }
 
 /*** Function used to initialize the User Model ***/
@@ -62,6 +59,7 @@ const initUserModel = async function():Promise<void> {
     }, {
         tableName: 'users',
         modelName: 'user',
+        timestamps: false,
         sequelize: db,
     });
 

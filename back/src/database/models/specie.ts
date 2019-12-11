@@ -31,10 +31,6 @@ export class Specie extends Model {
     public static associations: {
         animals: Association<Specie, Animal>;
     };
-
-    // timestamps!
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
 }
 
 /*** Function used to initialize the User Model ***/
@@ -54,6 +50,7 @@ const initSpecieModel = async function():Promise<void> {
     }, {
         tableName: 'species',
         modelName: 'specie',
+        timestamps: false,
         sequelize: db,
     });
 

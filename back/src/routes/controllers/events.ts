@@ -20,7 +20,7 @@ const getEventChecks = [
 eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
     const eventId = parseInt(req.params.eventId);
     try {
-        let eventFound = await PetEvent.findOne({where: {id: eventId}, include: [{model: Animal, as: "Attendees"},{ model: Specie, as: "AuthorizedSpecies"}]});
+        let eventFound = await PetEvent.findOne({where: {id: eventId}, include: [{model: Animal, as: "Attendees"},{ model: Specie, as: "AuthorizedSpecies", include:[]}]});
         if (!eventFound) {
             res.status(404).json({errorMessage: "Not found. The event you are trying to access does not exist."});
             return;
@@ -99,7 +99,7 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
     const location = req.body.location;
     const description = req.body.description;
     const specieIds: Array<number> = req.body.specieIds ? req.body.specieIds.map((value:any) => parseInt(value)) : undefined;
-    let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[{model:Animal,as:"Animals"}]});
+    let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[{model:Animal,as:"Attendees"},{ model: Specie, as: "AuthorizedSpecies"}]});
     if(!eventFound){
         res.status(404).json({errorMessage:"Not found. The event you are trying to access does not exist."});
         return;
@@ -137,7 +137,7 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
         await eventFound.set(update);
         if(specieIds !== undefined) {
             eventFound.setAuthorizedSpecies(specieIds);
-            let attendees = eventFound.attendees.filter((value: Animal) => specieIds.indexOf(value.specieId) !== -1);
+            let attendees = eventFound.attendees ? eventFound.attendees.filter((value: Animal) => specieIds.indexOf(value.specieId) !== -1) : [];
             eventFound.setAttendees(attendees);
             update['specieIds'] = specieIds;
         }
