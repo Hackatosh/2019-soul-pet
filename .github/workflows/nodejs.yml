@@ -5,37 +5,6 @@ on:
     types: [opened, synchronize, reopened, edited]
 
 jobs:
-  test-back:
-    name: Execute the tests on the back
-    runs-on: ubuntu-latest
-    env:
-      SERVER_PORT: 8000
-      TOKEN_LIFETIME_SEC: 600
-      DB_HOST: soul-pet-db
-      DB_PORT: 3306
-      DB_USER: 'user'
-      DB_PASSWORD: 'password'
-      DB_NAME: 'soul_pet'
-      SECRET_KEY: '7CMl4AhyElECTWaUqRjxbl7FsmtYunqf'
-      FTP_HOST: soul-pet-sftp
-      FTP_PORT: 22
-      FTP_USER: nodejs
-      FTP_PASSWORD: password
-      FTP_PATH_PICTURES: pictures
-    steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
-    - name: Install dependencies
-      run: |
-        cd back
-        yarn install
-    - name: Perform tests
-      run: |
-        cd back
-        yarn test --passWithNoTests
   test-front:
     name: Execute tests on the front
     runs-on: ubuntu-latest
