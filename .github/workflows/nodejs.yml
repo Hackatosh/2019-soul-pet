@@ -1,0 +1,24 @@
+name: Node CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test-front:
+    name: Execute tests on the front
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: yarn install and test
+      run: |
+        cd front
+        yarn install
+        yarn test --passWithNoTests
+      env:
+        CI: true
+        REACT_APP_BACK_URL: 'http://localhost:8001'
