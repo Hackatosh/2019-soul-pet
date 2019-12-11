@@ -9,11 +9,14 @@ jobs:
     name: Execute the tests on the back
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: Checkout
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
+    - name: Go to back directory
+      run: |
+        cd back
     - name: Cache node modules
       uses: actions/cache@v1
       with:
@@ -25,7 +28,6 @@ jobs:
           ${{ runner.os }}-
     - name: Install dependencies
       run: |
-        cd back
         yarn install
     - name: Perform tests
       run: |
@@ -34,11 +36,14 @@ jobs:
     name: Execute tests on the front
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: Checkout
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
+    - name: Go to front directory
+      run: |
+        cd front
     - name: Cache node modules
       uses: actions/cache@v1
       with:
