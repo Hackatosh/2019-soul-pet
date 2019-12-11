@@ -47,11 +47,12 @@ export class httpClient {
     /**
      * Handles an HTTP response depending on its status.
      * @param response the Response to handle
-     * @returns A Promise containing the parsed JSON of the body
+     * @returns A Promise containing the parsed JSON of the body, or an error.
      */
     private static async handleResponse(response: Response): Promise<any> {
-        if (!response.ok)
-            return Promise.reject(response.text() || response.statusText);
+        if (!response.ok) {
+            return response.json().then(({message}) => Promise.reject(message), () => Promise.reject(response.statusText));
+        }
         return response.json();
     }
 
@@ -62,10 +63,12 @@ export class httpClient {
      * @returns A promise containing an object of type T
      */
     private static async request<T>(endpoint: string, requestOptions: RequestInit): Promise<T> {
-        return fetch(config.apiUrl + endpoint, requestOptions).then(httpClient.handleResponse).then(data => {
+        return fetch(config.apiUrl + endpoint, requestOptions).then(httpClient.handleResponse).catch(error => {
+            if (error instanceof ErrorEvent)
+                return Promise.reject(error.message);
+            return Promise.reject(error);
+        }).then(data => {
             return data as T;
-        }).catch(message => {
-            return Promise.reject(message);
         });
     }
 
