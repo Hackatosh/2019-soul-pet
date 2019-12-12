@@ -5,7 +5,12 @@ import { check } from 'express-validator'
 import {PetEvent} from "../../database/models/event";
 import {Animal} from "../../database/models/animal";
 import {Specie} from "../../database/models/specie";
-import {isDateValid, isNumericArray} from "../../core/utils";
+import {
+    convertDateTimeFromString,
+    isDateTimeAfter,
+    isDateTimeValid,
+    isNumericArray
+} from "../../core/utils";
 import {User} from "../../database/models/user";
 
 
@@ -35,8 +40,8 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req:Auth
 
 const postEventChecks = [
     check('name').notEmpty().isString(),
-    check('beginDate').notEmpty().custom( date => isDateValid(date)),
-    check('endDate').notEmpty().custom( date => isDateValid(date)),
+    check('beginDate').notEmpty().custom( date => isDateTimeValid(date)),
+    check('endDate').notEmpty().custom( date => isDateTimeValid(date)).custom( (date, {req}) => isDateTimeAfter(date,req.body.beginDate)).withMessage("endDate should be after beginDate"),
     check('userId').notEmpty().isNumeric(),
     check('location').notEmpty().isString().optional(),
     check('description').notEmpty().isString(),
@@ -46,8 +51,8 @@ const postEventChecks = [
 
 eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
     const name = req.body.name;
-    const beginDate = req.body.beginDate;
-    const endDate = req.body.endDate;
+    const beginDate = convertDateTimeFromString(req.body.beginDate);
+    const endDate = convertDateTimeFromString(req.body.endDate);
     const userId = parseInt(req.body.userId);
     const location = req.body.location;
     const description = req.body.description;
@@ -82,8 +87,8 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:Authentica
 const putEventChecks = [
     check('eventId').notEmpty().isNumeric().optional(),
     check('name').notEmpty().isString().optional(),
-    check('beginDate').notEmpty().custom( date => isDateValid(date)).optional(),
-    check('endDate').notEmpty().custom( date => isDateValid(date)).optional(),
+    check('beginDate').notEmpty().custom( date => isDateTimeValid(date)).optional(),
+    check('endDate').notEmpty().custom( date => isDateTimeValid(date)).custom( (date, {req}) => isDateTimeAfter(date,req.body.beginDate)).withMessage("endDate should be after beginDate").optional(),
     check('location').notEmpty().isString().optional(),
     check('description').notEmpty().isString().optional(),
     check('specieIds').isArray().optional(),
@@ -94,8 +99,8 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
     const eventId = parseInt(req.params.eventId);
     const authenticatedId = req.authInfos.userId;
     const name = req.body.name;
-    const beginDate = req.body.begindDate;
-    const endDate = req.body.endDate;
+    const beginDate = convertDateTimeFromString(req.body.beginDate);
+    const endDate = convertDateTimeFromString(req.body.endDate);
     const location = req.body.location;
     const description = req.body.description;
     const specieIds: Array<number> = req.body.specieIds ? req.body.specieIds.map((value:any) => parseInt(value)) : undefined;

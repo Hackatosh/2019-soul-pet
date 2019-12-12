@@ -26,12 +26,12 @@ const objectifyHeadersArray = function (headers:Array<HttpHeader>):OutgoingHttpH
 };
 
 /*** Check if a string is invalid or empty ***/
-const isEmptyString = function(str:string){
+const isEmptyString = function(str:string): boolean{
     return str === undefined || str === null || str.trim() === ""
 };
 
 /*** Check if an array is an array of Number ***/
-const isNumericArray = function(arr:Array<any>){
+const isNumericArray = function(arr:Array<any>): boolean{
     for(let e of arr){
         if(!isNumeric(e)){
             return false;
@@ -40,9 +40,32 @@ const isNumericArray = function(arr:Array<any>){
    return true;
 };
 
-/*** Check if a string is a valid date***/
-const isDateValid = function (date:string) {
-    return moment(date, 'MM/DD/YYYY',true).isValid();
+/*** Check if a string is a valid datetime***/
+const isDateTimeValid = function (date:string): boolean {
+    return moment(date, 'DD/MM/YYYY:hh:mm:ss',true).isValid();
 };
 
-export { objectifyHeadersArray, isEmptyString, isDateValid, isNumericArray  }
+/*** Check if a string is a valid date***/
+const isDateValid = function (date:string): boolean {
+    return moment(date, 'DD/MM/YYYY',true).isValid();
+};
+
+/*** Convert a string representing a datetime to a date***/
+const convertDateTimeFromString = function (date:string):Date {
+    return moment(date, 'DD/MM/YYYY:HH:mm:ss',true).toDate();
+};
+
+/*** Convert a string representing a date to a date***/
+const convertDateFromString = function (date:string):Date {
+    return moment(date, 'DD/MM/YYYY',true).toDate();
+};
+
+
+/*** Check if a string is a valid date***/
+const isDateTimeAfter = function (date:string, dateBefore:string) {
+    const end = moment(date, 'DD/MM/YYYY:HH:mm:ss',true);
+    const start = moment(dateBefore, 'DD/MM/YYYY:HH:mm:ss',true);
+    return end.isAfter(start);
+};
+
+export { objectifyHeadersArray, isEmptyString, isDateValid, isDateTimeValid, isNumericArray, isDateTimeAfter, convertDateTimeFromString, convertDateFromString  }

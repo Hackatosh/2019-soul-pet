@@ -4,7 +4,7 @@ import {Animal} from "../../database/models/animal";
 import { check } from 'express-validator'
 import {inputValidationMW} from "../middlewares/inputValidation";
 import {Specie} from "../../database/models/specie";
-import {isDateValid} from "../../core/utils";
+import {convertDateFromString, isDateValid} from "../../core/utils";
 
 const animalsRouter = Router();
 
@@ -44,7 +44,7 @@ animalsRouter.post('/', postAnimalChecks, inputValidationMW, async (req: Authent
     const userId = parseInt(req.body.userId);
     const specieId = parseInt(req.body.specieId);
     const name = req.body.name;
-    const birthdate = req.body.birthdate;
+    const birthdate = convertDateFromString(req.body.birthdate);
     if(userId !== req.authInfos.userId){
         res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."});
         return;
@@ -75,7 +75,7 @@ animalsRouter.put('/:animalId', putAnimalChecks, inputValidationMW, async (req: 
     const animalId = parseInt(req.params.animalId);
     const specieId = parseInt(req.body.specieId);
     const name = req.body.name;
-    const birthdate = req.body.birthdate;
+    const birthdate = convertDateFromString(req.body.birthdate);
     const animalFound = await Animal.findOne({where: {id:animalId}});
     if(!animalFound){
         res.status(404).json({errorMessage:"Not found. The animal you are trying to access does not exist."});
