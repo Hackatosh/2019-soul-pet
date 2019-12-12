@@ -19,7 +19,7 @@ const eventsRouter = Router();
 /*** This route is used to get informations about an event ***/
 
 const getEventChecks = [
-    check('eventId').notEmpty().isNumeric(),
+    check('eventId').notEmpty().isNumeric().withMessage("eventId must be a number"),
 ]
 
 eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
@@ -27,10 +27,10 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req:Auth
     try {
         let eventFound = await PetEvent.findOne({where: {id: eventId}, include: [{model: Animal, as: "Attendees"},{ model: Specie, as: "AuthorizedSpecies", include:[]}]});
         if (!eventFound) {
-            res.status(404).json({errorMessage: "Not found. The event you are trying to access does not exist."});
+            res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
             return;
         }
-        res.status(200).send({event: eventFound})
+        res.status(200).send(eventFound)
     } catch(e){
         console.log(e)
     }
@@ -39,14 +39,14 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req:Auth
 /*** This route is used to create a new event ***/
 
 const postEventChecks = [
-    check('name').notEmpty().isString(),
-    check('beginDate').notEmpty().custom( date => isDateTimeValid(date)),
-    check('endDate').notEmpty().custom( date => isDateTimeValid(date)).custom( (date, {req}) => isDateTimeAfter(date,req.body.beginDate)).withMessage("endDate should be after beginDate"),
-    check('userId').notEmpty().isNumeric(),
-    check('location').notEmpty().isString().optional(),
-    check('description').notEmpty().isString(),
-    check('specieIds').isArray(),
-    check('specieIds').custom(array => isNumericArray(array)),
+    check('name').notEmpty().isString().withMessage("name must be a valid string"),
+    check('beginDate').notEmpty().custom( date => isDateTimeValid(date)).withMessage("beginDate must be a valid datetime"),
+    check('endDate').notEmpty().custom( date => isDateTimeValid(date)).withMessage("endDate must be a valid datetime").custom( (date, {req}) => isDateTimeAfter(date,req.body.beginDate)).withMessage("endDate must be after beginDate"),
+    check('userId').notEmpty().isNumeric().withMessage("userId must be a valid number"),
+    check('location').notEmpty().isString().withMessage("location should be a valid string").optional(),
+    check('description').notEmpty().isString().withMessage("description must be a valid string"),
+    check('specieIds').isArray().withMessage("specieIds must be an array of number"),
+    check('specieIds').custom(array => isNumericArray(array)).withMessage("specieIds must be an array of number"),
 ];
 
 eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
@@ -59,16 +59,16 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:Authentica
     const specieIds: Array<number> = req.body.specieIds.map((value:any) => parseInt(value));
     let userFound = await User.findOne({where:{id:userId}});
     if(userId !== req.authInfos.userId){
-        res.status(403).json({errorMessage:"Forbidden. You don't have access to this user."});
+        res.status(403).json({message:"Forbidden. You don't have access to this user."});
         return;
     }
     if(!userFound){
-        res.status(404).send({error:"userId doesn't match any user."})
+        res.status(404).send({message:"userId doesn't match any user."})
     }
     for(let specieId of specieIds){
         let specieFound = await Specie.findOne({where:{id:specieId}});
         if(!specieFound){
-            res.status(400).send({error:"You're trying to use an unexisting specie"});
+            res.status(400).send({message:"You're trying to use an unexisting specie"});
             return;
         }
     }
@@ -76,23 +76,23 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:Authentica
         const event = await PetEvent.create({name, beginDate, endDate, userId, location, description});
         event.addAuthorizedSpecies(specieIds);
         await event.save();
-        res.status(200).send({event: event})
+        res.status(200).send(event)
     } catch(e){
         console.log(e);
-        res.status(400).send({errorMessage:"Unable to create this event"})
+        res.status(400).send({message:"Unable to create this event"})
     }
 });
 
 /*** This route is used to modify an event ***/
 const putEventChecks = [
-    check('eventId').notEmpty().isNumeric().optional(),
-    check('name').notEmpty().isString().optional(),
-    check('beginDate').notEmpty().custom( date => isDateTimeValid(date)).optional(),
-    check('endDate').notEmpty().custom( date => isDateTimeValid(date)).custom( (date, {req}) => isDateTimeAfter(date,req.body.beginDate)).withMessage("endDate should be after beginDate").optional(),
-    check('location').notEmpty().isString().optional(),
-    check('description').notEmpty().isString().optional(),
-    check('specieIds').isArray().optional(),
-    check('specieIds').custom(array => isNumericArray(array)).optional(),
+    check('eventId').notEmpty().isNumeric().withMessage("eventId must be a valid number"),
+    check('name').notEmpty().isString().withMessage("name should be a valid string").optional(),
+    check('beginDate').notEmpty().custom( date => isDateTimeValid(date)).withMessage("beginDate should be a valid datetime").optional(),
+    check('endDate').notEmpty().custom( date => isDateTimeValid(date)).withMessage("endDate should be a valid datetime").custom( (date, {req}) => isDateTimeAfter(date,req.body.beginDate)).withMessage("endDate must be after beginDate").optional(),
+    check('location').notEmpty().isString().withMessage("location should be a valid string").optional(),
+    check('description').notEmpty().isString().withMessage("description should be a valid string").optional(),
+    check('specieIds').isArray().withMessage("specieIds should be an array of numbers").optional(),
+    check('specieIds').custom(array => isNumericArray(array)).withMessage("specieIds should be an array of numbers").optional(),
 ];
 
 eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, res:Response) => {
@@ -106,18 +106,18 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
     const specieIds: Array<number> = req.body.specieIds ? req.body.specieIds.map((value:any) => parseInt(value)) : undefined;
     let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[{model:Animal,as:"Attendees"},{ model: Specie, as: "AuthorizedSpecies"}]});
     if(!eventFound){
-        res.status(404).json({errorMessage:"Not found. The event you are trying to access does not exist."});
+        res.status(404).json({message:"Not found. The event you are trying to access does not exist."});
         return;
     }
     if(eventFound.userId !== authenticatedId){
-        res.status(403).json({errorMessage:"Forbidden. You don't have access to this event."});
+        res.status(403).json({message:"Forbidden. You don't have access to this event."});
         return;
     }
     if(specieIds !== undefined) {
         for (let specieId of specieIds) {
             let specieFound = await Specie.findOne({where: {id: specieId}});
             if (!specieFound) {
-                res.status(400).send({error: "You're trying to use an unexisting specie"});
+                res.status(400).send({message: "You're trying to use an unexisting specie"});
                 return;
             }
         }
@@ -147,17 +147,17 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
             update['specieIds'] = specieIds;
         }
         await eventFound.save();
-        res.status(200).json({update: update});
+        res.status(200).json(update);
     } catch (e) {
         console.log(e);
-        res.status(400).json({errorMessage: "Unable to update the event"});
+        res.status(400).json({message: "Unable to update the event"});
     }
 });
 
 /*** This route is used to delete an event ***/
 
 const deleteEventChecks = [
-    check('eventId').notEmpty().isNumeric(),
+    check('eventId').notEmpty().isNumeric().withMessage("eventId must be a number"),
 ];
 
 eventsRouter.delete('/:eventId',deleteEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
@@ -165,15 +165,15 @@ eventsRouter.delete('/:eventId',deleteEventChecks, inputValidationMW, async (req
     const authenticatedId = req.authInfos.userId;
     let eventFound = await PetEvent.findOne({where: {id: eventId}});
     if(!eventFound){
-        res.status(404).json({errorMessage:"Not found. The event you are trying to access does not exist."});
+        res.status(404).json({message:"Not found. The event you are trying to access does not exist."});
         return;
     }
     if(eventFound.userId !== authenticatedId){
-        res.status(403).json({errorMessage:"Forbidden. You don't have access to this event."});
+        res.status(403).json({message:"Forbidden. You don't have access to this event."});
         return;
     }
     await PetEvent.destroy({where:{id:eventId}});
-    res.status(200).send({eventId:eventId});
+    res.status(200).send({id:eventId});
 });
 
 
@@ -181,8 +181,8 @@ eventsRouter.delete('/:eventId',deleteEventChecks, inputValidationMW, async (req
 /*** This route is used to add an animal to an event ***/
 
 const postAnimalInEventChecks = [
-    check('eventId').notEmpty().isNumeric(),
-    check('animalId').notEmpty().isNumeric(),
+    check('eventId').notEmpty().isNumeric().withMessage("eventId must be a number"),
+    check('animalId').notEmpty().isNumeric().withMessage("animalId must be a number"),
 ];
 
 eventsRouter.post('/:eventId/animals', postAnimalInEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
@@ -191,16 +191,16 @@ eventsRouter.post('/:eventId/animals', postAnimalInEventChecks, inputValidationM
     const animalId = parseInt(req.body.animalId);
     let eventFound = await PetEvent.findOne({where: {id: eventId}});
     if(!eventFound){
-        res.status(404).json({errorMessage:"Not found. The event you are trying to access does not exist."});
+        res.status(404).json({message:"Not found. The event you are trying to access does not exist."});
         return;
     }
     let animalFound = await Animal.findOne({where: {id: animalId}});
     if(!animalFound){
-        res.status(404).json({errorMessage:"Not found. The animal you are trying to access does not exist."});
+        res.status(404).json({message:"Not found. The animal you are trying to access does not exist."});
         return;
     }
     if(animalFound.userId !== authenticatedId){
-        res.status(403).json({errorMessage:"Forbidden. You don't have access to this animal."});
+        res.status(403).json({message:"Forbidden. You don't have access to this animal."});
         return;
     }
     await eventFound.addAttendee(animalFound);
@@ -209,8 +209,8 @@ eventsRouter.post('/:eventId/animals', postAnimalInEventChecks, inputValidationM
 
 /*** This route is used to remove an animal to an event ***/
 const deleteAnimalFromEventChecks = [
-    check('eventId').notEmpty().isNumeric(),
-    check('animalId').notEmpty().isNumeric(),
+    check('eventId').notEmpty().isNumeric().withMessage("eventId must be a number"),
+    check('animalId').notEmpty().isNumeric().withMessage("animalId must be a number"),
 ];
 
 eventsRouter.delete('/:eventId/animals/:animalId', deleteAnimalFromEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
@@ -219,16 +219,16 @@ eventsRouter.delete('/:eventId/animals/:animalId', deleteAnimalFromEventChecks, 
     const animalId = parseInt(req.params.animalId);
     let eventFound = await PetEvent.findOne({where: {id: eventId}});
     if(!eventFound){
-        res.status(404).json({errorMessage:"Not found. The event you are trying to access does not exist."});
+        res.status(404).json({message:"Not found. The event you are trying to access does not exist."});
         return;
     }
     let animalFound = await Animal.findOne({where: {id: animalId}});
     if(!animalFound){
-        res.status(404).json({errorMessage:"Not found. The animal you are trying to access does not exist."});
+        res.status(404).json({message:"Not found. The animal you are trying to access does not exist."});
         return;
     }
     if(animalFound.userId !== authenticatedId){
-        res.status(403).json({errorMessage:"Forbidden. You don't have access to this animal."});
+        res.status(403).json({message:"Forbidden. You don't have access to this animal."});
         return;
     }
     await eventFound.removeAttendee(animalFound);
