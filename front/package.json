@@ -29,6 +29,23 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "jest": {
+    "collectCoverageFrom": [
+      "**/*.ts",
+      "!*/models/*",
+      "!**/index.ts",
+      "!*/config.ts",
+      "!*/react-app-env.d.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": -10
+      }
+    }
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -40,5 +57,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "fetch-mock": "^8.0.1",
+    "ts-jest": "^24.2.0"
   }
 }
