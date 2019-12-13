@@ -9,10 +9,10 @@ import {revocateAllTokensForUser} from "../../core/authentication/tokens";
 const accountRouter = Router();
 
 const putAccountChecks = [
-  check('userId').notEmpty().isNumeric(),
-  check('newPassword').notEmpty().isString().optional(),
-  check('username').notEmpty().isString().optional(),
-  check('email').notEmpty().isEmail().optional()
+  check('userId').notEmpty().isNumeric().withMessage("userId must be a number"),
+  check('newPassword').isString().isLength({ min: 8 }).withMessage("newPassword should be a valid string longer than 8 characters").optional(),
+  check('username').isString().isLength({ min: 3 }).withMessage("username should be a valid string longer than 3 characters").optional(),
+  check('email').notEmpty().isEmail().withMessage("email should be a valid email").optional()
 ];
 
 accountRouter.put('/:userId', putAccountChecks,inputValidationMW, async (req: AuthenticatedRequest,res: Response) => {
@@ -39,16 +39,16 @@ accountRouter.put('/:userId', putAccountChecks,inputValidationMW, async (req: Au
     try {
       await User.update(update, {where: {id: userId}});
       update["hashedPassword"]=null;
-      res.status(200).json({update: update});
       if (Object.keys(update).length !=0){
         await revocateAllTokensForUser(userId);
       }
+      res.status(200).json(update);
     } catch (e) {
       console.log(e);
-      res.status(400).json({errorMessage: "Unable to update the account"});
+      res.status(400).json({message: "Unable to update the account"});
     }
   } else {
-    res.status(403).json({errorMessage: "You don't have access to this user id"})
+    res.status(403).json({message: "You don't have access to this user id"})
   }
 }
 );
@@ -59,11 +59,11 @@ accountRouter.delete('/:userId', async (req: AuthenticatedRequest, res: Response
     const authenticatedId = req.authInfos.userId;
     if (userId === authenticatedId) {
       User.destroy({where: {id: userId}});
-      res.status(200).json({AccountDeleted : userId});
+      res.status(200).json({id : userId});
       await revocateAllTokensForUser(userId);
 
     } else {
-      res.status(403).json({errorMessage: "You don't have access to this user id"})
+      res.status(403).json({message: "You don't have access to this user id"})
 
     }
 

@@ -13,6 +13,7 @@ import {logoutRouter} from "./controllers/logout";
 import {corsMW} from "./middlewares/allowFront";
 import {animalsRouter} from "./controllers/animals";
 import {accountRouter} from "./controllers/account";
+import {eventsRouter} from "./controllers/events";
 
 /*** Basic middlewares mouting ***/
 const app = express();
@@ -28,8 +29,8 @@ apiRouter.use('/', healthRouter);
 apiRouter.use('/files',uploadRouter);
 apiRouter.use('/auth',authenticationRouter);
 apiRouter.use('*',loginRequiredMW);
+apiRouter.use('/events',eventsRouter);
 apiRouter.use('/account',accountRouter);
-apiRouter.get('/protected',(req:AuthenticatedRequest,res:Response) => {res.status(200).json({message:`Welcome`})});
 apiRouter.use('/animals',animalsRouter);
 apiRouter.use('/logout',logoutRouter);
 apiRouter.use('*',handleError500MW);
