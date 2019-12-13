@@ -6,9 +6,8 @@ import {PetEvent} from "../../database/models/event";
 import {Animal} from "../../database/models/animal";
 import {Specie} from "../../database/models/specie";
 import {
-    convertDateTimeFromString,
-    isDateTimeAfter,
-    isDateTimeValid,
+    convertStringToDate,
+    isDateTimeAfter, isDateValid,
     isNumericArray
 } from "../../core/utils";
 import {User} from "../../database/models/user";
@@ -40,8 +39,8 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req:Auth
 
 const postEventChecks = [
     check('name').notEmpty().isString().withMessage("name must be a valid string"),
-    check('beginDate').notEmpty().custom( date => isDateTimeValid(date)).withMessage("beginDate must be a valid datetime"),
-    check('endDate').notEmpty().custom( date => isDateTimeValid(date)).withMessage("endDate must be a valid datetime").custom( (date, {req}) => isDateTimeAfter(date,req.body.beginDate)).withMessage("endDate must be after beginDate"),
+    check('beginDate').notEmpty().custom( date => isDateValid(date)).withMessage("beginDate must be a valid datetime"),
+    check('endDate').notEmpty().custom( date => isDateValid(date)).withMessage("endDate must be a valid datetime").custom( (date, {req}) => isDateTimeAfter(date,req.body.beginDate)).withMessage("endDate must be after beginDate"),
     check('userId').notEmpty().isNumeric().withMessage("userId must be a valid number"),
     check('location').notEmpty().isString().withMessage("location should be a valid string").optional(),
     check('description').notEmpty().isString().withMessage("description must be a valid string"),
@@ -51,8 +50,8 @@ const postEventChecks = [
 
 eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
     const name = req.body.name;
-    const beginDate = convertDateTimeFromString(req.body.beginDate);
-    const endDate = convertDateTimeFromString(req.body.endDate);
+    const beginDate = convertStringToDate(req.body.beginDate);
+    const endDate = convertStringToDate(req.body.endDate);
     const userId = parseInt(req.body.userId);
     const location = req.body.location;
     const description = req.body.description;
@@ -87,8 +86,8 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req:Authentica
 const putEventChecks = [
     check('eventId').notEmpty().isNumeric().withMessage("eventId must be a valid number"),
     check('name').notEmpty().isString().withMessage("name should be a valid string").optional(),
-    check('beginDate').notEmpty().custom( date => isDateTimeValid(date)).withMessage("beginDate should be a valid datetime").optional(),
-    check('endDate').notEmpty().custom( date => isDateTimeValid(date)).withMessage("endDate should be a valid datetime").custom( (date, {req}) => isDateTimeAfter(date,req.body.beginDate)).withMessage("endDate must be after beginDate").optional(),
+    check('beginDate').notEmpty().custom( date => isDateValid(date)).withMessage("beginDate should be a valid datetime").optional(),
+    check('endDate').notEmpty().custom( date => isDateValid(date)).withMessage("endDate should be a valid datetime").custom( (date, {req}) => isDateTimeAfter(date,req.body.beginDate)).withMessage("endDate must be after beginDate").optional(),
     check('location').notEmpty().isString().withMessage("location should be a valid string").optional(),
     check('description').notEmpty().isString().withMessage("description should be a valid string").optional(),
     check('specieIds').isArray().withMessage("specieIds should be an array of numbers").optional(),
@@ -99,8 +98,8 @@ eventsRouter.put('/:eventId', putEventChecks, async (req:AuthenticatedRequest, r
     const eventId = parseInt(req.params.eventId);
     const authenticatedId = req.authInfos.userId;
     const name = req.body.name;
-    const beginDate = convertDateTimeFromString(req.body.beginDate);
-    const endDate = convertDateTimeFromString(req.body.endDate);
+    const beginDate = convertStringToDate(req.body.beginDate);
+    const endDate = convertStringToDate(req.body.endDate);
     const location = req.body.location;
     const description = req.body.description;
     const specieIds: Array<number> = req.body.specieIds ? req.body.specieIds.map((value:any) => parseInt(value)) : undefined;
