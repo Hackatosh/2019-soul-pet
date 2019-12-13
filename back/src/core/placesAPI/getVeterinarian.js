@@ -34,13 +34,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var request_promise = require('request-promise-native');
+var request = require('request-promise-native');
+/*** fields needed to call the API ***/
 var clientId = "OMUJAQFCEKPCCDPHKQW21VUWVJ1YEBGHN0R0RQRQZWJRRNL3";
 var clientSecret = "XQ1BKCP2ARAXAQ4M3AQ0P51CJ5DOVLLVYYINOJWXBXQYEVTZ";
 var veterinarianCategoryId = "4d954af4a243a5684765b473";
 var currentVersion = (new Date()).toISOString().replace(/-/g, '').split('T')[0];
-function searchVeterinarian(pos, radius) {
-    return request_promise({
+/*** input : user position with latitude and longitude, radius in meters (ex: "10000" for 10km)
+ * output : Venues Search API result with type Promise (see fields in doc)
+ * doc : https://developer.foursquare.com/docs/api/venues/search ***/
+function searchVeterinarian(lat, long, radius) {
+    return request({
         url: 'https://api.foursquare.com/v2/venues/search',
         method: 'GET',
         json: true,
@@ -48,14 +52,17 @@ function searchVeterinarian(pos, radius) {
             client_id: clientId,
             client_secret: clientSecret,
             categoryId: veterinarianCategoryId,
-            ll: pos,
+            ll: lat.toString() + ',' + long.toString(),
             v: currentVersion,
-            radius: radius
+            radius: radius.toString()
         }
     });
 }
+/*** input : id of veterinarian (given by search API)
+ * output : Venues Details API result with type Promise (see fields in doc)
+ * doc : https://developer.foursquare.com/docs/api/venues/details ***/
 function detailsVeterinarian(veterinarianId) {
-    return request_promise({
+    return request({
         url: "https://api.foursquare.com/v2/venues/" + veterinarianId,
         method: 'GET',
         json: true,
@@ -66,11 +73,13 @@ function detailsVeterinarian(veterinarianId) {
         }
     });
 }
+/*** Merge Search API results with Details API to get more informations on each veterinarian ***/
 function addDetailsToEachVenue(result) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Promise.all(result.response.venues.map(function (venue) { return detailsVeterinarian(venue.id).then(function (details) { return venue["details"] = details; }); }))];
+                case 0: //WIP
+                return [4 /*yield*/, Promise.all(result.response.venues.map(function (venue) { return detailsVeterinarian(venue.id).then(function (details) { return venue["details"] = details; }); }))];
                 case 1:
                     _a.sent();
                     return [2 /*return*/, result];
@@ -81,4 +90,4 @@ function addDetailsToEachVenue(result) {
 function testPrint(result) {
     console.log(result.response.venues);
 }
-var promise = searchVeterinarian("45.676,4.82115", "10000").then(addDetailsToEachVenue).then(testPrint);
+var testPromise = searchVeterinarian(45.676, 4.82115, 10000).then(testPrint);
