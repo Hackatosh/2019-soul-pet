@@ -57,9 +57,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "fetch-mock": "^8.0.1",
-    "ts-jest": "^24.2.0"
   }
 }
