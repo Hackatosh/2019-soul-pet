@@ -1,9 +1,4 @@
 import React from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import { authenticationService } from '../services';
-import { history } from '../helpers';
-
-
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 interface SServicesMap{
@@ -18,6 +13,14 @@ interface PServicesMap{
   markers: Array<MarkerData>;
 }
 
+const serviceTypeList = [
+  {type:"vet",
+  name: "Vétérinaires"},
+  {type:"park",
+  name: "Parcs"},
+  {type:"groom",
+  name : "Toiletteurs"}
+]
 
 interface MarkerData{
   key:string;
@@ -30,7 +33,9 @@ interface MarkerData{
 class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
   constructor(props: PServicesMap){
     super(props);
-    this.state= {toDisplay: ["vets", "parcs", "toiletteurs"]}
+    const toDisplay = serviceTypeList.map(el => (el.type))
+
+    this.state= {toDisplay: toDisplay}
   }
 
   handleChange = (event : any) => {
@@ -69,12 +74,10 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
         <div className="services_displayed">
           <form>
           <ul>
-            <li><input type="checkbox" value="vets" id="vets" defaultChecked={this.state.toDisplay.includes("vets")} onChange={this.handleChange}/>
-        <label>Vétérinaires</label></li>
-            <li><input type="checkbox" value="toiletteurs" id="toiletteurs" defaultChecked={this.state.toDisplay.includes("toiletteurs")} onChange={this.handleChange}/>
-        <label>Toiletteurs</label></li>
-            <li><input type="checkbox" value="parcs" id="parcs" defaultChecked={this.state.toDisplay.includes("parcs")} onChange={this.handleChange}/>
-        <label>Parcs</label></li>
+          {serviceTypeList.map(serviceType => (
+            <li><input type="checkbox" value={serviceType.type} id={serviceType.type} defaultChecked={this.state.toDisplay.includes(serviceType.type)} onChange={this.handleChange}/>
+        <label>{serviceType.name}</label></li>
+          ))}
           </ul>
           </form>
         </div>
