@@ -5,14 +5,14 @@ const request = require('request-promise-native');
 const clientId = "OMUJAQFCEKPCCDPHKQW21VUWVJ1YEBGHN0R0RQRQZWJRRNL3";
 const clientSecret = "XQ1BKCP2ARAXAQ4M3AQ0P51CJ5DOVLLVYYINOJWXBXQYEVTZ";
 const placeTypeToCategoryId: { [index: string]: string } = {
-  'vets' : '4d954af4a243a5684765b473',
+  'vet' : '4d954af4a243a5684765b473',
   'park' : '4bf58dd8d48988d163941735',
   'groom' : '5032897c91d4c4b30a586d69'
 };
 let currentVersion = (new Date()).toISOString().replace(/-/g, '').split('T')[0]
 
 
-/*** input : user position with latitude and longitude, radius in meters (ex: 10000 for 10km), placeType ('vets', 'park' or 'groom')
+/*** input : user position with latitude and longitude, radius in meters (ex: 10000 for 10km), placeType ('vet', 'park' or 'groom')
  * output : Venues Search API result with type Promise (see fields in doc)
  * doc : https://developer.foursquare.com/docs/api/venues/search ***/
 

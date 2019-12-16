@@ -1,6 +1,5 @@
 import {Request, Response, Router} from "express";
 import {searchPlaces} from "../../core/placesAPI/getPlaces";
-import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
 
