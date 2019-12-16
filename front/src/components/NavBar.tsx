@@ -10,7 +10,7 @@ class NavBar extends React.Component {
 		authenticationService.logout();
 		history.push('/login');
     }
-    
+
 	render() {
 		return (
 			<Navbar expand="lg" bg="dark" variant="dark" fixed="top">
@@ -21,12 +21,12 @@ class NavBar extends React.Component {
 						<Nav>
 							<Link to="/" className="nav-link">Mes animaux</Link>
 							<Link to="/services" className="nav-link">Services</Link>
-							<Link to="/events" className="nav-link">Événements</Link>
+							<Link to="/events/list" className="nav-link">Événements</Link>
 						</Nav>
 					}
 					<form className="form-inline ml-auto">
 						{
-							authenticationService.isLoggedIn 
+							authenticationService.isLoggedIn
 							? (<button className="btn btn-danger" type="button" onClick={this.logout}>Déconnexion</button>)
 							: (<Link className="btn btn-success" to="/login">Connexion</Link>)
 						}
