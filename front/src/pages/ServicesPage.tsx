@@ -1,10 +1,8 @@
 import React from 'react';
-import { authenticationService } from '../services';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import { Formik, Field, Form } from 'formik';
-import { history, randomBackground } from '../helpers';
+import { RouteComponentProps } from 'react-router-dom';
 import { ServicesMap } from '../components';
 import './ServicesPage.css';
+import {AuthenticationService} from "../services";
 
 
 class ServicesPage extends React.Component<RouteComponentProps, {}> {
@@ -54,7 +52,7 @@ class ServicesPage extends React.Component<RouteComponentProps, {}> {
 			<div className="container">
 				<div className="row mb-5">
 					<div className="col-sm-6 offset-sm-3">
-						<h1 className="text-center display-4">Bonjour {authenticationService.currentUserValue.username}&nbsp;!</h1>
+						<h1 className="text-center display-4">Bonjour {AuthenticationService.user.username}&nbsp;!</h1>
         </div>
         <h2 className="text-center"> Vous pouvez retrouver ici tous les services dont vous avez besoin pour
         vous occuper au mieux de vos animaux!</h2>

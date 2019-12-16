@@ -1,7 +1,4 @@
 import React from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import { authenticationService } from '../services';
-import { history } from '../helpers';
 
 
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
