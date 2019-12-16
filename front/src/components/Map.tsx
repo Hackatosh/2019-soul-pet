@@ -3,6 +3,7 @@ const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 interface SServicesMap{
   toDisplay: Array<string>;
+  radius: number;
 }
 
 interface PServicesMap{
@@ -35,7 +36,12 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
     super(props);
     const toDisplay = serviceTypeList.map(el => (el.type))
 
-    this.state= {toDisplay: toDisplay}
+    this.state= {toDisplay: toDisplay,
+                 radius: 5000}
+  }
+
+  updateRadius = (event:any) => {
+    this.setState({radius: event.target.value *1000})
   }
 
   handleChange = (event : any) => {
@@ -72,6 +78,8 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
           </LeafletMap>
         </div>
         <div className="services_displayed">
+          <input type="range" min="1" max="100" name="distance" onChange={this.updateRadius}/>
+          <label>Rayon de recherche : {this.state.radius/1000}</label>
           <form>
           <ul>
           {serviceTypeList.map(serviceType => (
