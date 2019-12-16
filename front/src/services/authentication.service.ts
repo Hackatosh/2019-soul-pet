@@ -5,6 +5,8 @@ import { User } from '../models';
  * Class designed to handle authentication with the back API
  */
 export class AuthenticationService {
+    private static user: User;
+
     /**
      * Attempts to log the user in, then redirects to the home page.
      * Params are self-explanatory
@@ -14,6 +16,7 @@ export class AuthenticationService {
         return httpClient.post<User>('/auth/login', false, JSON.stringify({ email, password })).then(user => {
             localStorage.setItem('user', JSON.stringify(user));
             history.push('/');
+            AuthenticationService.user = user;
             return user;
         }, () => {
             return Promise.reject('Identifiants incorrects');
@@ -35,6 +38,7 @@ export class AuthenticationService {
     static logout(): void {
         localStorage.removeItem('user');
         history.push('/login');
+        AuthenticationService.user = {} as User;
     }
 
     /**
@@ -50,9 +54,9 @@ export class AuthenticationService {
      * Beware, if the user is not logged in, all properties are undefined.
      * @returns a `User` object, with possibly undefined properties
      */
-    static get user(): User {
-        if (AuthenticationService.isLoggedIn)
-            return JSON.parse(localStorage.getItem('user') as string) as User;
-        return {} as User;
+    static get User(): User {
+        if (AuthenticationService.user === undefined && AuthenticationService.isLoggedIn)
+            AuthenticationService.user = JSON.parse(localStorage.getItem('user') as string) as User;
+        return AuthenticationService.user;
     }
 }
