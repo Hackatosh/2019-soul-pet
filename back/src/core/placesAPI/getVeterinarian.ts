@@ -56,3 +56,5 @@ function testPrint(result: any) {
 }
 
 const testPromise = searchVeterinarian(45.676,4.82115, 10000).then(testPrint);
+
+export {searchVeterinarian};
