@@ -4,7 +4,7 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 import { history, randomBackground } from '../helpers';
 import { ServicesMap } from '../components';
-
+import './ServicesPage.css';
 
 
 class ServicesPage extends React.Component<RouteComponentProps, {}> {
@@ -19,20 +19,26 @@ class ServicesPage extends React.Component<RouteComponentProps, {}> {
     const data = {
         lat: 48.864716,
         lon: 2.349014,
-        zoom : 10,
-        size : "400px",
+        zoom : 14,
+        size : "500px",
         markers: [
           {
             key: "marker1",
             position: [48.86471, 2.349014],
-            info:"General Kenobi",
+            info:"Dr Obiwan Kenobi, 18b rue Tiquetonne",
             serviceType: "vets"
           },
           {
             key: "marker2",
-            position: [48.86, 2.349016],
-            info:"You are a bold one",
+            position: [48.865, 2.338],
+            info:"Parc Grasswalker",
             serviceType: "parcs"
+          },
+          {
+            key: "marker3",
+            position: [48.86, 2.36],
+            info:"Chewbacca's style, 3 rue des Quatre Fils",
+            serviceType: "toiletteurs"
           }
         ]
       };
@@ -43,9 +49,12 @@ class ServicesPage extends React.Component<RouteComponentProps, {}> {
 				<div className="row mb-5">
 					<div className="col-sm-6 offset-sm-3">
 						<h1 className="text-center display-4">Bonjour {authenticationService.currentUserValue.username}&nbsp;!</h1>
-          <ServicesMap {...data}/>
         </div>
+        <h2 className="text-center"> Vous pouvez retrouver ici tous les services dont vous avez besoin pour
+        vous occuper au mieux de vos animaux!</h2>
       </div>
+      <ServicesMap {...data}/>
+
       </div>
     );
   }
