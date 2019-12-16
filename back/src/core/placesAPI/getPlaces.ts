@@ -7,10 +7,10 @@ const veterinarianCategoryId = "4d954af4a243a5684765b473";
 let currentVersion = (new Date()).toISOString().replace(/-/g, '').split('T')[0]
 
 
-/*** input : user position with latitude and longitude, radius in meters (ex: 10000 for 10km)
+/*** input : user position with latitude and longitude, radius in meters (ex: 10000 for 10km), placeType ('vets', 'park' or 'groom')
  * output : Venues Search API result with type Promise (see fields in doc)
  * doc : https://developer.foursquare.com/docs/api/venues/search ***/
-function searchVeterinarian(lat: number, long: number, radius: number) : Promise<any>{
+function searchPlaces(lat: number, long: number, radius: number, placeType: string) : Promise<any>{
   return request({
     url: 'https://api.foursquare.com/v2/venues/search',
     method: 'GET',
@@ -26,12 +26,12 @@ function searchVeterinarian(lat: number, long: number, radius: number) : Promise
   });
 }
 
-/*** input : id of veterinarian (given by search API)
+/*** input : id of place (given by search API)
  * output : Venues Details API result with type Promise (see fields in doc)
  * doc : https://developer.foursquare.com/docs/api/venues/details ***/
-function detailsVeterinarian(veterinarianId: string) : Promise<any>{
+function detailsPlace(placeId: string) : Promise<any>{
   return request({
-    url: "https://api.foursquare.com/v2/venues/" + veterinarianId,
+    url: "https://api.foursquare.com/v2/venues/" + placeId,
     method: 'GET',
     json: true,
     qs: {
@@ -42,9 +42,9 @@ function detailsVeterinarian(veterinarianId: string) : Promise<any>{
   });
 }
 
-/*** Merge Search API results with Details API to get more information on each veterinarian (WIP) ***/
+/*** Merge Search API results with Details API to get more information on each place (WIP) ***/
 async function addDetailsToEachVenue(result: any){
-  await Promise.all(result.response.venues.map((venue: any) => detailsVeterinarian(venue.id).then(
+  await Promise.all(result.response.venues.map((venue: any) => detailsPlace(venue.id).then(
       (details: any) => venue["details"] = details
   )));
   return result;
@@ -55,6 +55,4 @@ function testPrint(result: any) {
   console.log(result.response.venues);
 }
 
-const testPromise = searchVeterinarian(45.676,4.82115, 10000).then(testPrint);
-
-export {searchVeterinarian};
+export {searchPlaces};
