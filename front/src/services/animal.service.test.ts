@@ -13,14 +13,14 @@ const animals: Animal[] = [{
 	id: 1,
 	userId: 1,
 	specieId: 1,
-	birthDate: new Date(),
+	birthdate: new Date(),
 	name: 'Test1'
 },
 {
 	id: 2,
 	userId: 1,
 	specieId: 2,
-	birthDate: new Date(),
+	birthdate: new Date(),
 	name: 'Test2',
 	events: [{
 		id: 1,
@@ -37,14 +37,14 @@ beforeEach(() => {
 
 test('Get all animals', async () => {
 	get.mockResolvedValue(animals);
-	await AnimalService.getAll().then(a => {
+	await AnimalService.getAll(1).then(a => {
 		expect(a).toStrictEqual(animals);
-	});
+    });
 });
 
 test('Get no animals', async () => {
 	get.mockRejectedValue('Error');
-	await AnimalService.getAll().then(a => {
+	await AnimalService.getAll(1).then(a => {
 		expect(a).toHaveLength(0);
 	});
 	expect.assertions(1);

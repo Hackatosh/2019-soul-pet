@@ -7,8 +7,8 @@ export class AnimalService {
 	 * In case of an error, returns an empty array.
 	 * @returns an array containing the animals of the user
 	 */
-	static async getAll(): Promise<Animal[]> {
-		return httpClient.get<Animal[]>('/animals/', true).catch(() => []);
+	static async getAll(userId: number): Promise<Animal[]> {
+		return httpClient.get<Animal[]>(`/animals/?userId=${userId}`, true).catch(() => []);
 	}
 
 	/**
