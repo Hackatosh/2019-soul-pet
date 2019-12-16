@@ -39,7 +39,13 @@ class ServicesPage extends React.Component<RouteComponentProps, {}> {
             position: [48.86, 2.36],
             info:"Chewbacca's style, 3 rue des Quatre Fils",
             serviceType: "toiletteurs"
-          }
+          },
+          {
+            key: "marker4",
+            position: [48.862, 2.33],
+            info:"Parc Highground",
+            serviceType: "parcs"
+          },
         ]
       };
 
