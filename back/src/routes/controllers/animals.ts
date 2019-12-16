@@ -32,6 +32,24 @@ animalsRouter.get('/', getUserAnimalsChecks, inputValidationMW, async (req: Auth
     res.status(200).send(animals)
 });
 
+/*** This route is used to obtained an animal profile of a given user. ***/
+
+const getUserAnimalChecks = [
+    check('animalId').notEmpty().isNumeric().withMessage("animalId must be a number"),
+];
+
+animalsRouter.get('/:animalId', getUserAnimalChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
+    const animalId = parseInt(req.params.animalId);
+    const animal = await Animal.findOne({where: {id: animalId}});
+    if (!animal) {
+        res.sendStatus(404);
+    } else if (animal.userId != req.authInfos.userId) {
+        res.sendStatus(403);
+    } else {
+        res.status(200).send(animal);
+    }
+});
+
 /*** This route is used to create a new animal profile ***/
 
 const postAnimalChecks = [
