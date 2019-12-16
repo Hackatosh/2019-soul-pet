@@ -4,7 +4,7 @@ export interface Animal {
 	id: number;
 	userId: number;
 	specieId: number;
-	birthDate: Date;
+	birthdate: Date;
 	name: string;
 	events?: PetEvent[];
 }
