@@ -15,11 +15,12 @@ const getSearchPlacesCheck = [
 ];
 
 placesRouter.get('/search', getSearchPlacesCheck, inputValidationMW, async (req: Request, res: Response) => {
-    const searchPromise = searchPlaces(parseFloat(req.query.lat), parseFloat(req.query.long), parseInt(req.query.radius),
-        req.query.placeType);
-    await searchPromise.then((result: any) => {
-        res.send(result)
-    })
+    const lat = parseFloat(req.query.lat);
+    const long = parseFloat(req.query.long);
+    const radius = parseInt(req.query.radius);
+    const placeType = req.query.placeType;
+    const results = await searchPlaces(lat, long, radius, placeType);
+    res.send(results)
 });
 
 export {placesRouter};
