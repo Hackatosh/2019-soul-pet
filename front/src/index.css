@@ -1,13 +1,23 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* Global */
+html, body, #root {height: 100%;}
+body {padding-top: 70.5px;}
+div.container {padding: 3rem 0;}
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
+/* Full page background cover */
+div.cover {align-items: center; background-position: center; background-size: cover; display: flex; height: 100%; width: 100%;}
+div.background1 {background-image: url('resources/backgrounds/background1.jpg');}
+div.background2 {background-image: url('resources/backgrounds/background2.jpg');}
+div.background3 {background-image: url('resources/backgrounds/background3.jpg');}
+div.background4 {background-image: url('resources/backgrounds/background4.jpg');}
+div.background5 {background-image: url('resources/backgrounds/background5.jpg');}
+div.background6 {background-image: url('resources/backgrounds/background6.jpg');}
+div.background7 {background-image: url('resources/backgrounds/background7.jpg');}
+
+/* Centered form (login page, registration page…) */
+div.center-form {margin: auto;}
+.center-form p {margin: auto; max-width: 350px; width: auto;}
+.center-form form {margin: auto; max-width: 350px; width: 100%;}
+button.btn-block {margin: 1rem auto;}
+.center-form input {border-color: #e0e0e0; border-radius: 0; border-top-width: 0; height: 50px; padding: 20px;}
+.center-form input:first-of-type {border-top-left-radius: 0.25rem; border-top-right-radius: 0.25rem;}
+.center-form input:last-of-type {border-bottom-left-radius: 0.25rem; border-bottom-right-radius: 0.25rem;}
