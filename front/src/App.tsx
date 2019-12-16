@@ -1,23 +1,10 @@
 import React from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
-import { authenticationService } from './services';
 import { PrivateRoute, NavBar } from './components';
-import { HomePage, LoginPage, RegisterPage, EventList, EventDetails } from './pages';
+import { HomePage, LoginPage, RegisterPage, EventList, EventDetails, ServicesPage } from './pages';
 import { history } from './helpers';
 
-class App extends React.Component<{}, { currentUser: any }> {
-    constructor(props: Readonly<{}>) {
-        super(props);
-
-        this.state = {
-            currentUser: null
-        };
-    }
-
-    componentDidMount() {
-        authenticationService.currentUser.subscribe(x => this.setState({ currentUser: x }));
-    }
-
+class App extends React.Component<{}, {}> {
     render() {
         return (
             <Router history={history}>
@@ -28,7 +15,7 @@ class App extends React.Component<{}, { currentUser: any }> {
 					<Route path="/register" component={RegisterPage} />
           <Route path="/events/list" component={EventList} />
           <Route path="/events/1" component={EventDetails} />
-
+          <PrivateRoute path="/services" component={ServicesPage} />
 				</Switch>
             </Router>
         );

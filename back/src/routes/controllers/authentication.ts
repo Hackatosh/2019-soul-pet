@@ -12,9 +12,9 @@ const authenticationRouter = Router();
 /*** POST route used to create a user in the DB ***/
 
 const registerChecks = [
-    check('username').isString().isLength({ min: 3 }),
-    check('password').isString().isLength({ min: 8 }),
-    check('email').isEmail(),
+    check('username').isString().isLength({ min: 3 }).withMessage("username must be a valid string longer than 3 characters"),
+    check('password').isString().isLength({ min: 8 }).withMessage("password must be a valid string longer than 8 characters"),
+    check('email').isEmail().withMessage("email must be a valid email"),
 ];
 
 authenticationRouter.post('/register',registerChecks, inputValidationMW, async (req: Request, res: Response) => {
@@ -24,10 +24,10 @@ authenticationRouter.post('/register',registerChecks, inputValidationMW, async (
     try{
         let user = await User.create({username:username, hashedPassword: await hashPassword(password), email:email});
         user.hashedPassword = null;
-        res.status(200).json({user:user})
+        res.status(200).json(user)
     } catch(e) {
         console.log(e);
-        res.status(400).json({errorMessage:"Unable to register"})
+        res.status(400).json({message:"Unable to register"})
     }
 
 });
@@ -36,8 +36,8 @@ authenticationRouter.post('/register',registerChecks, inputValidationMW, async (
  * A JWT token is created using the authentications infos of the user and the SECRET KEY defined in env object. ***/
 
 const loginChecks = [
-    check('password').isString().isLength({ min: 8 }),
-    check('email').isEmail(),
+    check('password').isString().isLength({ min: 8 }).withMessage("password must be a valid string longer than 8 characters"),
+    check('email').isEmail().withMessage("email must be a valid email"),
 ];
 
 authenticationRouter.post('/login', loginChecks, inputValidationMW, async (req: Request, res: Response) => {
@@ -45,11 +45,11 @@ authenticationRouter.post('/login', loginChecks, inputValidationMW, async (req: 
     const password = req.body.password;
     const user = await User.findOne(({where: {email: email}}));
     if(!user){
-        res.status(401).json({errorMessage:"Authentication failed: user not found"})
+        res.status(401).json({message:"Authentication failed: user not found"})
     } else if(!(await compareUserPassword(user, password))){
-        res.status(401).json({errorMessage:"Authentication failed: invalid password"})
+        res.status(401).json({message:"Authentication failed: invalid password"})
     } else {
-		res.status(200).json({username: user.username, email: user.email, token: generateTokenForUser(user)})
+		res.status(200).json({username: user.username, email: user.email, token: await generateTokenForUser(user)})
     }
 });
 

@@ -1,14 +1,14 @@
 import React from 'react';
-import { authenticationService } from '../services';
+import { AuthenticationService } from '../services';
 import { Formik, Field, Form } from 'formik';
 import { randomBackground, history } from '../helpers';
 import { RouteComponentProps } from 'react-router';
 
-class RegisterPage extends React.Component<RouteComponentProps, {}> {
+export class RegisterPage extends React.Component<RouteComponentProps, {}> {
 	constructor(props: RouteComponentProps) {
 		super(props);
 
-		if (authenticationService.isLoggedIn) {
+		if (AuthenticationService.isLoggedIn) {
 			history.push('/');
 		}
 	}
@@ -27,7 +27,7 @@ class RegisterPage extends React.Component<RouteComponentProps, {}> {
 								setStatus("Les mots de passe ne correspondent pas");
 								return;
 							}
-							authenticationService.register(username, email, password).then(() => {
+							AuthenticationService.register(username, email, password).then(() => {
 									const { from } = this.props.location.state || { from: { pathname: "/login", state: { fromRegistration: true } } };
 									this.props.history.push(from);
 								},
@@ -60,5 +60,3 @@ class RegisterPage extends React.Component<RouteComponentProps, {}> {
 		);
 	}
 }
-
-export { RegisterPage };
