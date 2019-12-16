@@ -8,7 +8,7 @@ export class AnimalService {
 	 * @returns an array containing the animals of the user
 	 */
 	static async getAll(userId: number): Promise<Animal[]> {
-		return httpClient.get<Animal[]>(`/animals/?userId=${userId}`, true).catch(() => []);
+		return httpClient.get<Animal[]>(`/animals/?userId=${userId}`, true).catch(() => Promise.reject('Erreur lors de la récupération des animaux'));
 	}
 
 	/**

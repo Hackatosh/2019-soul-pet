@@ -13,8 +13,8 @@ export class httpClient {
      */
     private static headers(authenticated: boolean, body: boolean): Headers {
         const headers = new Headers();
-        if (authenticated && AuthenticationService.isLoggedIn && AuthenticationService.user.token) {
-            headers.append('Authorization', 'JWT ' + AuthenticationService.user.token);
+        if (authenticated && AuthenticationService.isLoggedIn && AuthenticationService.User.token) {
+            headers.append('Authorization', 'JWT ' + AuthenticationService.User.token);
         }
         if (body) {
             headers.append('Content-Type', 'application/json');
