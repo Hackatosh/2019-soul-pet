@@ -1,7 +1,7 @@
 import { PetEvent } from "./PetEvent";
 
 export interface Animal {
-	id: number;
+	id?: number;
 	userId: number;
 	specieId: number;
 	birthdate: Date;
