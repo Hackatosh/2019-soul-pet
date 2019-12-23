@@ -1,10 +1,13 @@
-import { Animal } from "../models";
+import { Animal, Specie } from "../models";
 import { httpClient } from "../helpers";
 
 export class AnimalService {
+    static async getSpecies(): Promise<Specie[]> {
+        return httpClient.get<Specie[]>('/animals/species/', true).catch(() => Promise.reject('Erreur lors de la récupération des espèces'));
+    }
+
 	/**
 	 * Retrieves all the animals of the user.
-	 * In case of an error, returns an empty array.
 	 * @returns an array containing the animals of the user
 	 */
 	static async getAll(userId: number): Promise<Animal[]> {

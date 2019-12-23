@@ -1,6 +1,6 @@
 import { AnimalService } from "./animal.service";
 import { httpClient } from "../helpers";
-import { Animal } from "../models";
+import { Animal, Specie } from "../models";
 
 const get = jest.spyOn(httpClient, "get");
 const post = jest.spyOn(httpClient, "post");
@@ -31,8 +31,17 @@ const animals: Animal[] = [{
 	}]
 }]
 
+const species: Specie[] = [{ id: 1, name: 'chat'}, { id: 2, name: 'chien'}];
+
 beforeEach(() => {
 	jest.resetAllMocks();
+});
+
+test('Get all species', async () => {
+	get.mockResolvedValue(species);
+	await AnimalService.getSpecies().then(s => {
+		expect(s).toStrictEqual(species);
+    });
 });
 
 test('Get all animals', async () => {
@@ -44,9 +53,7 @@ test('Get all animals', async () => {
 
 test('Get no animals', async () => {
 	get.mockRejectedValue('Error');
-	await AnimalService.getAll(1).then(a => {
-		expect(a).toHaveLength(0);
-	});
+	await AnimalService.getAll(1).catch(e => expect(e).toBeDefined());
 	expect.assertions(1);
 });
 
