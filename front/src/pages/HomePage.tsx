@@ -1,9 +1,6 @@
 import React from 'react';
 import { AuthenticationService, AnimalService } from '../services';
 import { RouteComponentProps } from 'react-router';
-import parrot from '../resources/animals/parrot.jpg';
-import sheep from '../resources/animals/sheep.jpg';
-import rabbit from '../resources/animals/rabbit.jpg';
 import { Link } from 'react-router-dom';
 import './HomePage.css';
 import { AnimalCard } from '../components';
