@@ -21,11 +21,21 @@ export class HomePage extends React.Component<RouteComponentProps, HomePageState
     }
 
     componentDidMount() {
-        AnimalService.getAll(AuthenticationService.User.id)
-            .then((animals: Animal[]) => this.setState({ animals: animals.reverse() })).catch(() => {
+        AnimalService.getSpecies().then(species => {
+            AnimalService.getAll(AuthenticationService.User.id).then((animals: Animal[]) => {
+                this.setState({ animals: animals.map((a: Animal) => {
+                    a.specie = species.find(s => s.id === a.specieId);
+                    return a;
+                }).reverse() });
+            }).catch(() => {
                 this.error = 'Erreur lors de la récupération des animaux';
                 this.setState({});
-            });        
+            });
+        }).catch(() => {
+            this.error = 'Erreur lors de la récupération des espèces';
+            this.setState({});
+        });
+              
     }
 
     private showAnimalForm(state: boolean) {
@@ -39,16 +49,16 @@ export class HomePage extends React.Component<RouteComponentProps, HomePageState
                 <div className="row mb-5">
 					<div className="col-sm-6 offset-sm-3"><div className="alert alert-danger">{this.error}</div></div>
 				</div>}
-                {this.state.animals.length === 0 && 
-                <div className="row mb-5">
-                    <div className="col-sm-6 offset-sm-3"><div className="alert alert-primary">Vous n’avez pas encore d’animaux…</div></div>
-                </div>}
-                <div className="row row-cols-2 row-cols-md-3 justify-content-center">
+                <div className="row row-cols-1 row-cols-md-3 justify-content-center">
 					<div className="col mb-4">
 						<p className="text-center"><Button variant="success" onClick={() => this.showAnimalForm(true)}>Ajouter un autre animal</Button></p>
 					</div>
 				</div>
-				<div className="row row-cols-2 row-cols-md-3 justify-content-center">
+                {this.state.animals.length === 0 && 
+                <div className="row mb-5">
+                    <div className="col-sm-6 offset-sm-3"><div className="alert alert-primary">Vous n’avez pas encore d’animaux…</div></div>
+                </div>}
+				<div className="row row-cols-1 row-cols-md-3 justify-content-center">
 					{this.state.animals.map(a => <div className="col mb-4" key={a.id}><AnimalCard animal={a} /></div>)}
 				</div>
                 <AnimalForm show={this.state.showAnimalForm} onHide={() => this.showAnimalForm(false)} onSuccess={(animal: Animal) => this.setState({ animals: [animal].concat(this.state.animals) })} />
