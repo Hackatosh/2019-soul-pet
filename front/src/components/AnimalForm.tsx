@@ -1,6 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import parrot from '../resources/animals/parrot.jpg';
 import { Animal, Specie } from '../models';
 import { Modal, Form, Alert, Button } from 'react-bootstrap';
 import { Formik } from 'formik';
@@ -13,7 +11,7 @@ export interface AnimalFormProps {
     onHide: () => void,
     /** Whether or not to show the modal */
     show: boolean,
-    /**Called when the post of the animal was successful */
+    /** Called when the post of the animal was successful */
     onSuccess: (animal: Animal) => void
 }
 
@@ -39,7 +37,7 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
 
 	render() {
 		return (
-			<Modal {...this.props} aria-labelledby="contained-modal-title-vcenter" centered>
+			<Modal onHide={this.props.onHide} show={this.props.show} aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">Ajouter un animal</Modal.Title>
                 </Modal.Header>
@@ -65,7 +63,7 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
                             });
                     }}
                     initialValues={this.props.animal === undefined ? 
-                        { name: '', birthdate: '', speciesId: this.state.species[0].id } : 
+                        { name: '', birthdate: '', speciesId: this.state.species.length > 0 ? this.state.species[0].id : 0 } : 
                         { name: this.props.animal.name, birthdate: this.props.animal.birthdate.toISOString().substr(0, 10), speciesId: this.props.animal.specieId }}>
                     {props => (
                     <Form onSubmit={props.handleSubmit}>
