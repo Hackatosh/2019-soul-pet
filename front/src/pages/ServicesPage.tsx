@@ -6,13 +6,6 @@ import {AuthenticationService} from "../services";
 
 
 class ServicesPage extends React.Component<RouteComponentProps, {}> {
-  constructor(props: RouteComponentProps){
-    super(props);
-
-
-  }
-
-
   render(){
     const data = {
         lat: 48.864716,
