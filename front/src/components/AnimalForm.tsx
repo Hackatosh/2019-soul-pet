@@ -33,8 +33,8 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
 
     componentDidMount() {
         AnimalService.getSpecies().then(species => this.setState({ species: species }));
-    }
-
+	}
+	
 	render() {
 		return (
 			<Modal onHide={this.props.onHide} show={this.props.show} aria-labelledby="contained-modal-title-vcenter" centered>
@@ -42,7 +42,7 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
                     <Modal.Title id="contained-modal-title-vcenter">Ajouter un animal</Modal.Title>
                 </Modal.Header>
                 <Formik onSubmit={values => {
-                        const animal: Animal = { name: values.name, birthdate: new Date(values.birthdate), specieId: values.specieId, userId: AuthenticationService.User.id };
+                        const animal: Animal = { id: this.props.animal?.id, name: values.name, birthdate: new Date(values.birthdate), specieId: values.specieId, userId: AuthenticationService.User.id };
                         // If we are adding a new animal
                         if (this.props.animal === undefined)
                             AnimalService.add(animal).then(a => {

@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import './HomePage.css';
 import { AnimalForm } from '../components';
 import { Animal } from '../models';
-import { Card } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
 import { history } from '../helpers';
 import sheep from '../resources/animals/sheep.jpg';
 
@@ -18,6 +18,8 @@ export interface AnimalPageState {
 export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState> {
 	private error = '';
 	private id = 0;
+	private age = 0;
+	private specie = '';
 
     constructor(props: AnimalPageProps) {
 		super(props);
@@ -32,6 +34,8 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
         AnimalService.getSpecies().then(species => {
             AnimalService.get(this.id).then((animal: Animal) => {
 				animal.specie = species.find(s => s.id === animal.specieId);
+				this.age = Math.floor(((new Date()).getTime() - animal.birthdate.getTime()) / 31536000000);
+				this.specie = animal.specie !== undefined ? animal.specie.name[0].toUpperCase() + animal.specie.name.substr(1) : '';
 				this.setState({ animal: animal })
 			}).catch(() => history.push('/404')) ;
         }).catch(() => {
@@ -56,7 +60,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 					<div className="col-10 offset-1 offset-md-0 col-md-7">
 						{this.error !== '' && <div className="alert alert-danger">{this.error}</div>}
 						<h1 className="display-3">{this.state.animal.name}</h1>
-						<p className="lead text-muted">{this.state.animal.specie !== undefined && (this.state.animal.specie.name[0].toUpperCase() + this.state.animal.specie.name.substr(1))} né le {this.state.animal.birthdate.toLocaleDateString()} ({Math.floor(((new Date()).getTime() - this.state.animal.birthdate.getTime()) / 31536000000)} ans)</p>
+						<p className="lead text-muted">{this.specie} né le {this.state.animal.birthdate.toLocaleDateString()} ({this.age} ans) &middot; <Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button> &middot; <Button variant="danger">Supprimer</Button></p>
 						<h2>Services préférés</h2>
 						<div className="row row-cols-1 row-cols-md-3">
   							<div className="col mb-4">

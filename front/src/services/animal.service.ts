@@ -2,6 +2,11 @@ import { Animal, Specie } from "../models";
 import { httpClient } from "../helpers";
 
 export class AnimalService {
+	private static revive(a: Animal): Animal {
+		a.birthdate = new Date(a.birthdate);
+		return a;
+	}
+
     static async getSpecies(): Promise<Specie[]> {
         return httpClient.get<Specie[]>('/animals/species/', true).catch(() => Promise.reject('Erreur lors de la récupération des espèces'));
     }
@@ -11,10 +16,7 @@ export class AnimalService {
 	 * @returns an array containing the animals of the user
 	 */
 	static async getAll(userId: number): Promise<Animal[]> {
-		return httpClient.get<Animal[]>(`/animals/?userId=${userId}`, true).then(animals => animals.map(a => {
-			a.birthdate = new Date(a.birthdate);
-			return a;
-		})).catch(() => Promise.reject('Erreur lors de la récupération des animaux'));
+		return httpClient.get<Animal[]>(`/animals/?userId=${userId}`, true).then(animals => animals.map(AnimalService.revive)).catch(() => Promise.reject('Erreur lors de la récupération des animaux'));
 	}
 
 	/**
@@ -23,10 +25,7 @@ export class AnimalService {
 	 * @returns the animal requested
 	 */
 	static async get(id: number): Promise<Animal> {
-		return httpClient.get<Animal>(`/animals/${id}`, true).then(a => {
-			a.birthdate = new Date(a.birthdate);
-			return a;
-		}).catch(() => Promise.reject('Erreur lors de la récupération de l’animal'));
+		return httpClient.get<Animal>(`/animals/${id}`, true).then(AnimalService.revive).catch(() => Promise.reject('Erreur lors de la récupération de l’animal'));
 	}
 
 	/**
@@ -35,7 +34,7 @@ export class AnimalService {
 	 * @returns the animal saved into the database
 	 */
 	static async add(animal: Animal): Promise<Animal> {
-		return httpClient.post<Animal>('/animals/', true, JSON.stringify(animal)).catch(() => Promise.reject(`Erreur lors de l’enregistrement de ${animal.name}`));
+		return httpClient.post<Animal>('/animals/', true, JSON.stringify(animal)).then(AnimalService.revive).catch(() => Promise.reject(`Erreur lors de l’enregistrement de ${animal.name}`));
 	}
 
 	/**
@@ -44,7 +43,7 @@ export class AnimalService {
 	 * @returns the animal saved into the database
 	 */
 	static async update(animal: Animal): Promise<Animal> {
-		return httpClient.put<Animal>('/animals/', true, JSON.stringify(animal)).catch(() => Promise.reject(`Erreur lors de la mise à jour de ${animal.name}`));
+		return httpClient.put<Animal>(`/animals/${animal.id}`, true, JSON.stringify(animal)).then(AnimalService.revive).catch(() => Promise.reject(`Erreur lors de la mise à jour de ${animal.name}`));
 	}
 
 	/**
