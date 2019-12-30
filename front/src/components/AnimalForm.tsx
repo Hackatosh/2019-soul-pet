@@ -28,7 +28,7 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
     constructor(props: AnimalFormProps) {
         super(props);
 
-        this.state = { species: [] };
+		this.state = { species: [] };
     }
 
     componentDidMount() {
@@ -42,7 +42,7 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
                     <Modal.Title id="contained-modal-title-vcenter">Ajouter un animal</Modal.Title>
                 </Modal.Header>
                 <Formik onSubmit={values => {
-                        const animal: Animal = { name: values.name, birthdate: new Date(values.birthdate), specieId: values.speciesId, userId: AuthenticationService.User.id };
+                        const animal: Animal = { name: values.name, birthdate: new Date(values.birthdate), specieId: values.specieId, userId: AuthenticationService.User.id };
                         // If we are adding a new animal
                         if (this.props.animal === undefined)
                             AnimalService.add(animal).then(a => {
@@ -63,8 +63,8 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
                             });
                     }}
                     initialValues={this.props.animal === undefined ? 
-                        { name: '', birthdate: '', speciesId: this.state.species.length > 0 ? this.state.species[0].id : 0 } : 
-                        { name: this.props.animal.name, birthdate: this.props.animal.birthdate.toISOString().substr(0, 10), speciesId: this.props.animal.specieId }}>
+                        { name: '', birthdate: '', specieId: this.state.species.length > 0 ? this.state.species[0].id : 0 } : 
+                        { name: this.props.animal.name, birthdate: this.props.animal.birthdate.toISOString().substr(0, 10), specieId: this.props.animal.specieId }}>
                     {props => (
                     <Form onSubmit={props.handleSubmit}>
                         <Modal.Body>
@@ -81,7 +81,7 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
                             </Form.Group>
                             <Form.Group controlId="animalSpecies">
                                 <Form.Label>Quelle espèce est-ce&nbsp;?</Form.Label>
-                                <Form.Control as="select" name="specieId" onChange={props.handleChange} noValidate>
+                                <Form.Control as="select" name="specieId" onChange={props.handleChange} noValidate value={this.props.animal?.specieId.toString()}>
                                     {this.state.species.map(specie => {
                                         specie.name = specie.name[0].toUpperCase() + specie.name.substr(1);
                                         return <option value={specie.id} key={specie.id}>{specie.name}</option>;
