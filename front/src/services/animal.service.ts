@@ -11,7 +11,10 @@ export class AnimalService {
 	 * @returns an array containing the animals of the user
 	 */
 	static async getAll(userId: number): Promise<Animal[]> {
-		return httpClient.get<Animal[]>(`/animals/?userId=${userId}`, true).catch(() => Promise.reject('Erreur lors de la récupération des animaux'));
+		return httpClient.get<Animal[]>(`/animals/?userId=${userId}`, true).then(animals => animals.map(a => {
+			a.birthdate = new Date(a.birthdate);
+			return a;
+		})).catch(() => Promise.reject('Erreur lors de la récupération des animaux'));
 	}
 
 	/**
@@ -20,7 +23,10 @@ export class AnimalService {
 	 * @returns the animal requested
 	 */
 	static async get(id: number): Promise<Animal> {
-		return httpClient.get<Animal>(`/animals/${id}`, true).catch(() => Promise.reject('Erreur lors de la récupération de l’animal'));
+		return httpClient.get<Animal>(`/animals/${id}`, true).then(a => {
+			a.birthdate = new Date(a.birthdate);
+			return a;
+		}).catch(() => Promise.reject('Erreur lors de la récupération de l’animal'));
 	}
 
 	/**
