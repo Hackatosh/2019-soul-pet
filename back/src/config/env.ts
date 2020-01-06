@@ -73,11 +73,11 @@ if (FTP_PATH_PICTURES == undefined) {
 }
 
 if (PLACES_API_ID  == undefined) {
-    throw new Error('FTP_PATH_PICTURES is not a valid env variable');
+    throw new Error('PLACES_API_ID is not a valid env variable');
 }
 
 if (PLACES_API_SECRET == undefined) {
-    throw new Error('FTP_PATH_PICTURES is not a valid env variable');
+    throw new Error('PLACES_API_SECRET is not a valid env variable');
 }
 
 const env = {

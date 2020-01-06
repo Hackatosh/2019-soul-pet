@@ -6,7 +6,6 @@ import {Animal} from "./models/animal";
 import {User} from "./models/user";
 import {Specie} from "./models/specie";
 import {PetEvent} from "./models/event";
-import {AnimalPictures} from "./models/animalPictures";
 
 const initAssociations = function () {
     User.hasMany(Animal, {foreignKey: 'userId', sourceKey: 'id'});
@@ -17,8 +16,6 @@ const initAssociations = function () {
     PetEvent.belongsToMany(Animal, {as: 'Attendees',through: 'EventAnimals', foreignKey: 'eventId'});
     Specie.belongsToMany(PetEvent, {as: 'Animals', through: 'EventSpecies', foreignKey: 'specieId'});
     PetEvent.belongsToMany(Specie, {as: 'AuthorizedSpecies', through: 'EventSpecies', foreignKey: 'eventId'});
-    Animal.hasMany(AnimalPictures,{foreignKey: 'animalId', sourceKey: 'id'});
-    AnimalPictures.belongsTo(Animal,{foreignKey: 'animalId', targetKey: 'id'})
 };
 
 export { initAssociations }
