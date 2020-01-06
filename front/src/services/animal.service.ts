@@ -59,7 +59,6 @@ export class AnimalService {
 	 * @returns null
 	 */
 	static async delete(id: number): Promise<null> {
-		const a = await this.get(id).catch(() => Promise.reject('Animal introuvable'));
-		return httpClient.delete(`/animals/${id}`, true).then(() => null).catch(() => Promise.reject(`Erreur lors de la suppression de ${a.name}`));
+		return httpClient.delete(`/animals/${id}`, true).then(() => null).catch(() => Promise.reject(`Erreur lors de la suppression de l’animal d’identifiant ${id}`));
 	}
 }
