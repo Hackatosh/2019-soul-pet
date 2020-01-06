@@ -13,7 +13,7 @@ export class AuthenticationService {
      * @returns The user as sent by the API
      */
     static async login(email: string, password: string): Promise<User> {
-        return httpClient.post<User>('/auth/login', false, JSON.stringify({ email, password })).then(user => {
+        return httpClient.post<User>('/auth/login', { id: 0, email: email, password: password }).then(user => {
             localStorage.setItem('user', JSON.stringify(user));
             history.push('/');
             AuthenticationService.user = user;
@@ -29,7 +29,7 @@ export class AuthenticationService {
      * @returns The user as registered by the API
      */
     static async register(username: string, email: string, password: string): Promise<User> {
-        return httpClient.post<User>('/auth/register', false, JSON.stringify({ username, email, password })).then(null, () => Promise.reject('Création du compte impossible ; veuillez réessayer.'));
+        return httpClient.post<User>('/auth/register', { id: 0, username: username, email: email, password: password }).then(null, () => Promise.reject('Création du compte impossible ; veuillez réessayer.'));
     }
     
     /**

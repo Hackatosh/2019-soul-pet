@@ -13,12 +13,10 @@ export class httpClient {
      */
     private static headers(authenticated: boolean, body: boolean): Headers {
         const headers = new Headers();
-        if (authenticated && AuthenticationService.isLoggedIn && AuthenticationService.User.token) {
-            headers.append('Authorization', 'JWT ' + AuthenticationService.User.token);
-        }
-        if (body) {
+        if (authenticated && AuthenticationService.isLoggedIn && AuthenticationService.User.token)
+            headers.append('Authorization', `JWT ${AuthenticationService.User.token}`);
+        if (body)
             headers.append('Content-Type', 'application/json');
-        }
         headers.append('Accept', 'application/json');
         return headers;
     }
@@ -47,13 +45,13 @@ export class httpClient {
     /**
      * Handles an HTTP response depending on its status.
      * @param response the Response to handle
-     * @returns A Promise containing the parsed JSON of the body, or an error.
+     * @returns A Promise containing the parsed JSON of the body or null if no body is provided
      */
     private static async handleResponse(response: Response): Promise<any> {
         if (!response.ok) {
             return response.json().then(({message}) => Promise.reject(message), () => Promise.reject(response.statusText));
         }
-        return response.json();
+        return response.json().catch(() => null);
     }
 
     /**
@@ -85,33 +83,32 @@ export class httpClient {
     /**
      * Sends a HTTP POST request.
      * @param endpoint The endpoint to send the request to, as a *non-absolute* URL
+     * @param body The body, of type T, of the request
      * @param authenticated Indicates whether the request should be authenticated.
-     * @param body Contains the body of the request, as a string, if need be.
      * @returns A promise containing an object of type T
      */
-    public static async post<T>(endpoint: string, authenticated = false, body = ''): Promise<T> {
-        return await this.request<T>(endpoint, this.options(authenticated, 'POST', body));
+    public static async post<T>(endpoint: string, body: T, authenticated = false): Promise<T> {
+        return await this.request<T>(endpoint, this.options(authenticated, 'POST', JSON.stringify(body)));
     }
 
     /**
      * Sends a HTTP PUT request.
      * @param endpoint The endpoint to send the request to, as a *non-absolute* URL
+     * @param body The body, of type T, of the request
      * @param authenticated Indicates whether the request should be authenticated.
-     * @param body Contains the body of the request, as a string, if need be.
      * @returns A promise containing an object of type T
      */
-    public static async put<T>(endpoint: string, authenticated = false, body = ''): Promise<T> {
-        return await this.request<T>(endpoint, this.options(authenticated, 'PUT', body));
+    public static async put<T>(endpoint: string, body: T, authenticated = false): Promise<T> {
+        return await this.request<T>(endpoint, this.options(authenticated, 'PUT', JSON.stringify(body)));
     }
 
     /**
      * Sends a HTTP DELETE request.
      * @param endpoint The endpoint to send the request to, as a *non-absolute* URL
      * @param authenticated Indicates whether the request should be authenticated.
-     * @param body Contains the body of the request, as a string, if need be.
-     * @returns A promise containing an object of type T
+     * @returns A promise containing null
      */
-    public static async delete<T>(endpoint: string, authenticated = false, body = ''): Promise<T> {
-        return await this.request<T>(endpoint, this.options(authenticated, 'DELETE', body));
+    public static async delete(endpoint: string, authenticated = false): Promise<null> {
+        return await this.request<null>(endpoint, this.options(authenticated, 'DELETE'));
     }
 }

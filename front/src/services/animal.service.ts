@@ -34,7 +34,7 @@ export class AnimalService {
 	 * @returns the animal saved into the database
 	 */
 	static async add(animal: Animal): Promise<Animal> {
-		return httpClient.post<Animal>('/animals/', true, JSON.stringify(animal)).then(AnimalService.revive).catch(() => Promise.reject(`Erreur lors de l’enregistrement de ${animal.name}`));
+		return httpClient.post<Animal>('/animals/', animal, true).then(AnimalService.revive).catch(() => Promise.reject(`Erreur lors de l’enregistrement de ${animal.name}`));
 	}
 
 	/**
@@ -43,7 +43,7 @@ export class AnimalService {
 	 * @returns the animal saved into the database
 	 */
 	static async update(animal: Animal): Promise<Animal> {
-		return httpClient.put<Animal>(`/animals/${animal.id}`, true, JSON.stringify(animal)).then(AnimalService.revive).catch(() => Promise.reject(`Erreur lors de la mise à jour de ${animal.name}`));
+		return httpClient.put<Animal>(`/animals/${animal.id}`, animal, true).then(AnimalService.revive).catch(() => Promise.reject(`Erreur lors de la mise à jour de ${animal.name}`));
 	}
 
 	/**
