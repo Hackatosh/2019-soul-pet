@@ -7,14 +7,18 @@ import {AuthenticatedRequest} from "../../core/authentication/authenticationInte
 
 const uploadRouter = Router();
 
-uploadRouter.post('/animals',inMemoryStorage.single("photo"), async (req: AuthenticatedRequest, res: Response) => {
+uploadRouter.post('/animals/:animalId',inMemoryStorage.single("photo"), async (req: AuthenticatedRequest, res: Response) => {
     try {
         const buffer = req.file.buffer;
         const filename = req.file.originalname;
-        const animalId = req.body.animalId;
+        const animalId = req.params.animalId;
         const userId = req.authInfos.userId;
         const pet = await Animal.findOne({where: {id: animalId}});
-        if (pet.userId !==userId){
+        if (!pet)
+            {
+                res.status(404).json({message: "This animal does not exist"})
+        } else if(pet.userId !== userId)
+        {
             res.status(403).json({message: "You don't have access to this animal"})
         }
         else{
@@ -28,6 +32,7 @@ uploadRouter.post('/animals',inMemoryStorage.single("photo"), async (req: Authen
             }
         }
     } catch(e){
+        console.log(e);
         res.status(400).send({message:"Couldn't upload the file"})
     }
 
