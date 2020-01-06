@@ -1,4 +1,8 @@
 import React from 'react';
+<<<<<<< HEAD
+=======
+
+>>>>>>> f1587b352736d06d675e5418eac3df1e9f418634
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 interface SServicesMap{
@@ -45,10 +49,7 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
   }
 
   handleChange = (event : any) => {
-    const newDisplay = this.state.toDisplay.filter(el => {
-      if (el !== event.target.value)
-        return el;
-    })
+    const newDisplay = this.state.toDisplay.filter(el => el !== event.target.value)
     if (!newDisplay.includes(event.target.value) && event.target.checked)
       newDisplay.push(event.target.value);
     this.setState({toDisplay : newDisplay});
@@ -66,14 +67,18 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
                      attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                    />
-              {this.props.markers.map(el => {if (this.state.toDisplay.includes(el.serviceType))
-                return(
-                    <Marker key={el.key} position={el.position}>
-                      <Popup>
-                       {el.info}
-                      </Popup>
-                    </Marker>
-              )})}
+              {this.props.markers.map(el => {
+				if (this.state.toDisplay.includes(el.serviceType))
+					return (
+						<Marker key={el.key} position={el.position}>
+							<Popup>
+								{el.info}
+							</Popup>
+						</Marker>
+					);
+				return null;
+				}
+			)}
 
           </LeafletMap>
         </div>
