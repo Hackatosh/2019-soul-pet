@@ -5,15 +5,18 @@ import { User } from '../models';
  * Class designed to handle authentication with the back API
  */
 export class AuthenticationService {
+    private static user: User;
+
     /**
      * Attempts to log the user in, then redirects to the home page.
      * Params are self-explanatory
      * @returns The user as sent by the API
      */
     static async login(email: string, password: string): Promise<User> {
-        return httpClient.post<User>('/auth/login', { email: email, password: password }).then(user => {
+        return httpClient.post<User>('/auth/login', { id: 0, email: email, password: password }).then(user => {
             localStorage.setItem('user', JSON.stringify(user));
             history.push('/');
+            AuthenticationService.user = user;
             return user;
         }, () => {
             return Promise.reject('Identifiants incorrects');
@@ -26,7 +29,7 @@ export class AuthenticationService {
      * @returns The user as registered by the API
      */
     static async register(username: string, email: string, password: string): Promise<User> {
-        return httpClient.post<User>('/auth/register', { username: username, email: email, password: password }).then(null, () => Promise.reject('Création du compte impossible ; veuillez réessayer.'));
+        return httpClient.post<User>('/auth/register', { id: 0, username: username, email: email, password: password }).then(null, () => Promise.reject('Création du compte impossible ; veuillez réessayer.'));
     }
     
     /**
@@ -35,6 +38,7 @@ export class AuthenticationService {
     static logout(): void {
         localStorage.removeItem('user');
         history.push('/login');
+        AuthenticationService.user = {} as User;
     }
 
     /**
@@ -50,9 +54,9 @@ export class AuthenticationService {
      * Beware, if the user is not logged in, all properties are undefined.
      * @returns a `User` object, with possibly undefined properties
      */
-    static get user(): User {
-        if (AuthenticationService.isLoggedIn)
-            return JSON.parse(localStorage.getItem('user') as string) as User;
-        return {} as User;
+    static get User(): User {
+        if (AuthenticationService.user === undefined && AuthenticationService.isLoggedIn)
+            AuthenticationService.user = JSON.parse(localStorage.getItem('user') as string) as User;
+        return AuthenticationService.user;
     }
 }

@@ -32,7 +32,7 @@ test('HTTP authenticated GET', async () => {
         json: () => Promise.resolve(user)
     });
     isLoggedIn.mockReturnValueOnce(true).mockReturnValueOnce(false);
-    jest.spyOn(AuthenticationService, "user", "get").mockReturnValue(user);
+    jest.spyOn(AuthenticationService, "User", "get").mockReturnValue(user);
     // isLoggedIn will return true.
     await httpClient.get<User>('account/', true).then(u => {
         let requestOptions: RequestInit = fetch.mock.calls[0][1];
