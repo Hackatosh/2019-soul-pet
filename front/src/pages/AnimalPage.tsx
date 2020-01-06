@@ -3,49 +3,41 @@ import { AnimalService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './HomePage.css';
 import { AnimalForm, DeleteConfirmation } from '../components';
-import { Animal, Specie } from '../models';
+import { Animal } from '../models';
 import { Card, Button } from 'react-bootstrap';
-import { history } from '../helpers';
+import { history, titleCase, ageFromDate } from '../helpers';
 import sheep from '../resources/animals/sheep.jpg';
 
 export interface AnimalPageProps extends RouteComponentProps<{id: string}> {}
 
 export interface AnimalPageState {
     error: string;
+    id: number;
     animal: Animal | undefined;
 	showAnimalForm: boolean;
 	showAnimalDelete: boolean;
 }
 
 export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState> {
-	private id = 0;
-	private age = 0;
-	private specie = '';
-	private species: Specie[] = [];
-
-    constructor(props: AnimalPageProps) {
+	constructor(props: AnimalPageProps) {
 		super(props);
 		if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
 			history.push('/404')
 		else
-			this.id = parseInt(this.props.match.params.id);
-        this.state = { error: '', animal: undefined, showAnimalForm: false, showAnimalDelete: false };
+            this.state = { error: '', id: parseInt(this.props.match.params.id), animal: undefined, showAnimalForm: false, showAnimalDelete: false };
 	}
 
     componentDidMount() {
-        AnimalService.getSpecies().then(species => {
-			this.species = species;
-            AnimalService.get(this.id).then(a => this.prepareAnimal(a)).catch(() => history.push('/404')) ;
-        }).catch(() => {
-            this.setState({});
-        });    
+        AnimalService.get(this.state.id).then(a => this.prepareAnimal(a)).catch(() => history.push('/404'));   
 	}
 	
 	private prepareAnimal(animal: Animal) {
-		animal.specie = this.species.find(s => s.id === animal.specieId);
-		this.age = Math.floor(((new Date()).getTime() - animal.birthdate.getTime()) / 31536000000);
-		this.specie = animal.specie !== undefined ? animal.specie.name[0].toUpperCase() + animal.specie.name.substr(1) : '';
-		this.setState({ animal: animal })
+        AnimalService.getSpecies().then(species => {
+			animal.specie = species.find(s => s.id === animal.specieId);
+            this.setState({ animal: animal });
+        }).catch(() => {
+            this.setState({ error: 'Erreur lors de la récupération des espèces' });
+        });
 	}
 
     private showAnimalForm(state: boolean) {
@@ -68,7 +60,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							{this.state.error !== '' && <div className="alert alert-danger">{this.state.error}</div>}
 							<h1 className="display-3">{this.state.animal.name}</h1>
-							<p className="lead text-muted">{this.specie} né le {this.state.animal.birthdate.toLocaleDateString()} ({this.age} ans) &middot; <Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button> &middot; <Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button></p>
+							<p className="lead text-muted">{this.state.animal.specie !== undefined ? titleCase(this.state.animal.specie?.name) : ''} né le {this.state.animal.birthdate.toLocaleDateString()} ({ageFromDate(this.state.animal.birthdate)} ans) &middot; <Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button> &middot; <Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button></p>
 							<h2>Services préférés</h2>
 							<div className="row row-cols-1 row-cols-md-3">
 								<div className="col mb-4">
@@ -139,7 +131,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 					</div>
 					<AnimalForm show={this.state.showAnimalForm} animal={this.state.animal} onHide={() => this.showAnimalForm(false)} onSuccess={a => this.prepareAnimal(a)} />
 					<DeleteConfirmation prompt='Écrivez le nom de l’animal pour confirmer la suppression' expected={this.state.animal?.name} show={this.state.showAnimalDelete} onHide={() => this.showAnimalDelete(false)} onSuccess={() => {
-						AnimalService.delete(this.id).then(() => history.push('/')).catch(() => this.setState({ error: 'Erreur lors de la suppression' }))
+						AnimalService.delete(this.state.id).then(() => history.push('/')).catch(() => this.setState({ error: 'Erreur lors de la suppression' }))
 					}} />
 				</React.Fragment>}
             </div>
