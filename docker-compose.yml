@@ -26,6 +26,8 @@ services:
       FTP_USER: nodejs
       FTP_PASSWORD: password
       FTP_PATH_PICTURES: pictures
+      PLACES_API_ID: "OMUJAQFCEKPCCDPHKQW21VUWVJ1YEBGHN0R0RQRQZWJRRNL3"
+      PLACES_API_SECRET: "XQ1BKCP2ARAXAQ4M3AQ0P51CJ5DOVLLVYYINOJWXBXQYEVTZ"
     volumes:
       - ./back:/usr/app/
       - /usr/app/node_modules

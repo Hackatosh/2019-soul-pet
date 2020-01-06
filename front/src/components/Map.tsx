@@ -1,10 +1,9 @@
 import React from 'react';
-
-
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 interface SServicesMap{
   toDisplay: Array<string>;
+  radius: number;
 }
 
 interface PServicesMap{
@@ -15,6 +14,14 @@ interface PServicesMap{
   markers: Array<MarkerData>;
 }
 
+const serviceTypeList = [
+  {type:"vet",
+  name: "Vétérinaires"},
+  {type:"park",
+  name: "Parcs"},
+  {type:"groom",
+  name : "Toiletteurs"}
+]
 
 interface MarkerData{
   key:string;
@@ -27,7 +34,14 @@ interface MarkerData{
 class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
   constructor(props: PServicesMap){
     super(props);
-    this.state= {toDisplay: ["vets", "parcs", "toiletteurs"]}
+    const toDisplay = serviceTypeList.map(el => (el.type))
+
+    this.state= {toDisplay: toDisplay,
+                 radius: 5000}
+  }
+
+  updateRadius = (event:any) => {
+    this.setState({radius: event.target.value *1000})
   }
 
   handleChange = (event : any) => {
@@ -65,14 +79,14 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
           </LeafletMap>
         </div>
         <div className="services_displayed">
+          <input type="range" min="1" max="100" name="distance" onChange={this.updateRadius}/>
+          <label>Rayon de recherche : {this.state.radius/1000}</label>
           <form>
           <ul>
-            <li><input type="checkbox" value="vets" id="vets" defaultChecked={this.state.toDisplay.includes("vets")} onChange={this.handleChange}/>
-        <label>Vétérinaires</label></li>
-            <li><input type="checkbox" value="toiletteurs" id="toiletteurs" defaultChecked={this.state.toDisplay.includes("toiletteurs")} onChange={this.handleChange}/>
-        <label>Toiletteurs</label></li>
-            <li><input type="checkbox" value="parcs" id="parcs" defaultChecked={this.state.toDisplay.includes("parcs")} onChange={this.handleChange}/>
-        <label>Parcs</label></li>
+          {serviceTypeList.map(serviceType => (
+            <li><input type="checkbox" value={serviceType.type} id={serviceType.type} defaultChecked={this.state.toDisplay.includes(serviceType.type)} onChange={this.handleChange}/>
+        <label>{serviceType.name}</label></li>
+          ))}
           </ul>
           </form>
         </div>
