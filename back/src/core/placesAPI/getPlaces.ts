@@ -69,6 +69,4 @@ function detailsPlace(placeId: string): Promise<any> {
     });
 }
 
-
-
 export {searchPlaces};
