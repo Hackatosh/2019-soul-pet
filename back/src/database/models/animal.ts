@@ -6,11 +6,15 @@ import {
     BelongsToManyAddAssociationsMixin,
     BelongsToManySetAssociationsMixin,
     Association,
-    BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin
+    BelongsToManyRemoveAssociationMixin,
+    BelongsToManyRemoveAssociationsMixin,
+    HasManyGetAssociationsMixin,
+    HasManyAddAssociationMixin, HasManyHasAssociationMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin
 } from 'sequelize';
 import {db} from '../connection'
 import {Specie} from "./specie";
 import {PetEvent} from "./event";
+import {AnimalPictures} from "./animalPictures";
 
 /*** Model used to represent an animal in DB ***/
 export class Animal extends Model {
@@ -27,11 +31,24 @@ export class Animal extends Model {
     public removeEvent!:BelongsToManyRemoveAssociationMixin<PetEvent,number>;
     public removeEvents!:BelongsToManyRemoveAssociationsMixin<PetEvent,number>;
 
+    public getAnimalPictures!: HasManyGetAssociationsMixin<AnimalPictures>; // Note the null assertions!
+    public addAnimalPicture!: HasManyAddAssociationMixin<AnimalPictures, number>;
+    public hasAnimalPicture!: HasManyHasAssociationMixin<AnimalPictures, number>;
+    public countAnimalPictures!: HasManyCountAssociationsMixin;
+    public createAnimalPictures!: HasManyCreateAssociationMixin<AnimalPictures>;
+    public removeAnimalPicture !: HasManyHasAssociationMixin<AnimalPictures, number>;
+    public removeAnimalPictures !: HasManyHasAssociationMixin<AnimalPictures, number>;
+
+
+
     // These will only be populated if you actively include a relation.
     public readonly events?: PetEvent[];
+    public readonly animalPictures?: AnimalPictures[];
+
 
     public static associations: {
         events: Association<PetEvent,Animal>;
+        pictures: Association<AnimalPictures,Animal>;
     }
 }
 
