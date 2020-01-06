@@ -7,17 +7,16 @@ import { AnimalCard, AnimalForm } from '../components';
 import { Animal } from '../models';
 
 export interface HomePageState {
+    error: string;
     animals: Animal[];
     showAnimalForm: boolean;
 }
 
 export class HomePage extends React.Component<RouteComponentProps, HomePageState> {
-    private error = '';
-
     constructor(props: RouteComponentProps) {
         super(props);
 
-        this.state = { animals: [], showAnimalForm: false };
+        this.state = { animals: [], showAnimalForm: false, error: '' };
     }
 
     componentDidMount() {
@@ -27,15 +26,8 @@ export class HomePage extends React.Component<RouteComponentProps, HomePageState
                     a.specie = species.find(s => s.id === a.specieId);
                     return a;
                 }).reverse() });
-            }).catch(() => {
-                this.error = 'Erreur lors de la récupération des animaux';
-                this.setState({});
-            });
-        }).catch(() => {
-            this.error = 'Erreur lors de la récupération des espèces';
-            this.setState({});
-        });
-              
+            }).catch(() => this.setState({ error: 'Erreur lors de la récupération des animaux' }));
+        }).catch(() => this.setState({ error: 'Erreur lors de la récupération des espèces' }));         
     }
 
     private showAnimalForm(state: boolean) {
@@ -45,9 +37,9 @@ export class HomePage extends React.Component<RouteComponentProps, HomePageState
     render() {
 		return (
 			<div className="container">
-                {this.error !== '' &&
+                {this.state.error !== '' &&
                 <div className="row mb-5">
-					<div className="col-sm-6 offset-sm-3"><div className="alert alert-danger">{this.error}</div></div>
+					<div className="col-sm-6 offset-sm-3"><div className="alert alert-danger">{this.state.error}</div></div>
 				</div>}
                 <div className="row row-cols-1 row-cols-md-3 justify-content-center">
 					<div className="col mb-4">

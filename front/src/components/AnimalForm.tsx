@@ -16,23 +16,22 @@ export interface AnimalFormProps {
 }
 
 export interface AnimalFormState {
-    species: Specie[]
+    error: string;
+    species: Specie[];
 }
 
 /**
  * A form used to add or edit an animal
  */
 export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState> {
-    private error = '';
-
     constructor(props: AnimalFormProps) {
         super(props);
 
-		this.state = { species: [] };
+		this.state = { error: '', species: [] };
     }
 
     componentDidMount() {
-        AnimalService.getSpecies().then(species => this.setState({ species: species }));
+        AnimalService.getSpecies().then(species => this.setState({ species: species })).catch(() => this.setState({ error: 'Erreur lors de la récupération des espèces' }));
 	}
 	
 	render() {
@@ -48,19 +47,13 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
                             AnimalService.add(animal).then(a => {
                                 this.props.onSuccess(a);
                                 this.props.onHide();
-                            }).catch(() => {
-                                this.error = 'Erreur lors de l’enregistrement de l’animal';
-                                this.setState({});
-                            });
+                            }).catch(() => this.setState({ error: 'Erreur lors de l’enregistrement de l’animal' }));
                         // Else we are editing an existing animal
                         else
                             AnimalService.update(animal).then(a => {
                                 this.props.onSuccess(a);
                                 this.props.onHide();
-                            }).catch(() => {
-                                this.error = 'Erreur lors de l’enregistrement de l’animal';
-                                this.setState({});
-                            });
+                            }).catch(() => this.setState({ error: 'Erreur lors de l’enregistrement de l’animal' }));
                     }}
                     initialValues={this.props.animal === undefined ? 
                         { name: '', birthdate: '', specieId: this.state.species.length > 0 ? this.state.species[0].id : 0 } : 
@@ -68,8 +61,8 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
                     {props => (
                     <Form onSubmit={props.handleSubmit}>
                         <Modal.Body>
-                            {this.error !== '' &&
-                            <Alert variant="danger">{this.error}</Alert>
+                            {this.state.error !== '' &&
+                            <Alert variant="danger">{this.state.error}</Alert>
                             }
                             <Form.Group controlId="animalName">
                                 <Form.Label>Comment s’appelle votre animal&nbsp;?</Form.Label>

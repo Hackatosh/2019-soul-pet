@@ -11,13 +11,13 @@ import sheep from '../resources/animals/sheep.jpg';
 export interface AnimalPageProps extends RouteComponentProps<{id: string}> {}
 
 export interface AnimalPageState {
+    error: string;
     animal: Animal | undefined;
 	showAnimalForm: boolean;
 	showAnimalDelete: boolean;
 }
 
 export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState> {
-	private error = '';
 	private id = 0;
 	private age = 0;
 	private specie = '';
@@ -29,7 +29,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 			history.push('/404')
 		else
 			this.id = parseInt(this.props.match.params.id);
-        this.state = { animal: undefined, showAnimalForm: false, showAnimalDelete: false };
+        this.state = { error: '', animal: undefined, showAnimalForm: false, showAnimalDelete: false };
 	}
 
     componentDidMount() {
@@ -37,7 +37,6 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 			this.species = species;
             AnimalService.get(this.id).then(a => this.prepareAnimal(a)).catch(() => history.push('/404')) ;
         }).catch(() => {
-            this.error = 'Erreur lors de la récupération des espèces';
             this.setState({});
         });    
 	}
@@ -67,7 +66,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 							<img className="rounded img-fluid" src={sheep} alt={"Picture of " + this.state.animal.name} />
 						</div>
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
-							{this.error !== '' && <div className="alert alert-danger">{this.error}</div>}
+							{this.state.error !== '' && <div className="alert alert-danger">{this.state.error}</div>}
 							<h1 className="display-3">{this.state.animal.name}</h1>
 							<p className="lead text-muted">{this.specie} né le {this.state.animal.birthdate.toLocaleDateString()} ({this.age} ans) &middot; <Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button> &middot; <Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button></p>
 							<h2>Services préférés</h2>
@@ -140,10 +139,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 					</div>
 					<AnimalForm show={this.state.showAnimalForm} animal={this.state.animal} onHide={() => this.showAnimalForm(false)} onSuccess={a => this.prepareAnimal(a)} />
 					<DeleteConfirmation prompt='Écrivez le nom de l’animal pour confirmer la suppression' expected={this.state.animal?.name} show={this.state.showAnimalDelete} onHide={() => this.showAnimalDelete(false)} onSuccess={() => {
-						AnimalService.delete(this.id).then(() => history.push('/')).catch(() => {
-							this.error = 'Erreur lors de la suppression';
-							this.setState({});
-						})
+						AnimalService.delete(this.id).then(() => history.push('/')).catch(() => this.setState({ error: 'Erreur lors de la suppression' }))
 					}} />
 				</React.Fragment>}
             </div>
