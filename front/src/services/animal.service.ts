@@ -2,13 +2,20 @@ import { Animal, Specie } from "../models";
 import { httpClient } from "../helpers";
 
 export class AnimalService {
-	private static revive(a: Animal): Animal {
+    private static species: Specie[] | undefined = undefined;
+    
+    private static revive(a: Animal): Animal {
 		a.birthdate = new Date(a.birthdate);
 		return a;
-	}
+    }
 
     static async getSpecies(): Promise<Specie[]> {
-        return httpClient.get<Specie[]>('/animals/species/', true).catch(() => Promise.reject('Erreur lors de la récupération des espèces'));
+        if (this.species === undefined)
+            this.species = await httpClient.get<Specie[]>('/animals/species/', true).catch(() => Promise.reject('Erreur lors de la récupération des espèces'));
+        if (this.species === undefined || this.species.length === 0)
+            return Promise.reject('Erreur lors de la récupération des espèces');
+        else
+            return Promise.resolve(this.species);
     }
 
 	/**
