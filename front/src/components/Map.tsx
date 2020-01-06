@@ -1,8 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
-=======
-
->>>>>>> f1587b352736d06d675e5418eac3df1e9f418634
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 interface SServicesMap{
