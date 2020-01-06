@@ -19,8 +19,20 @@ placesRouter.get('/search', getSearchPlacesCheck, inputValidationMW, async (req:
     const long = parseFloat(req.query.long);
     const radius = parseInt(req.query.radius);
     const placeType = req.query.placeType;
-    const results = await searchPlaces(lat, long, radius, placeType);
-    res.send(results)
+
+    if (isNaN(lat)  || isNaN(long) || isNaN(radius)){
+        res.status(500).json({message: "Incorrect fields for Places API"});
+    }
+    else {
+        try {
+            const results = await searchPlaces(lat, long, radius, placeType);
+            res.send(results)
+        } catch (e) {
+            console.log(e)
+            res.status(501).json({message: "Unable to get Places API results"});
+        }
+    }
+
 });
 
 export {placesRouter};
