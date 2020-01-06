@@ -1,6 +1,7 @@
 import React from 'react';
 import { ServicesMap } from '../components';
 import './ServicesPage.css';
+import {AuthenticationService} from "../services";
 
 
 class ServicesPage extends React.Component<{}> {

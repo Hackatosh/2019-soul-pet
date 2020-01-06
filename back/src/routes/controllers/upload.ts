@@ -11,7 +11,7 @@ uploadRouter.post('/pictures',inMemoryStorage.single("photo"),async (req:Request
         await uploadToSFTP(buffer, Folder.Pictures, filename);
         res.sendStatus(200);
     } catch(e){
-        res.status(400).send({errorMessage:"Couldn't upload the file"})
+        res.status(400).send({message:"Couldn't upload the file"})
     }
 
 });
@@ -21,7 +21,7 @@ uploadRouter.get('/pictures/:filename',async (req:Request, res:Response) => {
         const filename = req.params.filename;
         await pipeSFTPIntoResponse(res,Folder.Pictures, filename, ContentType.PNG)
     } catch(e){
-        res.status(400).send({errorMessage:"Problem when downloading the file"})
+        res.status(400).send({message:"Problem when downloading the file"})
     }
 });
 

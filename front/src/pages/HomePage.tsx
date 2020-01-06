@@ -1,5 +1,5 @@
 import React from 'react';
-import { authenticationService } from '../services';
+import { AuthenticationService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import parrot from '../resources/animals/parrot.jpg';
 import sheep from '../resources/animals/sheep.jpg';
@@ -7,13 +7,13 @@ import rabbit from '../resources/animals/rabbit.jpg';
 import { Link } from 'react-router-dom';
 import './HomePage.css';
 
-class HomePage extends React.Component<RouteComponentProps, {}> {
+export class HomePage extends React.Component<RouteComponentProps, {}> {
 	render() {
 		return (
 			<div className="container">
 				<div className="row mb-5">
 					<div className="col-sm-6 offset-sm-3">
-						<h1 className="text-center display-4">Bonjour {authenticationService.currentUserValue.username}&nbsp;!</h1>
+						<h1 className="text-center display-4">Bonjour {AuthenticationService.user.username}&nbsp;!</h1>
 					</div>
 				</div>
 				<div className="row row-cols-2 row-cols-md-3 justify-content-center">
@@ -85,5 +85,3 @@ class HomePage extends React.Component<RouteComponentProps, {}> {
 		);
 	}
 }
-
-export { HomePage };

@@ -29,7 +29,6 @@ const initTokenModel = async function():Promise<void> {
         sequelize: db,
     });
 
-    await Token.sync();
 };
 
 export { initTokenModel }
