@@ -14,6 +14,7 @@ import {corsMW} from "./middlewares/allowFront";
 import {animalsRouter} from "./controllers/animals";
 import {accountRouter} from "./controllers/account";
 import {eventsRouter} from "./controllers/events";
+import {placesRouter} from "./controllers/places";
 
 /*** Basic middlewares mouting ***/
 const app = express();
@@ -29,6 +30,7 @@ apiRouter.use('/', healthRouter);
 apiRouter.use('/files',uploadRouter);
 apiRouter.use('/auth',authenticationRouter);
 apiRouter.use('*',loginRequiredMW);
+apiRouter.use('/places', placesRouter);
 apiRouter.use('/events',eventsRouter);
 apiRouter.use('/account',accountRouter);
 apiRouter.use('/animals',animalsRouter);
