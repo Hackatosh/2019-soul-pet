@@ -7,7 +7,7 @@ import {loginRequiredMW} from "./middlewares/loginRequired";
 import {authenticationRouter} from "./controllers/authentication";
 import {AuthenticatedRequest} from "../core/authentication/authenticationInterfaces";
 import * as bodyParser from 'body-parser';
-import {uploadRouter} from "./controllers/upload";
+import {uploadRouter} from "./controllers/uploadImage";
 import {handleError500MW} from "./middlewares/errorHandlers";
 import {logoutRouter} from "./controllers/logout";
 import {corsMW} from "./middlewares/allowFront";
@@ -26,12 +26,12 @@ app.use(helmet());
 /*** API routers mounting ***/
 const apiRouter = Router();
 apiRouter.use('/', healthRouter);
-apiRouter.use('/files',uploadRouter);
 apiRouter.use('/auth',authenticationRouter);
 apiRouter.use('*',loginRequiredMW);
 apiRouter.use('/events',eventsRouter);
 apiRouter.use('/account',accountRouter);
 apiRouter.use('/animals',animalsRouter);
+apiRouter.use('/uploadImage',uploadRouter);
 apiRouter.use('/logout',logoutRouter);
 apiRouter.use('*',handleError500MW);
 
