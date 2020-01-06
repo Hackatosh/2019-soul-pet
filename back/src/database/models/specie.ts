@@ -3,10 +3,15 @@ import {
     DataTypes,
     HasManyGetAssociationsMixin,
     HasManyAddAssociationMixin,
-    HasManyHasAssociationMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin, Association
+    HasManyHasAssociationMixin,
+    HasManyCountAssociationsMixin,
+    HasManyCreateAssociationMixin,
+    Association,
+    BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin
 } from 'sequelize';
 import {db} from '../connection'
 import {Animal} from "./animal";
+import {PetEvent} from "./event";
 
 /*** Model used to represent a specie in DB ***/
 export class Specie extends Model {
@@ -19,16 +24,13 @@ export class Specie extends Model {
     public countAnimals!: HasManyCountAssociationsMixin;
     public createAnimal!: HasManyCreateAssociationMixin<Animal>;
 
+
     // These will only be populated if you actively include a relation.
     public readonly animals?: Animal[];
 
     public static associations: {
         animals: Association<Specie, Animal>;
     };
-
-    // timestamps!
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
 }
 
 /*** Function used to initialize the User Model ***/
@@ -48,10 +50,10 @@ const initSpecieModel = async function():Promise<void> {
     }, {
         tableName: 'species',
         modelName: 'specie',
+        timestamps: false,
         sequelize: db,
     });
 
-    await Specie.sync();
 };
 
 export {initSpecieModel}

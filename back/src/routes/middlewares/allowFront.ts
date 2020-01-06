@@ -1,11 +1,14 @@
-import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
-import {NextFunction, Response} from "express";
+import {CorsOptions} from "cors";
+import cors from "cors";
 
-const allowFrontMW = async function (req:AuthenticatedRequest,res:Response,next:NextFunction) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    next();
+const corsOptions:CorsOptions = {
+    origin: 'http://localhost:3001',
+    methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
+    allowedHeaders:  ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+    credentials: true,
+    optionsSuccessStatus: 200,
 };
 
-export { allowFrontMW }
+const corsMW = cors(corsOptions);
+
+export { corsMW }

@@ -1,6 +1,11 @@
 import React from 'react';
+<<<<<<< HEAD
+=======
+import { RouteComponentProps } from 'react-router-dom';
+>>>>>>> master
 import { ServicesMap } from '../components';
 import './ServicesPage.css';
+import {AuthenticationService} from "../services";
 
 
 class ServicesPage extends React.Component<{}> {
@@ -45,7 +50,11 @@ class ServicesPage extends React.Component<{}> {
 			<div className="container">
 				<div className="row mb-5">
 					<div className="col-sm-6 offset-sm-3">
+<<<<<<< HEAD
 						<h1 className="text-center display-4">De quel service avez-vous besoin ?</h1>
+=======
+						<h1 className="text-center display-4">Bonjour {AuthenticationService.user.username}&nbsp;!</h1>
+>>>>>>> master
         </div>
         <h2 className="text-center"> Vous pouvez retrouver ici tous les services dont vous avez besoin pour
         vous occuper au mieux de vos animaux</h2>

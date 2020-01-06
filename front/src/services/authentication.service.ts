@@ -1,47 +1,58 @@
-import { BehaviorSubject } from 'rxjs';
-import { config } from '../config';
-import { handleResponse, history } from '../helpers';
+import { history, httpClient } from '../helpers';
 import { User } from '../models';
 
-const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser') as string) as User);
+/**
+ * Class designed to handle authentication with the back API
+ */
+export class AuthenticationService {
+    /**
+     * Attempts to log the user in, then redirects to the home page.
+     * Params are self-explanatory
+     * @returns The user as sent by the API
+     */
+    static async login(email: string, password: string): Promise<User> {
+        return httpClient.post<User>('/auth/login', { email: email, password: password }).then(user => {
+            localStorage.setItem('user', JSON.stringify(user));
+            history.push('/');
+            return user;
+        }, () => {
+            return Promise.reject('Identifiants incorrects');
+        });
+    }
 
-export const authenticationService = {
-	login,
-	register,
-	logout,
-	currentUser: currentUserSubject.asObservable(),
-	get currentUserValue () { return currentUserSubject.value },
-	get isLoggedIn () { return this.currentUserValue && this.currentUserValue.id !== -1 }
-};
+    /**
+     * Attempts to register a new user.
+     * Params are self-explanatory.
+     * @returns The user as registered by the API
+     */
+    static async register(username: string, email: string, password: string): Promise<User> {
+        return httpClient.post<User>('/auth/register', { username: username, email: email, password: password }).then(null, () => Promise.reject('Création du compte impossible ; veuillez réessayer.'));
+    }
+    
+    /**
+     * Logs the user out, and redirects to the login page.
+     */
+    static logout(): void {
+        localStorage.removeItem('user');
+        history.push('/login');
+    }
 
-async function login(email: string, password: string) {
-	const requestOptions = {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json'},
-		body: JSON.stringify({ email, password })
-	};
-	return fetch(`${config.apiUrl}/auth/login`, requestOptions).then(handleResponse).then((user: User) => {
-		localStorage.setItem('currentUser', JSON.stringify(user));
-		currentUserSubject.next(user);
-		history.push('/');
-		return user;
-	}, () => {
-		return Promise.reject('Identifiants incorrects');
-	});
-}
+    /**
+     * Checks whether the user is logged in or not.
+     * @returns true if the user is logged in
+     */
+    static get isLoggedIn(): boolean {
+        return localStorage.getItem('user') !== null;
+    }
 
-async function register(username: string, email: string, password: string) {
-	const requestOptions = {
-		method: 'POST',
-		headers: {'Content-Type': 'application/json'},
-		body: JSON.stringify({ username, email, password })
-	};
-	return fetch(`${config.apiUrl}/auth/register`, requestOptions).then(handleResponse).then(null, () => {
-		return Promise.reject('Création du compte impossible ; veuillez réessayer.');
-	});
-}
-
-function logout() {
-	localStorage.removeItem('currentUser');
-	currentUserSubject.next(User.noUser);
+    /**
+     * Retrieves the logged-in user.
+     * Beware, if the user is not logged in, all properties are undefined.
+     * @returns a `User` object, with possibly undefined properties
+     */
+    static get user(): User {
+        if (AuthenticationService.isLoggedIn)
+            return JSON.parse(localStorage.getItem('user') as string) as User;
+        return {} as User;
+    }
 }
