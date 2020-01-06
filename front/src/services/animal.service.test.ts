@@ -86,14 +86,7 @@ test('Delete animal', async () => {
 	del.mockResolvedValueOnce(null)
 		.mockRejectedValueOnce('Error');
 	await AnimalService.delete(0).then(e => expect(e).toBeNull());
-	await AnimalService.delete(0).catch(e => expect(e).toBe(`Erreur lors de la suppression de ${animals[0].name}`));
+	await AnimalService.delete(0).catch(e => expect(e).toBe(`Erreur lors de la suppression de l’animal d’identifiant 0`));
 	expect(del).toBeCalledTimes(2);
 	expect.assertions(3);
 });
-
-test('Delete animal not found', async () => {
-	getAnimals.mockRejectedValueOnce('Erreur lors de la récupération de l’animal');
-	await AnimalService.delete(0).catch(e => expect(e).toBe('Animal introuvable'));
-	expect(del).not.toBeCalled();
-	expect.assertions(2);
-})

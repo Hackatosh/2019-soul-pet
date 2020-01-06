@@ -15,6 +15,8 @@ export class httpClient {
         const headers = new Headers();
         if (authenticated && AuthenticationService.isLoggedIn && AuthenticationService.User.token)
             headers.append('Authorization', `JWT ${AuthenticationService.User.token}`);
+        else if (authenticated)
+            throw new Error('User is not authenticated');
         if (body)
             headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');

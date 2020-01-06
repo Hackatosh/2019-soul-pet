@@ -43,7 +43,7 @@ test('HTTP authenticated GET', async () => {
     // isLoggedIn will return false.
     await httpClient.get<User>('account/', true).catch(() => {
         expect(isLoggedIn.mock.calls).toHaveLength(2);
-        expect(fetch.mock.calls).toHaveLength(2);
+        expect(fetch.mock.calls).toHaveLength(1);
     });
     expect.assertions(5);
 });
