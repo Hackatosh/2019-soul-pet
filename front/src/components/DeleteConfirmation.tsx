@@ -1,7 +1,6 @@
 import React from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { Formik } from 'formik';
-import { AnimalService } from '../services';
 
 export interface DeleteConfirmationProps {
     /** Called to hide the modal */
@@ -20,11 +19,7 @@ export interface DeleteConfirmationProps {
  * A form used to confirm the deletion of an object
  */
 export class DeleteConfirmation extends React.Component<DeleteConfirmationProps, {}> {
-    componentDidMount() {
-        AnimalService.getSpecies().then(species => this.setState({ species: species }));
-	}
-	
-	render() {
+    render() {
 		return (
 			<Modal onHide={this.props.onHide} show={this.props.show} aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>
