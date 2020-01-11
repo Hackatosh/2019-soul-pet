@@ -8,9 +8,8 @@ export class LoginPage extends React.Component<RouteComponentProps, {}> {
 	constructor(props: RouteComponentProps) {
 		super(props);
 
-		if (AuthenticationService.isLoggedIn) {
+		if (AuthenticationService.isLoggedIn)
 			history.push('/');
-		}
 	}
 
 	render() {

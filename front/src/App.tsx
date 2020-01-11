@@ -3,8 +3,14 @@ import { Router, Route, Switch } from 'react-router-dom';
 import { PrivateRoute, NavBar } from './components';
 import { HomePage, LoginPage, RegisterPage, EventList, EventDetails, ServicesPage, AnimalPage, NotFoundPage } from './pages';
 import { history } from './helpers';
+import { AuthenticationService } from './services';
 
 class App extends React.Component<{}, {}> {
+	constructor() {
+		super({});
+		AuthenticationService.restoreUser();
+	}
+
     render() {
         return (
             <Router history={history}>

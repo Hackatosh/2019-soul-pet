@@ -3,7 +3,7 @@ import { User } from "../models";
 import { AuthenticationService } from "../services";
 
 const fetch = jest.spyOn(global, 'fetch');
-const isLoggedIn = jest.spyOn(AuthenticationService, "isLoggedIn", "get");
+const isLoggedIn = jest.spyOn(AuthenticationService, 'isLoggedIn', 'get');
 
 const user: User = {
     id: 1,
@@ -30,7 +30,7 @@ test('HTTP authenticated GET', async () => {
         ok: true,
         status: 200,
         json: () => Promise.resolve(user)
-    });
+	});
     isLoggedIn.mockReturnValueOnce(true).mockReturnValueOnce(false);
     jest.spyOn(AuthenticationService, "User", "get").mockReturnValue(user);
     // isLoggedIn will return true.
