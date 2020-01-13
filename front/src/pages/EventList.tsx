@@ -1,12 +1,47 @@
 import React from 'react';
+import {EventCard} from './EventCard';
 import peche from '../resources/events/peche.jpg';
 import rencontre from '../resources/events/rencontre.jpg';
 import randonnee from '../resources/events/randonnee.jpg';
-import { Link } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
+import Pagination from 'react-bootstrap/Pagination'
+import PageItem from 'react-bootstrap/PageItem'
+import { PetEvent } from '../models/PetEvent';
 
 export class EventList extends React.Component<RouteComponentProps, {}> {
+
   render() {
+
+      let active = 2;
+      let items = [];
+      for (let number = 1; number <= 5; number++) {
+        items.push(
+          <Pagination.Item key={number} active={number === active}>
+            {number}
+          </Pagination.Item>,
+        );
+      }
+
+      const paginationBasic = (
+        <div>
+          <Pagination>{items}</Pagination>
+        </div>
+      );
+      const event:PetEvent = {id:1,title:"Mon event",description:"Ca alors quel evenement hors du commun",organisateur:"Moi meme",begin_date:new Date(),end_date:new Date()}
+
+      let numberEvent = [];
+      for (let number = 1; number <= 5; number++) {
+        numberEvent.push(
+          <EventCard event={event}/>
+        );
+      }
+
+      const liste = (
+        <div>
+          {numberEvent.map(number => number)}
+        </div>
+      );
+
     return (
       <div className="container">
         <div className="row mb-5">
@@ -15,57 +50,13 @@ export class EventList extends React.Component<RouteComponentProps, {}> {
           </div>
         </div>
         <div className="row row-cols-2 row-cols-md-3 justify-content-center">
-          <div className="col mb-4">
-            <div className="card">
-              <img src={peche} className="card-img-top" alt="Peche" />
-              <div className="card-body">
-                <h5 className="card-title">Peche à la ligne</h5>
-                <h6 className="card-title">Date de l'event</h6>
-                <p className="card-text">Pour pecher les poissons de vos amis. <br />Attrapez les tous !</p>
-                <h6 className="card-title">Organisé par</h6>
-                <Link to="/events/1" className="btn btn-primary">Détails</Link>
-              </div>
-            </div>
-          </div>
-          <div className="col mb-4">
-            <div className="card">
-              <img src={rencontre} className="card-img-top" alt="Peche" />
-              <div className="card-body">
-                <h5 className="card-title">Titre</h5>
-                <h6 className="card-title">Date de l'event</h6>
-                <p className="card-text">Description de l' en 2 lignes</p>
-                <h6 className="card-title">Organisé par</h6>
-                <Link to="/events/1" className="btn btn-primary">Détails</Link>
-              </div>
-            </div>
-          </div>
-          <div className="col mb-4">
-            <div className="card">
-              <img src={randonnee} className="card-img-top" alt="Peche" />
-              <div className="card-body">
-                <h5 className="card-title">Promenade en forêt</h5>
-                <h6 className="card-title">Date de l'event</h6>
-                <p className="card-text">Ramenez votre animal de compagnie et
-                vos chaussures de sport</p>
-                <h6 className="card-title">Organisé par</h6>
-                <Link to="/events/1" className="btn btn-primary">Détails</Link>
-              </div>
-            </div>
-          </div>
-          <div className="col mb-4">
-            <div className="card">
-              <img src={rencontre} className="card-img-top" alt="Peche" />
-              <div className="card-body">
-                <h5 className="card-title">Titre</h5>
-                <h6 className="card-title">Date de l'events</h6>
-                <p className="card-text">Description de l' en 2 lignes</p>
-                <h6 className="card-title">Organisé par</h6>
-                <Link to="/events/1" className="btn btn-primary">Détails</Link>
-              </div>
-            </div>
-          </div>
+          <EventCard event={event}/>
+          <EventCard event={event}/>
+          <EventCard event={event}/>
         </div>
+        {paginationBasic}
       </div>
+
     )
   }
 }
