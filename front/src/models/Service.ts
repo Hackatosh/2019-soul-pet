@@ -1,6 +1,7 @@
 interface SServicesMapType{
   toDisplay: Array<string>;
   radius: number;
+  markers: Array<MarkerData>;
 }
 
 interface QueryServiceType{
@@ -15,7 +16,6 @@ interface PServicesMapType{
   lon: number;
   zoom: number;
   size: string;
-  markers: Array<MarkerData>;
 }
 
 interface MarkerDataType{

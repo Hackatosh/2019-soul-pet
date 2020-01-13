@@ -11,33 +11,7 @@ class ServicesPage extends React.Component<{}> {
         lat: 48.864716,
         lon: 2.349014,
         zoom : 14,
-        size : "500px",
-        markers: [
-          {
-            key: "marker1",
-            position: [48.86471, 2.349014],
-            info:"Dr Obiwan Kenobi, 18b rue Tiquetonne",
-            serviceType: "vet"
-          },
-          {
-            key: "marker2",
-            position: [48.865, 2.338],
-            info:"Parc Grasswalker",
-            serviceType: "park"
-          },
-          {
-            key: "marker3",
-            position: [48.86, 2.36],
-            info:"Chewbacca's style, 3 rue des Quatre Fils",
-            serviceType: "groom"
-          },
-          {
-            key: "marker4",
-            position: [48.862, 2.33],
-            info:"Parc Highground",
-            serviceType: "park"
-          },
-        ]
+        size : "500px"
       };
 
 
