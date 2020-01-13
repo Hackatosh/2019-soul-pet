@@ -1,16 +1,20 @@
 import React from 'react';
 import { PServicesMap, SServicesMap, ListMarkerData } from '../models';
 import { GetServicesServices } from '../services';
+import { iconVet, iconPark, iconGroom } from '../models';
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 
 const serviceTypeList = [
   {type:"vet",
-  name: "Vétérinaires"},
+  name: "Vétérinaires",
+  icon: iconVet},
   {type:"park",
-  name: "Parcs"},
+  name: "Parcs",
+  icon: iconPark},
   {type:"groom",
-  name : "Toiletteurs"}
+  name : "Toiletteurs",
+  icon: iconGroom}
 ]
 
 
@@ -67,10 +71,8 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
     for (let i = 0; i < serviceTypeList.length; i++) {
       const markers = await GetServicesServices.get_services(this.props.lat,
         this.props.lon, this.state.radius, serviceTypeList[i].type);
-        console.log(markers)
         markersAllTypes = markersAllTypes.concat(markers)
     }
-    console.log(markersAllTypes)
     this.setState({markers: markersAllTypes})
   }
 
@@ -92,9 +94,10 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
               </Popup>
             </Marker>
         {this.state.markers.map(el => {
+        const icon = (serviceTypeList.filter(serviceType => (serviceType.type === el.serviceType)))[0].icon
 				if (this.state.toDisplay.includes(el.serviceType))
 					return (
-						<Marker key={el.key} position={el.position}>
+						<Marker key={el.key} position={el.position} icon={icon}>
 							<Popup>
 								{el.info}
 							</Popup>
