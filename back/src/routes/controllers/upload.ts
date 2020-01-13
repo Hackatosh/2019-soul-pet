@@ -2,21 +2,22 @@ import {Request, Response, Router} from 'express';
 import {inMemoryStorage} from "../../core/files/localStorage";
 import {ContentType, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
 
-const uploadRouter = Router();
+const uploadTestRouter = Router();
 
-uploadRouter.post('/pictures',inMemoryStorage.single("photo"),async (req:Request, res:Response) => {
+uploadTestRouter.post('/pictures',inMemoryStorage.single("photo"),async (req:Request, res:Response) => {
     try {
         const buffer = req.file.buffer;
         const filename = req.file.originalname;
         await uploadToSFTP(buffer, Folder.Pictures, filename);
         res.sendStatus(200);
     } catch(e){
+        console.log(e)
         res.status(400).send({message:"Couldn't upload the file"})
     }
 
 });
 
-uploadRouter.get('/pictures/:filename',async (req:Request, res:Response) => {
+uploadTestRouter.get('/pictures/:filename',async (req:Request, res:Response) => {
     try {
         const filename = req.params.filename;
         await pipeSFTPIntoResponse(res,Folder.Pictures, filename, ContentType.PNG)
@@ -25,5 +26,5 @@ uploadRouter.get('/pictures/:filename',async (req:Request, res:Response) => {
     }
 });
 
-export { uploadRouter }
+export { uploadTestRouter }
 
