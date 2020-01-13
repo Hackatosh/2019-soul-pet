@@ -5,9 +5,9 @@ import {Animal} from "../../database/models/animal";
 import {AnimalPictures} from "../../database/models/animalPictures";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
 
-const uploadRouter = Router();
+const filesRouter = Router();
 
-uploadRouter.post('/animals/:animalId',inMemoryStorage.single("photo"), async (req: AuthenticatedRequest, res: Response) => {
+filesRouter.post('/animals/:animalId',inMemoryStorage.single("photo"), async (req: AuthenticatedRequest, res: Response) => {
     try {
         const buffer = req.file.buffer;
         const filename = req.file.originalname;
@@ -38,4 +38,5 @@ uploadRouter.post('/animals/:animalId',inMemoryStorage.single("photo"), async (r
 
 });
 
-export {uploadRouter}
+
+export {filesRouter}
