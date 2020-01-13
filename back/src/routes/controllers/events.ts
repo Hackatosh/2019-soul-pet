@@ -12,10 +12,50 @@ import {
 } from "../../core/utils";
 import {User} from "../../database/models/user";
 import {serialize} from "v8";
-import Sequelize, {or} from "sequelize";
+import Sequelize from "sequelize";
 
 const Op = Sequelize.Op;
 const eventsRouter = Router();
+
+/*** This route is used to search for events ***/
+
+const searchEvents = [
+    check('keywords').notEmpty().isString().withMessage("keywords must be string").optional(),
+    check('beginDate').notEmpty().custom( date => isDateValid(date)).withMessage("beginDate should be a valid datetime").optional(),
+    check('endDate').notEmpty().custom( date => isDateValid(date)).withMessage("endDate should be a valid datetime").optional()
+];
+
+eventsRouter.get('/search', searchEvents, inputValidationMW, async (req:AuthenticatedRequest , res:Response) => {
+    const keywords = req.query.keywords;
+    const beginDate = convertStringToDate(req.query.beginDate);
+    const endDate = convertStringToDate(req.query.endDate);
+    let andConditions = [];
+
+    if (keywords){
+        const listKeywords = keywords.split(" ");
+        const conditionsKeywords:any = [];
+        listKeywords.forEach(function(keyword : string){
+            conditionsKeywords.push({name : {[Op.like] : keyword}});
+            conditionsKeywords.push({description : {[Op.like] : keyword}});
+        });
+        console.log(conditionsKeywords)
+        andConditions.push({[Op.or] : conditionsKeywords})
+    }
+
+    if (beginDate){
+        andConditions.push({beginDate : {[Op.gte] : beginDate}})
+    }
+
+    if (endDate) {
+        andConditions.push({endDate : {[Op.lte] : endDate}})
+    }
+
+    let searchRequest = {[Op.and] : andConditions};
+
+    let searchResult = await PetEvent.findAll({where : searchRequest});
+    console.log(searchRequest);
+    res.send(searchResult);
+});
 
 /*** This route is used to get informations about an event ***/
 
@@ -234,42 +274,6 @@ eventsRouter.delete('/:eventId/animals/:animalId', deleteAnimalFromEventChecks, 
     }
     await eventFound.removeAttendee(animalFound);
     res.status(200).send({eventId: eventId, animalId: animalId})
-});
-
-/*** This route is used to search for events ***/
-const searchEvents = [
-    check('keywords').notEmpty().isString().withMessage("keywords must be string").optional(),
-    check('beginDate').notEmpty().custom( date => isDateValid(date)).withMessage("beginDate should be a valid datetime").optional(),
-    check('endDate').notEmpty().custom( date => isDateValid(date)).withMessage("endDate should be a valid datetime").optional()
-];
-
-eventsRouter.get('/search', searchEvents, inputValidationMW, async (req:any , res:any) => {
-    const keywords = req.query.keywords;
-    const beginDate = convertStringToDate(req.query.beginDate);
-    const endDate = convertStringToDate(req.query.endDate);
-    let searchRequest:any = {};
-    searchRequest[Op.and] = [];
-
-    if (keywords){
-        const listKeywords = keywords.split(keywords);
-        const conditionsKeywords:any = [];
-        listKeywords.forEach(function(keyword : string){
-            conditionsKeywords.push({name : {[Op.like] : keyword}});
-            conditionsKeywords.push({description : {[Op.like] : keyword}});
-        });
-        searchRequest[Op.and].push({[Op.or] : conditionsKeywords})
-    }
-
-    if (beginDate){
-        searchRequest[Op.and].push({beginDate : {[Op.gte] : beginDate}})
-    }
-
-    if (endDate) {
-        searchRequest[Op.and].push({endDate : {[Op.lte] : endDate}})
-    }
-
-    //let searchResult = await PetEvent.findAll(searchRequest);
-    res.send(searchRequest);
 });
 
 export {eventsRouter}
