@@ -1,18 +1,8 @@
 import React from 'react';
+import { PServicesMap, SServicesMap, ListMarkerData } from '../models';
+import { GetServicesServices } from '../services';
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
-interface SServicesMap{
-  toDisplay: Array<string>;
-  radius: number;
-}
-
-interface PServicesMap{
-  lat: number;
-  lon: number;
-  zoom: number;
-  size: string;
-  markers: Array<MarkerData>;
-}
 
 const serviceTypeList = [
   {type:"vet",
@@ -23,12 +13,7 @@ const serviceTypeList = [
   name : "Toiletteurs"}
 ]
 
-interface MarkerData{
-  key:string;
-  position: Array<number>;
-  info: string;
-  serviceType: string;
-}
+
 
 
 class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
@@ -37,7 +22,33 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
     const toDisplay = serviceTypeList.map(el => (el.type))
 
     this.state= {toDisplay: toDisplay,
-                 radius: 5000}
+                 radius: 5000,
+                 markers: [
+                   {
+                     key: "marker1",
+                     position: [48.86471, 2.349014],
+                     info:"Dr Obiwan Kenobi, 18b rue Tiquetonne",
+                     serviceType: "vet"
+                   },
+                   {
+                     key: "marker2",
+                     position: [48.865, 2.338],
+                     info:"Parc Grasswalker",
+                     serviceType: "park"
+                   },
+                   {
+                     key: "marker3",
+                     position: [48.86, 2.36],
+                     info:"Chewbacca's style, 3 rue des Quatre Fils",
+                     serviceType: "groom"
+                   },
+                   {
+                     key: "marker4",
+                     position: [48.862, 2.33],
+                     info:"Parc Highground",
+                     serviceType: "park"
+                   },
+                 ]}
   }
 
   updateRadius = (event:any) => {
@@ -49,6 +60,18 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
     if (!newDisplay.includes(event.target.value) && event.target.checked)
       newDisplay.push(event.target.value);
     this.setState({toDisplay : newDisplay});
+  }
+
+  queryAPIServices = async (event : any) => {
+    let markersAllTypes: ListMarkerData = []
+    for (let i = 0; i < serviceTypeList.length; i++) {
+      const markers = await GetServicesServices.get_services(this.props.lat,
+        this.props.lon, this.state.radius, serviceTypeList[i].type);
+        console.log(markers)
+        markersAllTypes = markersAllTypes.concat(markers)
+    }
+    console.log(markersAllTypes)
+    this.setState({markers: markersAllTypes})
   }
 
   render(){
@@ -63,7 +86,12 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
                      attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                    />
-              {this.props.markers.map(el => {
+            <Marker position={position} opacity={0.5}>
+              <Popup>
+                Vous êtes ici !
+              </Popup>
+            </Marker>
+        {this.state.markers.map(el => {
 				if (this.state.toDisplay.includes(el.serviceType))
 					return (
 						<Marker key={el.key} position={el.position}>
@@ -88,7 +116,9 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
         <label>{serviceType.name}</label></li>
           ))}
           </ul>
+
           </form>
+          <button className="btn btn-primary btn-block" onClick={this.queryAPIServices}>Recherche</button>
         </div>
       </div>
     );
