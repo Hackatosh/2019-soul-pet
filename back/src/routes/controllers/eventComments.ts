@@ -62,7 +62,7 @@ eventCommentsRouter.post('/', postCommentChecks, inputValidationMW, async (req: 
         return;
     }
     try {
-        const comment = await PetEvent.create({userId, eventId, text});
+        const comment = await EventComment.create({userId, eventId, text});
         res.status(200).json(comment)
     } catch (e) {
         console.log(e);
@@ -73,7 +73,7 @@ eventCommentsRouter.post('/', postCommentChecks, inputValidationMW, async (req: 
 /*** This route is used to edit a comment***/
 
 const putCommentChecks = [
-    check('eventId').notEmpty().isNumeric().withMessage("eventId must be a number"),
+    check('commentId').notEmpty().isNumeric().withMessage("eventId must be a number"),
     check('text').notEmpty().isString().withMessage("text must be a valid string"),
 ];
 

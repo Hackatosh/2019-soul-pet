@@ -17,9 +17,9 @@ const initAssociations = function () {
     PetEvent.belongsToMany(Animal, {as: 'Attendees',through: 'EventAnimals', foreignKey: 'eventId'});
     Specie.belongsToMany(PetEvent, {as: 'Animals', through: 'EventSpecies', foreignKey: 'specieId'});
     PetEvent.belongsToMany(Specie, {as: 'AuthorizedSpecies', through: 'EventSpecies', foreignKey: 'eventId'});
-    User.hasMany(EventComment, {foreignKey: 'userId', sourceKey: 'id'});
+    User.hasMany(EventComment, {foreignKey: 'userId', sourceKey: 'id', as:"EventComments"});
     EventComment.belongsTo(User, {foreignKey: 'userId', targetKey: 'id'});
-    PetEvent.hasMany(EventComment, {foreignKey: 'eventId', sourceKey: 'id'});
+    PetEvent.hasMany(EventComment, {foreignKey: 'eventId', sourceKey: 'id', as:"EventComments"});
     EventComment.belongsTo(PetEvent, {foreignKey: 'eventId', targetKey: 'id'});
 };
 
