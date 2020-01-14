@@ -62,7 +62,7 @@ const specieModelFill = async function (): Promise<void> {
     await Specie.create({id: 3, name: "Chat"});
     await Specie.create({id: 4, name: "Lapin"});
     await Specie.create({id:5, name: "Perroquet"});
-    await Specie.create({id:6, name: "Petit Frère"});
+    await Specie.create({id:6, name: "Loutre"});
 };
 
 export {initSpecieModel, specieModelFill}
