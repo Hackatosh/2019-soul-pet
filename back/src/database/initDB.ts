@@ -43,6 +43,7 @@ const initDB = async function () {
         await initSpecieModel();
         await initAnimalModel();
         await initPetEventModel();
+        await initPetEventModel();
         await initAssociations();
         await db.sync();
         await specieModelFill();
