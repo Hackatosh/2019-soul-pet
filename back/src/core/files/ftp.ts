@@ -115,6 +115,20 @@ const uploadToSFTP = async function(src:Buffer,destFolder:Folder,destFilename:st
     }
 };
 
+const deleteFromSFTP = async function(destFolder:Folder,destFilename:string):Promise<void> {
+    let sftpPath = resolvePath(destFolder, destFilename);
+    let sftp = new Client();
+    try{
+        await sftp.connect(config);
+        await sftp.delete(sftpPath);
+        await sftp.end();
+    } catch(e){
+        throw new Error("Unable to delete file")
+    } finally {
+        await sftp.end();
+    }
+};
+
 /*** Create a pipe from a given SFTP location obtained by resolving remoteFolder and remoteFilename ***/
 const createSFTPPipe = async function(remoteFolder:Folder, remoteFilename:string):Promise<SFTPPipe>{
     let sftp = new Client();

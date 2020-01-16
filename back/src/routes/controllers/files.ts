@@ -38,5 +38,22 @@ filesRouter.post('/animals/:animalId',inMemoryStorage.single("photo"), async (re
 
 });
 
+filesRouter.delete('/animals/:animalId',inMemoryStorage.single("idImage"),async (req: AuthenticatedRequest, res: Response)=> {
+    const animalId = req.params.animalId;
+    const userId = req.authInfos.userId;
+    const idImage = req.body.idImage;
+    const pet = await Animal.findOne({where: {id: animalId}});
+    if(!pet)
+        {
+            res.status(404).json({message: "This animal does not exist"})
+        } else if(pet.userId !== userId) {
+        res.status(403).json({message: "You don't have access to this animal"})
+    } else
+            {
+            const image=await AnimalPictures.findOne({where: {id: idImage}})
+        }
+    }
+);
 
-export {filesRouter}
+
+export {filesRouter};
