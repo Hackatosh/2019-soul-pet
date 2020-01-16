@@ -88,7 +88,7 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
                      attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                    />
-            <Marker position={position} opacity={0.5}>
+            <Marker position={position} >
               <Popup>
                 Vous êtes ici !
               </Popup>

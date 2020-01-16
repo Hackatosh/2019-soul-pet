@@ -1,5 +1,5 @@
-import { history, httpClient } from '../helpers';
-import { ListMarkerData, QueryService, MarkerData } from '../models';
+import { httpClient } from '../helpers';
+import { ListMarkerData, MarkerData } from '../models';
 
 
 
