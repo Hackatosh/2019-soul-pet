@@ -6,11 +6,15 @@ import {
     BelongsToManyAddAssociationsMixin,
     BelongsToManySetAssociationsMixin,
     Association,
-    BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin
+    BelongsToManyRemoveAssociationMixin,
+    BelongsToManyRemoveAssociationsMixin,
+    HasManyGetAssociationsMixin,
+    HasManyAddAssociationMixin, HasManyHasAssociationMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin
 } from 'sequelize';
 import {db} from '../connection'
 import {Animal} from "./animal";
 import {Specie} from "./specie";
+import {EventComment} from "./eventComment";
 
 /*** Model used to represent an event in DB ***/
 export class PetEvent extends Model {
@@ -46,9 +50,19 @@ export class PetEvent extends Model {
     // These will only be populated if you actively include a relation.
     public readonly authorizedSpecies?: Specie[];
 
+    public getComments!: HasManyGetAssociationsMixin<EventComment>; // Note the null assertions!
+    public addComment!: HasManyAddAssociationMixin<EventComment, number>;
+    public hasComment!: HasManyHasAssociationMixin<EventComment, number>;
+    public countComments!: HasManyCountAssociationsMixin;
+    public createComment!: HasManyCreateAssociationMixin<EventComment>;
+
+    // These will only be populated if you actively include a relation.
+    public readonly comments?: EventComment[];
+
     public static associations: {
-        attendees: Association<Animal, PetEvent>;
-        authorizedSpecies: Association<Specie, PetEvent>;
+        attendees: Association<PetEvent, Animal>;
+        authorizedSpecies: Association<PetEvent, Specie>;
+        comments: Association<PetEvent, EventComment>
     };
 
 }

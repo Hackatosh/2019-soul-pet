@@ -6,6 +6,7 @@ import {inputValidationMW} from "../middlewares/inputValidation";
 import {Specie} from "../../database/models/specie";
 import {isDateValid} from "../../core/utils";
 import {convertStringToDate} from "../../core/utils";
+import {PetEvent} from "../../database/models/event";
 
 const animalsRouter = Router();
 
@@ -28,8 +29,26 @@ animalsRouter.get('/', getUserAnimalsChecks, inputValidationMW, async (req: Auth
         res.status(403).json({message: "Forbidden. You don't have access to this user."});
         return;
     }
-    const animals = await Animal.findAll({where: {userId: userId}});
+    const animals = await Animal.findAll({where: {userId: userId},include: [{model: Specie}]});
     res.status(200).send(animals)
+});
+
+/*** This route is used to obtained an animal profile. ***/
+
+const getUserAnimalChecks = [
+    check('animalId').notEmpty().isNumeric().withMessage("animalId must be a number"),
+];
+
+animalsRouter.get('/:animalId', getUserAnimalChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
+    const animalId = parseInt(req.params.animalId);
+    const animal = await Animal.findOne({where: {id: animalId},include: [{model: PetEvent, as: "Events"},{model: Specie}]});
+    if (!animal) {
+        res.sendStatus(404);
+    } else if (animal.userId != req.authInfos.userId) {
+        res.sendStatus(403);
+    } else {
+        res.status(200).send(animal);
+    }
 });
 
 /*** This route is used to create a new animal profile ***/
@@ -76,7 +95,7 @@ animalsRouter.put('/:animalId', putAnimalChecks, inputValidationMW, async (req: 
     const animalId = parseInt(req.params.animalId);
     const specieId = parseInt(req.body.specieId);
     const name = req.body.name;
-    const birthdate = convertStringToDate(req.body.birthdate);
+    const birthdate = req.body.birthdate ? convertStringToDate(req.body.birthdate) : null;
     const animalFound = await Animal.findOne({where: {id: animalId}});
     if (!animalFound) {
         res.status(404).json({message: "Not found. The animal you are trying to access does not exist."});
@@ -86,7 +105,7 @@ animalsRouter.put('/:animalId', putAnimalChecks, inputValidationMW, async (req: 
         res.status(403).json({message: "Forbidden. You don't have access to this animal."});
         return;
     }
-    if (!await Specie.findOne({where: {id: specieId}})) {
+    if (specieId && !(await Specie.findOne({where: {id: specieId}}))) {
         res.status(400).json({message: "Bad request. The specie you indicated is not registered in DB."});
         return;
     }
@@ -123,7 +142,7 @@ animalsRouter.delete('/:animalId', deleteAnimalChecks, inputValidationMW, async 
         return;
     }
     await Animal.destroy({where: {id: animalId}});
-    res.status(200).send({id: animalId})
+    res.status(200).json({id: animalId})
 });
 
 export {animalsRouter}

@@ -53,8 +53,8 @@ test('Register failure', async () => {
 });
 
 test('Retrieve user', async () => {
-    expect(AuthenticationService.user).toStrictEqual({} as User);
+    expect(AuthenticationService.User).toStrictEqual({} as User);
     post.mockResolvedValueOnce(user);
     await AuthenticationService.login('testemail@test.ts', 'password');
-    expect(AuthenticationService.user).toStrictEqual(user);
+    expect(AuthenticationService.User).toStrictEqual(user);
 });
