@@ -2,15 +2,17 @@ import { Response, Router} from "express";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
 import {inputValidationMW} from "../middlewares/inputValidation";
 import { check } from 'express-validator'
-import {PetEvent} from "../../database/models/event";
-import {Animal} from "../../database/models/animal";
+import { PetEvent } from "../../database/models/event";
+import { Animal } from "../../database/models/animal";
 import {Specie} from "../../database/models/specie";
 import {
     convertStringToDate,
-    isDateTimeAfter, isDateValid,
-    isNumericArray
+    isDateTimeAfter,
+    isDateValid,
+    isNumericArray,
 } from "../../core/utils";
 import {User} from "../../database/models/user";
+import {EventComment} from "../../database/models/eventComment";
 
 
 const eventsRouter = Router();
@@ -24,7 +26,7 @@ const getEventChecks = [
 eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
     const eventId = parseInt(req.params.eventId);
     try {
-        let eventFound = await PetEvent.findOne({where: {id: eventId}, include: [{model: Animal, as: "Attendees"},{ model: Specie, as: "AuthorizedSpecies", include:[]}]});
+        let eventFound = await PetEvent.findOne({where: {id: eventId}, include: [{model: Animal, as: "Attendees"},{ model: Specie, as: "AuthorizedSpecies"}, {model: EventComment, as: "EventComments"}]});
         if (!eventFound) {
             res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
             return;

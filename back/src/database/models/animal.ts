@@ -31,7 +31,7 @@ export class Animal extends Model {
     public readonly events?: PetEvent[];
 
     public static associations: {
-        events: Association<PetEvent,Animal>;
+        events: Association<Animal, PetEvent>;
     }
 }
 

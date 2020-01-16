@@ -10,6 +10,7 @@ import {
 } from 'sequelize';
 import {db} from '../connection'
 import {Animal} from "./animal";
+import {EventComment} from "./eventComment";
 
 /*** Model used to represent a user in DB ***/
 export class User extends Model {
@@ -27,8 +28,18 @@ export class User extends Model {
     // These will only be populated if you actively include a relation.
     public readonly animals?: Animal[];
 
+    public getComments!: HasManyGetAssociationsMixin<EventComment>; // Note the null assertions!
+    public addComment!: HasManyAddAssociationMixin<EventComment, number>;
+    public hasComment!: HasManyHasAssociationMixin<EventComment, number>;
+    public countComments!: HasManyCountAssociationsMixin;
+    public createComment!: HasManyCreateAssociationMixin<EventComment>;
+
+    // These will only be populated if you actively include a relation.
+    public readonly eventComments?: EventComment[];
+
     public static associations: {
         animals: Association<User, Animal>;
+        eventComments: Association<User, EventComment>
     };
 
 }
