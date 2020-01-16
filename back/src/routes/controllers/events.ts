@@ -14,7 +14,6 @@ import {User} from "../../database/models/user";
 import {serialize} from "v8";
 import Sequelize from "sequelize";
 
-const Op = Sequelize.Op;
 const eventsRouter = Router();
 
 /*** This route is used to search for events ***/
@@ -27,33 +26,31 @@ const searchEvents = [
 
 eventsRouter.get('/search', searchEvents, inputValidationMW, async (req:AuthenticatedRequest , res:Response) => {
     const keywords = req.query.keywords;
-    const beginDate = convertStringToDate(req.query.beginDate);
-    const endDate = convertStringToDate(req.query.endDate);
+    const beginDate = req.query.beginDate ? convertStringToDate(req.query.beginDate) : null;
+    const endDate = req.query.endDate ? convertStringToDate(req.query.endDate) : null;
     let andConditions = [];
 
     if (keywords){
         const listKeywords = keywords.split(" ");
         const conditionsKeywords:any = [];
         listKeywords.forEach(function(keyword : string){
-            conditionsKeywords.push({name : {[Op.like] : keyword}});
-            conditionsKeywords.push({description : {[Op.like] : keyword}});
+            conditionsKeywords.push({name : {[Sequelize.Op.like] : '%'+ keyword + '%'}});
+            conditionsKeywords.push({description : {[Sequelize.Op.like] : '%' + keyword + '%'}});
         });
-        console.log(conditionsKeywords)
-        andConditions.push({[Op.or] : conditionsKeywords})
+        andConditions.push({[Sequelize.Op.or] : conditionsKeywords})
     }
 
     if (beginDate){
-        andConditions.push({beginDate : {[Op.gte] : beginDate}})
+        andConditions.push({beginDate : {[Sequelize.Op.gte] : beginDate}})
     }
 
     if (endDate) {
-        andConditions.push({endDate : {[Op.lte] : endDate}})
+        andConditions.push({endDate : {[Sequelize.Op.lte] : endDate}})
     }
 
-    let searchRequest = {[Op.and] : andConditions};
+    let searchRequest = {[Sequelize.Op.and] : andConditions};
 
     let searchResult = await PetEvent.findAll({where : searchRequest});
-    console.log(searchRequest);
     res.send(searchResult);
 });
 

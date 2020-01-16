@@ -45,9 +45,10 @@ const initDB = async function () {
         await initPetEventModel();
         await initAssociations();
         await db.sync();
-        await specieModelFill();
+        //await specieModelFill();
         console.log("DB initialized successfully");
     } catch (e) {
+        console.log(e);
         throw new Error("Problem when initializing the DB.")
     }
 };
