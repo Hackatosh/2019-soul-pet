@@ -7,6 +7,10 @@ interface MatchParams {
   id: number;
 }
 
+const EVENT = [
+  {id:1, title:"Ca alors", description:"Bonjour"}
+]
+
 interface EventCardProps extends RouteComponentProps<MatchParams> {
   event:PetEvent;
 }
