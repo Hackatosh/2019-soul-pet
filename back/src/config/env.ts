@@ -18,7 +18,8 @@ const FTP_USER = process.env.FTP_USER;
 const FTP_PASSWORD = process.env.FTP_PASSWORD;
 const FTP_PATH_ANIMAL_PICTURES = process.env.FTP_PATH_ANIMAL_PICTURES;
 const FTP_PATH_EVENT_PICTURES = process.env.FTP_PATH_EVENT_PICTURES;
-
+const PLACES_API_ID = process.env.PLACES_API_ID;
+const PLACES_API_SECRET = process.env.PLACES_API_SECRET;
 
 if (SERVER_PORT == undefined || isNaN(parseInt(SERVER_PORT))) {
     throw new Error('SERVER_PORT is not a valid env variable');
@@ -76,6 +77,14 @@ if (FTP_PATH_EVENT_PICTURES == undefined) {
     throw new Error('FTP_PATH_EVENT_PICTURES is not a valid env variable');
 }
 
+if (PLACES_API_ID  == undefined) {
+    throw new Error('PLACES_API_ID is not a valid env variable');
+}
+
+if (PLACES_API_SECRET == undefined) {
+    throw new Error('PLACES_API_SECRET is not a valid env variable');
+}
+
 const env = {
     SERVER_PORT,
     TOKEN_LIFETIME_SEC:parseInt(TOKEN_LIFETIME_SEC),
@@ -91,6 +100,8 @@ const env = {
     FTP_PASSWORD,
     FTP_PATH_ANIMAL_PICTURES,
     FTP_PATH_EVENT_PICTURES,
+    PLACES_API_ID,
+    PLACES_API_SECRET,
 };
 
 export { env };

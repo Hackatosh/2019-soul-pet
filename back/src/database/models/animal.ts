@@ -47,14 +47,13 @@ export class Animal extends Model {
 
 
     public static associations: {
-        events: Association<PetEvent,Animal>;
+        events: Association<Animal, PetEvent>;
         pictures: Association<AnimalPicture,Animal>;
     }
 }
 
 /*** Function used to initialize the User Model ***/
 const initAnimalModel = async function():Promise<void> {
-
     Animal.init({
         id: {
             type: DataTypes.INTEGER.UNSIGNED,

@@ -27,6 +27,8 @@ services:
       FTP_PASSWORD: password
       FTP_PATH_ANIMAL_PICTURES: pictures/animals
       FTP_PATH_EVENT_PICTURES: pictures/events
+      PLACES_API_ID: "OMUJAQFCEKPCCDPHKQW21VUWVJ1YEBGHN0R0RQRQZWJRRNL3"
+      PLACES_API_SECRET: "XQ1BKCP2ARAXAQ4M3AQ0P51CJ5DOVLLVYYINOJWXBXQYEVTZ"
     volumes:
       - ./back:/usr/app/
       - /usr/app/node_modules
@@ -38,6 +40,9 @@ services:
     ports:
       - "3001:3000"
     restart: always
+    environment:
+      PORT: 3000
+      REACT_APP_BACK_URL: "http://localhost:8001/api"
     volumes:
       - ./front:/usr/app/
       - /usr/app/node_modules

@@ -1,0 +1,19 @@
+.ServicesMap{
+  display: flex;
+  width: 80%;
+  margin-top: 20px;
+  justify-content: space-around;
+}
+
+
+
+.services_displayed{
+  font-size: 23px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+ul{
+  width: 300px;
+}

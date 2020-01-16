@@ -34,7 +34,7 @@ export class Specie extends Model {
 }
 
 /*** Function used to initialize the User Model ***/
-const initSpecieModel = async function():Promise<void> {
+const initSpecieModel = async function (): Promise<void> {
 
     Specie.init({
         id: {
@@ -56,4 +56,13 @@ const initSpecieModel = async function():Promise<void> {
 
 };
 
-export {initSpecieModel}
+const specieModelFill = async function (): Promise<void> {
+    await Specie.create({id: 1, name: "Chien"});
+    await Specie.create({id: 2, name: "Lama"});
+    await Specie.create({id: 3, name: "Chat"});
+    await Specie.create({id: 4, name: "Lapin"});
+    await Specie.create({id:5, name: "Perroquet"});
+    await Specie.create({id:6, name: "Loutre"});
+};
+
+export {initSpecieModel, specieModelFill}
