@@ -2,7 +2,7 @@ import React from 'react';
 import { PServicesMap, SServicesMap, ListMarkerData } from '../models';
 import { GetServicesServices } from '../services';
 import { iconVet, iconPark, iconGroom } from '../models';
-import { getUserLocation } from '../helpers';
+//import { getUserLocation } from '../helpers';
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 

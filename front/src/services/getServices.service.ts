@@ -8,14 +8,14 @@ export class GetServicesServices{
       var listMarkerData: ListMarkerData = []
       return httpClient.get<any>('/places/search?lat='+ lat +'&long='+ lon +'&radius='+ radius +'&placeType='+ placeType, true).then(response => {
           console.log(response)
-          response.response.venues.map((venue :any) => {
+          listMarkerData = response.response.venues.map((venue :any) => {
             let marker: MarkerData = {
               key: venue.id,
               info: venue.name + (venue.location.address ? (', ' + venue.location.address): '') ,
               position: [venue.location.lat, venue.location.lng],
               serviceType: placeType
             };
-            listMarkerData.push(marker);
+            return marker;
           })
           return listMarkerData;
       }, () => {
