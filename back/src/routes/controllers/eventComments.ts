@@ -78,9 +78,9 @@ const putCommentChecks = [
 ];
 
 eventCommentsRouter.put('/:commentId', putCommentChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
-    const eventId = parseInt(req.body.eventId);
+    const commentId = parseInt(req.params.commentId);
     const text = req.body.text;
-    const commentFound = await EventComment.findOne({where: {id: eventId}});
+    const commentFound = await EventComment.findOne({where: {id: commentId}});
     if (!commentFound) {
         res.status(404).json({message: "Not found. The comment you are trying to access does not exist."});
         return;
