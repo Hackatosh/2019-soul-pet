@@ -14,7 +14,7 @@ class App extends React.Component<{}, {}> {
 					<Route path="/login" component={LoginPage} />
 					<Route path="/register" component={RegisterPage} />
           <Route path="/events/list" component={EventList} />
-          <Route path="/events/1" component={EventDetails} />
+          <Route path="/events/:id" component={EventDetails} />
           <PrivateRoute path="/services" component={ServicesPage} />
 				</Switch>
             </Router>
