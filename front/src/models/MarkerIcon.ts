@@ -11,7 +11,7 @@ const iconPark = L.icon({
   shadowSize:   [50, 64],
   iconAnchor:   [22, 40],
   shadowAnchor: [20, 62],
-  popupAnchor:  [-3, -76]
+  popupAnchor:  [-3, -40]
 });
 
 const iconVet = L.icon({
@@ -21,7 +21,7 @@ const iconVet = L.icon({
   shadowSize:   [50, 64],
   iconAnchor:   [22, 40],
   shadowAnchor: [20, 62],
-  popupAnchor:  [-3, -76]
+  popupAnchor:  [-3, -40]
 
 });
 
@@ -32,7 +32,7 @@ const iconGroom = L.icon({
   shadowSize:   [50, 64],
   iconAnchor:   [22, 40],
   shadowAnchor: [20, 62],
-  popupAnchor:  [-3, -76]
+  popupAnchor:  [-3, -40]
 });
 
 
