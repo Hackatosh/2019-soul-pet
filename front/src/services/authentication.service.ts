@@ -1,21 +1,28 @@
 import { history, httpClient } from '../helpers';
 import { User } from '../models';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Class designed to handle authentication with the back API
  */
 export class AuthenticationService {
-    /**
+	private static user: BehaviorSubject<User> = new BehaviorSubject({} as User);
+
+	static UserObservable = AuthenticationService.user.asObservable();
+
+	/**
      * Attempts to log the user in, then redirects to the home page.
      * Params are self-explanatory
      * @returns The user as sent by the API
      */
     static async login(email: string, password: string): Promise<User> {
-        return httpClient.post<User>('/auth/login', { email: email, password: password }).then(user => {
+        return httpClient.post<User>('/auth/login', { id: 0, email: email, password: password }).then(user => {
             localStorage.setItem('user', JSON.stringify(user));
+			AuthenticationService.user.next(user);
             history.push('/');
             return user;
         }, () => {
+			AuthenticationService.user.next({} as User);
             return Promise.reject('Identifiants incorrects');
         });
     }
@@ -26,7 +33,7 @@ export class AuthenticationService {
      * @returns The user as registered by the API
      */
     static async register(username: string, email: string, password: string): Promise<User> {
-        return httpClient.post<User>('/auth/register', { username: username, email: email, password: password }).then(null, () => Promise.reject('Création du compte impossible ; veuillez réessayer.'));
+        return httpClient.post<User>('/auth/register', { id: 0, username: username, email: email, password: password }).then(null, () => Promise.reject('Création du compte impossible ; veuillez réessayer.'));
     }
     
     /**
@@ -34,25 +41,32 @@ export class AuthenticationService {
      */
     static logout(): void {
         localStorage.removeItem('user');
+		AuthenticationService.user.next({} as User)
         history.push('/login');
-    }
+	}
 
-    /**
-     * Checks whether the user is logged in or not.
-     * @returns true if the user is logged in
-     */
-    static get isLoggedIn(): boolean {
-        return localStorage.getItem('user') !== null;
-    }
-
-    /**
+	/**
      * Retrieves the logged-in user.
      * Beware, if the user is not logged in, all properties are undefined.
      * @returns a `User` object, with possibly undefined properties
      */
-    static get user(): User {
-        if (AuthenticationService.isLoggedIn)
-            return JSON.parse(localStorage.getItem('user') as string) as User;
-        return {} as User;
-    }
+    static get User(): User {
+		return AuthenticationService.user.value;
+	}
+
+	static get isLoggedIn(): boolean {
+		return AuthenticationService.user.value.id !== undefined;
+	}
+
+	/**
+	 * Attempts to restore the user from the local storage.
+	 * This should only be called once, in App.tsx for example.
+	 */
+	static restoreUser(): void {
+		const user = localStorage.getItem('user');
+		if (user === null)
+			AuthenticationService.user.next({} as User);
+		else
+			AuthenticationService.user.next(JSON.parse(user) as User);
+	}
 }
