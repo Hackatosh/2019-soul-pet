@@ -2,6 +2,7 @@ import React from 'react';
 import { PServicesMap, SServicesMap, ListMarkerData } from '../models';
 import { GetServicesServices } from '../services';
 import { iconVet, iconPark, iconGroom } from '../models';
+import { getUserLocation } from '../helpers';
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 
@@ -55,6 +56,10 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
                  ]}
   }
 
+  async componentDidMount(){
+    this.queryAPIServices({});
+  }
+
   updateRadius = (event:any) => {
     this.setState({radius: event.target.value *1000})
   }
@@ -76,10 +81,11 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
     this.setState({markers: markersAllTypes})
   }
 
+
   render(){
 
 
-    const position=[this.props.lat, this.props.lon];
+    let position=[this.props.lat, this.props.lon];
     return(
       <div className="ServicesMap">
         <div className="container_leaflet">
