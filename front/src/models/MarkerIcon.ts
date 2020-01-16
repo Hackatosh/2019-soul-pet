@@ -7,19 +7,32 @@ import shadow from '../resources/icons/shadow.png';
 const iconPark = L.icon({
   iconUrl: imagePark,
   shadowUrl: shadow,
-  iconSize: [26, 40]
+  iconSize:     [38, 40],
+  shadowSize:   [50, 64],
+  iconAnchor:   [22, 40],
+  shadowAnchor: [20, 62],
+  popupAnchor:  [-3, -76]
 });
 
 const iconVet = L.icon({
   iconUrl: imageVet,
   shadowUrl: shadow,
-  iconSize: [26, 40]
+  iconSize:     [38, 40],
+  shadowSize:   [50, 64],
+  iconAnchor:   [22, 40],
+  shadowAnchor: [20, 62],
+  popupAnchor:  [-3, -76]
+
 });
 
 const iconGroom = L.icon({
   shadowUrl: shadow,
   iconUrl: imageGroom,
-  iconSize: [26, 40]
+  iconSize:     [38, 40],
+  shadowSize:   [50, 64],
+  iconAnchor:   [22, 40],
+  shadowAnchor: [20, 62],
+  popupAnchor:  [-3, -76]
 });
 
 
