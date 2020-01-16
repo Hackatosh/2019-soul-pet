@@ -61,7 +61,7 @@ eventsRouter.get('/search', searchEvents, inputValidationMW, async (req:Authenti
 
 const getEventChecks = [
     check('eventId').notEmpty().isNumeric().withMessage("eventId must be a number"),
-]
+];
 
 eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req:AuthenticatedRequest, res:Response) => {
     const eventId = parseInt(req.params.eventId);
