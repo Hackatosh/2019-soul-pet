@@ -1,6 +1,6 @@
 
 
-getUserLocation = function () {
+export async function getUserLocation(){
 
     let pos = {
         lat: '',
@@ -8,7 +8,7 @@ getUserLocation = function () {
         status: ''
     }
 
-    function success(position) {
+    function success(position: any) {
 
         pos.lat = position.coords.latitude;
         pos.lon = position.coords.longitude;
@@ -26,6 +26,6 @@ getUserLocation = function () {
         await navigator.geolocation.getCurrentPosition(success, error);
     }
     return pos; // not returns anything at first
-}
+};
 
 export default { getUserLocation };

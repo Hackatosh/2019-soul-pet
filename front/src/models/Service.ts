@@ -1,7 +1,8 @@
 interface SServicesMapType{
+  userPosition: Array<number>;
   toDisplay: Array<string>;
   radius: number;
-  markers: Array<MarkerData>;
+  markers: Array<MarkerDataType>;
 }
 
 interface QueryServiceType{

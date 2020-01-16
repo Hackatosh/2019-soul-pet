@@ -17,8 +17,32 @@ const serviceTypeList = [
   name : "Toiletteurs",
   icon: iconGroom}
 ]
-
-
+const easterEggMarkers = [
+               {
+                 key: "marker1",
+                 position: [48.86471, 2.349014],
+                 info:"Dr Obiwan Kenobi, 18b rue Tiquetonne",
+                 serviceType: "vet"
+               },
+               {
+                 key: "marker2",
+                 position: [48.865, 2.338],
+                 info:"Parc Grasswalker",
+                 serviceType: "park"
+               },
+               {
+                 key: "marker3",
+                 position: [48.86, 2.36],
+                 info:"Chewbacca's style, 3 rue des Quatre Fils",
+                 serviceType: "groom"
+               },
+               {
+                 key: "marker4",
+                 position: [48.862, 2.33],
+                 info:"Parc Highground",
+                 serviceType: "park"
+               },
+             ]
 
 
 class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
@@ -26,34 +50,12 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
     super(props);
     const toDisplay = serviceTypeList.map(el => (el.type))
 
-    this.state= {toDisplay: toDisplay,
+
+    this.state= {userPosition: [this.props.lat, this.props.lon],
+                 toDisplay: toDisplay,
                  radius: 5000,
-                 markers: [
-                   {
-                     key: "marker1",
-                     position: [48.86471, 2.349014],
-                     info:"Dr Obiwan Kenobi, 18b rue Tiquetonne",
-                     serviceType: "vet"
-                   },
-                   {
-                     key: "marker2",
-                     position: [48.865, 2.338],
-                     info:"Parc Grasswalker",
-                     serviceType: "park"
-                   },
-                   {
-                     key: "marker3",
-                     position: [48.86, 2.36],
-                     info:"Chewbacca's style, 3 rue des Quatre Fils",
-                     serviceType: "groom"
-                   },
-                   {
-                     key: "marker4",
-                     position: [48.862, 2.33],
-                     info:"Parc Highground",
-                     serviceType: "park"
-                   },
-                 ]}
+                 markers: []
+               }
   }
 
   async componentDidMount(){
@@ -73,28 +75,34 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 
   queryAPIServices = async (event : any) => {
     let markersAllTypes: ListMarkerData = []
-    for (let i = 0; i < serviceTypeList.length; i++) {
-      const markers = await GetServicesServices.get_services(this.props.lat,
-        this.props.lon, this.state.radius, serviceTypeList[i].type);
-        markersAllTypes = markersAllTypes.concat(markers)
-    }
-    this.setState({markers: markersAllTypes})
+    try{
+      for (let i = 0; i < serviceTypeList.length; i++) {
+        const markers = await GetServicesServices.get_services(this.props.lat,
+          this.props.lon, this.state.radius, serviceTypeList[i].type);
+          markersAllTypes = markersAllTypes.concat(markers)
+        }
+        this.setState({markers: ((markersAllTypes===[]) ? easterEggMarkers : markersAllTypes)})
+
+      } catch(error){
+        this.setState({markers: easterEggMarkers});
+      }
+
+
   }
 
 
   render(){
 
 
-    let position=[this.props.lat, this.props.lon];
     return(
       <div className="ServicesMap">
         <div className="container_leaflet">
-          <LeafletMap center={position} zoom={this.props.zoom} style={{height: this.props.size, width: this.props.size}}>
+          <LeafletMap center={this.state.userPosition} zoom={this.props.zoom} style={{height: this.props.size, width: this.props.size}}>
             <TileLayer
                      attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                    />
-            <Marker position={position} >
+            <Marker position={this.state.userPosition} >
               <Popup>
                 Vous êtes ici !
               </Popup>
