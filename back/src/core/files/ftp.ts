@@ -161,4 +161,4 @@ const deleteFromSFTP = async function(destFolder:Folder,destFilename:string):Pro
     }
 };
 
-export { uploadToSFTP, pipeSFTPIntoResponse }
+export { uploadToSFTP, pipeSFTPIntoResponse, deleteFromSFTP }

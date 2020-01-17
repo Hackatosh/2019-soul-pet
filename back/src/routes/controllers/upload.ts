@@ -8,7 +8,7 @@ uploadTestRouter.post('/pictures',inMemoryStorage.single("photo"),async (req:Req
     try {
         const buffer = req.file.buffer;
         const filename = req.file.originalname;
-        await uploadToSFTP(buffer, Folder.Pictures, filename);
+        await uploadToSFTP(buffer, Folder.AnimalPictures, filename);
         res.sendStatus(200);
     } catch(e){
         console.log(e)
@@ -20,7 +20,7 @@ uploadTestRouter.post('/pictures',inMemoryStorage.single("photo"),async (req:Req
 uploadTestRouter.get('/pictures/:filename',async (req:Request, res:Response) => {
     try {
         const filename = req.params.filename;
-        await pipeSFTPIntoResponse(res,Folder.Pictures, filename, ContentType.PNG)
+        await pipeSFTPIntoResponse(res,Folder.AnimalPictures, filename, ContentType.PNG)
     } catch(e){
         res.status(400).send({message:"Problem when downloading the file"})
     }
