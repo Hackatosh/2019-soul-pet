@@ -1,5 +1,5 @@
 import {Response, Router} from "express";
-import {inMemoryStorage} from "../../core/files/localStorage";
+import {inMemoryStoragePicture, resolvePictureContentType} from "../../core/files/localStorage";
 import {ContentType, deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
 import {Animal} from "../../database/models/animal";
 import {AnimalPicture} from "../../database/models/animalPicture";
@@ -58,7 +58,7 @@ animalPicturesRouter.get('/', getAnimalPictureChecks, inputValidationMW, async (
         return;
     }
     try {
-        await pipeSFTPIntoResponse(res,Folder.AnimalPictures, filename, ContentType.PNG)
+        await pipeSFTPIntoResponse(res,Folder.AnimalPictures, filename, file.contentType)
     } catch(e){
         res.status(400).json({message:"Problem when downloading the file"})
     }
@@ -72,10 +72,11 @@ const postAnimalPicturesChecks = [
     check('animalId').notEmpty().isNumeric().withMessage("animalId must be a number"),
 ];
 
-animalPicturesRouter.post('/:animalId', inMemoryStorage.single("picture"), postAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
+animalPicturesRouter.post('/:animalId', inMemoryStoragePicture.single("picture"), postAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     try {
         const buffer = req.file.buffer;
         const filename = req.file.originalname;
+        const contentType = resolvePictureContentType(req.file);
         const animalId = req.params.animalId;
         const userId = req.authInfos.userId;
         const pet = await Animal.findOne({where: {id: animalId}});
@@ -86,7 +87,7 @@ animalPicturesRouter.post('/:animalId', inMemoryStorage.single("picture"), postA
         } else {
             try {
                 await uploadToSFTP(buffer, Folder.AnimalPictures, filename);
-                const animalPicture = await AnimalPicture.create({animalId, filename});
+                const animalPicture = await AnimalPicture.create({animalId, filename, contentType});
                 res.status(200).send(animalPicture);
             } catch (e) {
                 console.log(e);

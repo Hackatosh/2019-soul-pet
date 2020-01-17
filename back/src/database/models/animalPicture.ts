@@ -3,11 +3,13 @@ import {
     Model
 } from "sequelize";
 import {db} from "../connection";
+import {ContentType} from "../../core/files/ftp";
 
 export class AnimalPicture extends Model {
     public id!: number;
     public animalId !: number;
     public filename  !: string;
+    public contentType !: ContentType;
 }
 
     const initAnimalPicturesModel = async function():Promise<void> {
@@ -27,6 +29,11 @@ export class AnimalPicture extends Model {
                 type :new DataTypes.STRING(128),
                 allowNull : false,
                 unique: true,
+            },
+            contentType: {
+                type: DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
+                unique: false,
             },
         }, {
             tableName: 'animalPictures',

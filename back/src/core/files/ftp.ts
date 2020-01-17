@@ -50,6 +50,8 @@ export enum Folder {
 /*** Enum representing the content types that can be put in and retrieved from the SFTP ***/
 export enum ContentType{
     PNG,
+    JPEG,
+    GIF,
 }
 
 
@@ -83,8 +85,15 @@ const resolvePath = function(folder:Folder,filename:string):string{
 /*** Generate a Content-Type HttpHeader based on the ContentType enum ***/
 const generateContentTypeHeader = function (contentType:ContentType):HttpHeader {
     switch (contentType) {
+        //For .png files
         case ContentType.PNG:
             return new HttpHeader("Content-Type","image/png");
+            // For .jpg and .jpeg files
+        case ContentType.JPEG:
+            return new HttpHeader("Content-Type","image/jpeg");
+            // For .gif files
+        case ContentType.GIF:
+            return new HttpHeader("Content-Type","image/gif");
         default:
             throw new Error("Unimplemented content type. This is needed for no sniff header.")
     }

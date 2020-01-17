@@ -13,7 +13,6 @@ import {corsMW} from "./middlewares/allowFront";
 import {animalsRouter} from "./controllers/animals";
 import {accountRouter} from "./controllers/account";
 import {eventsRouter} from "./controllers/events";
-import {uploadTestRouter} from "./controllers/upload";
 
 /*** Basic middlewares mouting ***/
 const app = express();
@@ -31,7 +30,6 @@ apiRouter.use('*',loginRequiredMW);
 apiRouter.use('/events',eventsRouter);
 apiRouter.use('/account',accountRouter);
 apiRouter.use('/animals',animalsRouter);
-apiRouter.use('/uploadTest',uploadTestRouter);
 apiRouter.use('/pictures/animals',animalPicturesRouter);
 apiRouter.use('/logout',logoutRouter);
 apiRouter.use('*',handleError500MW);
