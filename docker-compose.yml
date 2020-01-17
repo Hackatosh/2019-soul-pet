@@ -76,7 +76,8 @@ services:
       - sftp-event-pictures:/home/nodejs/pictures/events/
     ports:
       - "2222:22"
-    command: [nodejs:password:::pictures/animals, nodejs:password:::pictures/events]
+    command: nodejs:password:::pictures
 volumes:
   db-data:
-  sftp-pictures:
+  sftp-animal-pictures:
+  sftp-event-pictures:

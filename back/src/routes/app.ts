@@ -5,7 +5,6 @@ import helmet from 'helmet';
 import { healthRouter } from './controllers/health';
 import {loginRequiredMW} from "./middlewares/loginRequired";
 import {authenticationRouter} from "./controllers/authentication";
-import {AuthenticatedRequest} from "../core/authentication/authenticationInterfaces";
 import * as bodyParser from 'body-parser';
 import {animalPicturesRouter} from "./controllers/animalPictures";
 import {handleError500MW} from "./middlewares/errorHandlers";

@@ -72,7 +72,7 @@ const postAnimalPicturesChecks = [
     check('animalId').notEmpty().isNumeric().withMessage("animalId must be a number"),
 ];
 
-animalPicturesRouter.post('/:animalId', inMemoryStorage.single("photo"), postAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
+animalPicturesRouter.post('/:animalId', inMemoryStorage.single("picture"), postAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     try {
         const buffer = req.file.buffer;
         const filename = req.file.originalname;

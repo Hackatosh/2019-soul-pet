@@ -111,6 +111,7 @@ const uploadToSFTP = async function(src:Buffer,destFolder:Folder,destFilename:st
         await sftp.connect(config);
         await sftp.put(src, sftpPath, putOptions);
     } catch (e) {
+        console.log(e);
         throw new Error("Unable to upload file")
     } finally {
         await sftp.end();
