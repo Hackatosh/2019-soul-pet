@@ -7,7 +7,7 @@ import {loginRequiredMW} from "./middlewares/loginRequired";
 import {authenticationRouter} from "./controllers/authentication";
 import {AuthenticatedRequest} from "../core/authentication/authenticationInterfaces";
 import * as bodyParser from 'body-parser';
-import {uploadRouter} from "./controllers/uploadImage";
+import {animalPicturesRouter} from "./controllers/animalPictures";
 import {handleError500MW} from "./middlewares/errorHandlers";
 import {logoutRouter} from "./controllers/logout";
 import {corsMW} from "./middlewares/allowFront";
@@ -33,7 +33,7 @@ apiRouter.use('/events',eventsRouter);
 apiRouter.use('/account',accountRouter);
 apiRouter.use('/animals',animalsRouter);
 apiRouter.use('/uploadTest',uploadTestRouter);
-apiRouter.use('/uploadImage',uploadRouter);
+apiRouter.use('/pictures/animals',animalPicturesRouter);
 apiRouter.use('/logout',logoutRouter);
 apiRouter.use('*',handleError500MW);
 

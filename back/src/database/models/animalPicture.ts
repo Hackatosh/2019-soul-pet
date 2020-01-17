@@ -4,7 +4,7 @@ import {
 } from "sequelize";
 import {db} from "../connection";
 
-export class AnimalPictures extends Model {
+export class AnimalPicture extends Model {
     public id!: number;
     public animalId !: number;
     public filename  !: string;
@@ -12,7 +12,7 @@ export class AnimalPictures extends Model {
 
     const initAnimalPicturesModel = async function():Promise<void> {
 
-        AnimalPictures.init({
+        AnimalPicture.init({
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 autoIncrement: true,
@@ -30,7 +30,7 @@ export class AnimalPictures extends Model {
             },
         }, {
             tableName: 'animalPictures',
-            modelName: 'animalPictures',
+            modelName: 'animalPicture',
             sequelize: db,
         });
     };

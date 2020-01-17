@@ -8,7 +8,7 @@ import {initSpecieModel} from "./models/specie";
 import {initAssociations} from "./associations";
 import {initAnimalModel} from "./models/animal";
 import {initPetEventModel} from "./models/event";
-import {initAnimalPicturesModel} from "./models/animalPictures";
+import {initAnimalPicturesModel} from "./models/animalPicture";
 
 /*** Loop used to wait until the DB is ready, unless the number of maxTry is reached ***/
 const waitForDB = async function (maxTry:number):Promise<void> {

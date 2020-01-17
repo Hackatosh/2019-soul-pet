@@ -25,7 +25,8 @@ services:
       FTP_PORT: 22
       FTP_USER: nodejs
       FTP_PASSWORD: password
-      FTP_PATH_PICTURES: pictures
+      FTP_PATH_ANIMAL_PICTURES: pictures/animals
+      FTP_PATH_EVENT_PICTURES: pictures/events
     volumes:
       - ./back:/usr/app/
       - /usr/app/node_modules
@@ -71,10 +72,11 @@ services:
     container_name: 'soul-pet-sftp'
     volumes:
       - ./ftp/sftp.d:/etc/sftp.d/
-      - sftp-pictures:/home/nodejs/pictures
+      - sftp-animal-pictures:/home/nodejs/pictures/animals/
+      - sftp-event-pictures:/home/nodejs/pictures/events/
     ports:
       - "2222:22"
-    command: nodejs:password:::pictures
+    command: [nodejs:password:::pictures/animals, nodejs:password:::pictures/events]
 volumes:
   db-data:
   sftp-pictures:

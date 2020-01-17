@@ -14,7 +14,7 @@ import {
 import {db} from '../connection'
 import {Specie} from "./specie";
 import {PetEvent} from "./event";
-import {AnimalPictures} from "./animalPictures";
+import {AnimalPicture} from "./animalPicture";
 
 /*** Model used to represent an animal in DB ***/
 export class Animal extends Model {
@@ -31,24 +31,24 @@ export class Animal extends Model {
     public removeEvent!:BelongsToManyRemoveAssociationMixin<PetEvent,number>;
     public removeEvents!:BelongsToManyRemoveAssociationsMixin<PetEvent,number>;
 
-    public getAnimalPictures!: HasManyGetAssociationsMixin<AnimalPictures>; // Note the null assertions!
-    public addAnimalPicture!: HasManyAddAssociationMixin<AnimalPictures, number>;
-    public hasAnimalPicture!: HasManyHasAssociationMixin<AnimalPictures, number>;
+    public getAnimalPictures!: HasManyGetAssociationsMixin<AnimalPicture>; // Note the null assertions!
+    public addAnimalPicture!: HasManyAddAssociationMixin<AnimalPicture, number>;
+    public hasAnimalPicture!: HasManyHasAssociationMixin<AnimalPicture, number>;
     public countAnimalPictures!: HasManyCountAssociationsMixin;
-    public createAnimalPictures!: HasManyCreateAssociationMixin<AnimalPictures>;
-    public removeAnimalPicture !: HasManyHasAssociationMixin<AnimalPictures, number>;
-    public removeAnimalPictures !: HasManyHasAssociationMixin<AnimalPictures, number>;
+    public createAnimalPictures!: HasManyCreateAssociationMixin<AnimalPicture>;
+    public removeAnimalPicture !: HasManyHasAssociationMixin<AnimalPicture, number>;
+    public removeAnimalPictures !: HasManyHasAssociationMixin<AnimalPicture, number>;
 
 
 
     // These will only be populated if you actively include a relation.
     public readonly events?: PetEvent[];
-    public readonly animalPictures?: AnimalPictures[];
+    public readonly animalPictures?: AnimalPicture[];
 
 
     public static associations: {
         events: Association<PetEvent,Animal>;
-        pictures: Association<AnimalPictures,Animal>;
+        pictures: Association<AnimalPicture,Animal>;
     }
 }
 

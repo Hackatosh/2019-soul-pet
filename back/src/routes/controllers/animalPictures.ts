@@ -2,12 +2,30 @@ import {Request, Response, Router} from "express";
 import {inMemoryStorage} from "../../core/files/localStorage";
 import {Folder, uploadToSFTP} from "../../core/files/ftp";
 import {Animal} from "../../database/models/animal";
-import {AnimalPictures} from "../../database/models/animalPictures";
+import {AnimalPicture} from "../../database/models/animalPicture";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
+import {check} from "express-validator";
+import {inputValidationMW} from "../middlewares/inputValidation";
 
-const uploadRouter = Router();
+const animalPicturesRouter = Router();
 
-uploadRouter.post('/animals/:animalId',inMemoryStorage.single("photo"), async (req: AuthenticatedRequest, res: Response) => {
+const postAnimalPicturesChecks = [
+    check('animalId').notEmpty().isNumeric().withMessage("animalId must be a number"),
+];
+
+animalPicturesRouter.get('/:animalId', async (req: AuthenticatedRequest, res: Response) => {
+
+});
+
+/***
+ * This route allows to upload a picture for a given animal.
+ ***/
+
+const postAnimalPicturesChecks = [
+    check('animalId').notEmpty().isNumeric().withMessage("animalId must be a number"),
+];
+
+animalPicturesRouter.post('/:animalId', inMemoryStorage.single("photo"), postAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     try {
         const buffer = req.file.buffer;
         const filename = req.file.originalname;
@@ -23,8 +41,8 @@ uploadRouter.post('/animals/:animalId',inMemoryStorage.single("photo"), async (r
         }
         else{
             try {
-                await uploadToSFTP(buffer, Folder.Pictures, filename);
-                const animalPicture = await AnimalPictures.create({animalId, filename});
+                await uploadToSFTP(buffer, Folder.AnimalPictures, filename);
+                const animalPicture = await AnimalPicture.create({animalId, filename});
                 res.status(200).send(animalPicture);
             } catch (e) {
                 console.log(e);
@@ -35,7 +53,6 @@ uploadRouter.post('/animals/:animalId',inMemoryStorage.single("photo"), async (r
         console.log(e);
         res.status(400).send({message:"Couldn't upload the file"})
     }
-
 });
 
-export {uploadRouter}
+export {animalPicturesRouter}
