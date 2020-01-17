@@ -13,7 +13,6 @@ import {corsMW} from "./middlewares/allowFront";
 import {animalsRouter} from "./controllers/animals";
 import {accountRouter} from "./controllers/account";
 import {eventsRouter} from "./controllers/events";
-import {uploadTestRouter} from "./controllers/upload";
 import {placesRouter} from "./controllers/places";
 import {eventCommentsRouter} from "./controllers/eventComments";
 
