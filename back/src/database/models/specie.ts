@@ -13,7 +13,10 @@ import {db} from '../connection'
 import {Animal} from "./animal";
 import {PetEvent} from "./event";
 
-/*** Model used to represent a specie in DB ***/
+/***
+ * Model used to represent a specie in the DB.
+ ***/
+
 export class Specie extends Model {
     public id!: number;
     public name!: string;
@@ -24,7 +27,6 @@ export class Specie extends Model {
     public countAnimals!: HasManyCountAssociationsMixin;
     public createAnimal!: HasManyCreateAssociationMixin<Animal>;
 
-
     // These will only be populated if you actively include a relation.
     public readonly animals?: Animal[];
 
@@ -33,7 +35,10 @@ export class Specie extends Model {
     };
 }
 
-/*** Function used to initialize the User Model ***/
+/***
+ * Function used to initialize the Specie Model.
+ ***/
+
 const initSpecieModel = async function (): Promise<void> {
 
     Specie.init({

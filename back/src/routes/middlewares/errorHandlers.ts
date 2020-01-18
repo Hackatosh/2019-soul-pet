@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
-/*** Middleware to handle internal server error ***/
+/***
+ * Middleware to handle internal server errors.
+ ***/
 
 const handleError500MW = function (err:Error, req:Request, res:Response, next: NextFunction) {
   console.log("Error 500 !");

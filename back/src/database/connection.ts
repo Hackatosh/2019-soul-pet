@@ -1,9 +1,14 @@
-/*** This file set up the DB using Sequelize***/
+/***
+ * This file sets up the DB connection which is used by Sequelize ORM.
+ ***/
 
 import {Sequelize} from 'sequelize';
 import {env} from '../config/env'
 
-/*** Create a Sequelize instance which holds all the informations to connect to MariaDB ***/
+/***
+ * Create a Sequelize instance using all the information provided by the env object to connect to MariaDB.
+ ***/
+
 const db = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
     host: env.DB_HOST,
     port: env.DB_PORT,

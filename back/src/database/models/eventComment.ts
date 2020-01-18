@@ -4,7 +4,10 @@ import {
 } from 'sequelize';
 import {db} from '../connection'
 
-/*** Model used to represent an comment about an event in DB ***/
+/***
+ * Model used to represent an comment made by a user about an event in the DB.
+ ***/
+
 export class EventComment extends Model {
     public id!: number;
     public userId!: number;
@@ -16,8 +19,11 @@ export class EventComment extends Model {
     public readonly updatedAt!: Date;
 }
 
-/*** Function used to initialize the EventComment Model ***/
-const initEventCommentModel = async function():Promise<void> {
+/***
+ * Function used to initialize the EventComment Model.
+ ***/
+
+const initEventCommentModel = async function (): Promise<void> {
 
     EventComment.init({
         id: {

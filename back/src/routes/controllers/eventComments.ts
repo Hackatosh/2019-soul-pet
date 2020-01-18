@@ -7,7 +7,9 @@ import {EventComment} from "../../database/models/eventComment";
 
 const eventCommentsRouter = Router();
 
-/*** This route is used to obtained the list of all the comments of a given user***/
+/***
+ * This route is used to obtained the list of all the comments about events related to a specific user, identified by the provided userId.
+ ***/
 
 const getUserEventCommentsChecks = [
     check('userId').notEmpty().isNumeric().withMessage("userId must be a number"),
@@ -23,7 +25,9 @@ eventCommentsRouter.get('/', getUserEventCommentsChecks, inputValidationMW, asyn
     res.status(200).json(comments)
 });
 
-/*** This route is used to obtained a specific comment. ***/
+/***
+ * This route is used to obtained a specific comment about an event, identified by the provided commentId.
+ ***/
 
 const getCommentChecks = [
     check('commentId').notEmpty().isNumeric().withMessage("commentId must be a number"),
@@ -41,7 +45,10 @@ eventCommentsRouter.get('/:commentId', getCommentChecks, inputValidationMW, asyn
     }
 });
 
-/*** This route is used to create a new comment ***/
+/***
+ * This route is used to create a new comment using the provided information.
+ * The comment is associated to the event identified by the provided eventId and to the user identified by the provided userId.
+ ***/
 
 const postCommentChecks = [
     check('userId').notEmpty().isNumeric().withMessage("userId must be a number"),
@@ -70,7 +77,9 @@ eventCommentsRouter.post('/', postCommentChecks, inputValidationMW, async (req: 
     }
 });
 
-/*** This route is used to edit a comment***/
+/***
+ * This route is used to edit a comment, identified by the provided commentId.
+ ***/
 
 const putCommentChecks = [
     check('commentId').notEmpty().isNumeric().withMessage("eventId must be a number"),
@@ -94,7 +103,9 @@ eventCommentsRouter.put('/:commentId', putCommentChecks, inputValidationMW, asyn
     res.status(200).json(commentFound);
 });
 
-/*** This route is used to delete a comment***/
+/***
+ * This route is used to delete a comment, identified by the provided commentId.
+ ***/
 
 const deleteCommentChecks = [
     check('commentId').notEmpty().isNumeric().withMessage("commentId must be a number"),

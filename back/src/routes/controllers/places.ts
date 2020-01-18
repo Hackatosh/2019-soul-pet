@@ -6,7 +6,9 @@ import {AuthenticatedRequest} from "../../core/authentication/authenticationInte
 
 const placesRouter = Router();
 
-/** This route is used to search for veterinarians near the user **/
+/***
+ * This route allows to obtains the list of the provided place type near the provided position (lat, long) in the provided radius.
+ ***/
 
 const getSearchPlacesCheck = [
     check('lat').notEmpty().isNumeric().withMessage("lat must be a number"),
