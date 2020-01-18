@@ -54,7 +54,7 @@ eventsRouter.get('/search', searchEvents, inputValidationMW, async (req: Authent
     let searchRequest = {[Sequelize.Op.and]: andConditions};
 
     let searchResult = await PetEvent.findAll({where: searchRequest});
-    res.status(200).send(searchResult);
+    res.status(200).json(searchResult);
 });
 
 /***
@@ -80,7 +80,7 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: Aut
             res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
             return;
         }
-        res.status(200).send(eventFound)
+        res.status(200).json(eventFound)
     } catch (e) {
         console.log(e)
     }
@@ -115,12 +115,12 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req: Authentic
         return;
     }
     if (!userFound) {
-        res.status(404).send({message: "userId doesn't match any user."})
+        res.status(404).json({message: "userId doesn't match any user."})
     }
     for (let specieId of specieIds) {
         let specieFound = await Specie.findOne({where: {id: specieId}});
         if (!specieFound) {
-            res.status(400).send({message: "You're trying to use an unexisting specie"});
+            res.status(400).json({message: "You're trying to use an unexisting specie"});
             return;
         }
     }
@@ -128,10 +128,10 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req: Authentic
         const event = await PetEvent.create({name, beginDate, endDate, userId, location, description});
         event.addAuthorizedSpecies(specieIds);
         await event.save();
-        res.status(200).send(event)
+        res.status(200).json(event)
     } catch (e) {
         console.log(e);
-        res.status(400).send({message: "Unable to create this event"})
+        res.status(400).json({message: "Unable to create this event"})
     }
 });
 
@@ -175,7 +175,7 @@ eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, 
         for (let specieId of specieIds) {
             let specieFound = await Specie.findOne({where: {id: specieId}});
             if (!specieFound) {
-                res.status(400).send({message: "You're trying to use an unexisting specie"});
+                res.status(400).json({message: "You're trying to use an unexisting specie"});
                 return;
             }
         }
@@ -233,7 +233,7 @@ eventsRouter.delete('/:eventId', deleteEventChecks, inputValidationMW, async (re
         return;
     }
     await PetEvent.destroy({where: {id: eventId}});
-    res.status(200).send({id: eventId});
+    res.status(200).json({id: eventId});
 });
 
 
@@ -265,7 +265,7 @@ eventsRouter.post('/:eventId/animals', postAnimalInEventChecks, inputValidationM
         return;
     }
     await eventFound.addAttendee(animalFound);
-    res.status(200).send({eventId: eventId, animalId: animalId})
+    res.status(200).json({eventId: eventId, animalId: animalId})
 });
 
 /***
@@ -296,7 +296,7 @@ eventsRouter.delete('/:eventId/animals/:animalId', deleteAnimalFromEventChecks, 
         return;
     }
     await eventFound.removeAttendee(animalFound);
-    res.status(200).send({eventId: eventId, animalId: animalId})
+    res.status(200).json({eventId: eventId, animalId: animalId})
 });
 
 export {eventsRouter}

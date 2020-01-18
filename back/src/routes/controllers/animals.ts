@@ -17,7 +17,7 @@ const animalsRouter = Router();
 
 animalsRouter.get('/species', async (req: AuthenticatedRequest, res: Response) => {
     const species = await Specie.findAll();
-    res.status(200).send(species);
+    res.status(200).json(species);
 });
 
 /***
@@ -35,7 +35,7 @@ animalsRouter.get('/', getUserAnimalsChecks, inputValidationMW, async (req: Auth
         return;
     }
     const animals = await Animal.findAll({where: {userId: userId}, include: [{model: Specie}]});
-    res.status(200).send(animals)
+    res.status(200).json(animals)
 });
 
 /***
@@ -58,7 +58,7 @@ animalsRouter.get('/:animalId', getUserAnimalChecks, inputValidationMW, async (r
     } else if (animal.userId != req.authInfos.userId) {
         res.sendStatus(403);
     } else {
-        res.status(200).send(animal);
+        res.status(200).json(animal);
     }
 });
 
@@ -89,10 +89,10 @@ animalsRouter.post('/', postAnimalChecks, inputValidationMW, async (req: Authent
     }
     try {
         const animal = await Animal.create({userId, specieId, name, birthdate});
-        res.status(200).send(animal)
+        res.status(200).json(animal)
     } catch (e) {
         console.log(e);
-        res.status(400).send({message: "Unable to register the animal"})
+        res.status(400).json({message: "Unable to register the animal"})
     }
 });
 
@@ -136,7 +136,7 @@ animalsRouter.put('/:animalId', putAnimalChecks, inputValidationMW, async (req: 
         update = {specieId: specieId, ...update}
     }
     await Animal.update(update, {where: {id: animalId}});
-    res.status(200).send(update);
+    res.status(200).json(update);
 });
 
 /***

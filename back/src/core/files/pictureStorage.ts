@@ -28,7 +28,7 @@ const picturesFilter = function (req: Request, file: Multer.File, cb: (error: Er
  ***/
 const pictureErrorMW = function (err: Error, req: Request, res: Response, next: NextFunction) {
     if (err.message === message) {
-        res.status(400).send({message: "Unsupported picture filetype. Please send JPEG, JPG, PNG or GIF file."})
+        res.status(400).json({message: "Unsupported picture filetype. Please send JPEG, JPG, PNG or GIF file."})
     } else {
         next();
     }

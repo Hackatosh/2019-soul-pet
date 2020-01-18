@@ -41,7 +41,7 @@ eventCommentsRouter.get('/:commentId', getCommentChecks, inputValidationMW, asyn
     } else if (comment.userId != req.authInfos.userId) {
         res.sendStatus(403).json({message:"You don't have access to this comment."});
     } else {
-        res.status(200).send(comment);
+        res.status(200).json(comment);
     }
 });
 
@@ -73,7 +73,7 @@ eventCommentsRouter.post('/', postCommentChecks, inputValidationMW, async (req: 
         res.status(200).json(comment)
     } catch (e) {
         console.log(e);
-        res.status(400).send({message: "Unable to create the comment"})
+        res.status(400).json({message: "Unable to create the comment"})
     }
 });
 

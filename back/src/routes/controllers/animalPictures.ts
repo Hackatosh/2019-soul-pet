@@ -89,15 +89,15 @@ animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAni
             try {
                 await uploadToSFTP(buffer, Folder.AnimalPictures, filename);
                 const animalPicture = await AnimalPicture.create({animalId, filename, contentType});
-                res.status(200).send(animalPicture);
+                res.status(200).json(animalPicture);
             } catch (e) {
                 console.log(e);
-                res.status(400).send({message: "Unable to save the picture"})
+                res.status(400).json({message: "Unable to save the picture"})
             }
         }
     } catch (e) {
         console.log(e);
-        res.status(400).send({message: "Couldn't upload the file"})
+        res.status(400).json({message: "Couldn't upload the file"})
     }
 
 });

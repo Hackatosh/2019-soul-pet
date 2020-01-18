@@ -11,7 +11,7 @@ const logoutRouter = Router();
 
 logoutRouter.post('/', async (req: AuthenticatedRequest, res: Response) => {
     await revocateToken(req.rawToken);
-    res.sendStatus(200);
+    res.status(200).json({message: "The token has been correctly deleted", rawToken: req.rawToken});
 });
 
 export {logoutRouter};
