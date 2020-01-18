@@ -13,8 +13,6 @@ import {
 } from "../../core/utils";
 import {User} from "../../database/models/user";
 import {EventComment} from "../../database/models/eventComment";
-
-import {serialize} from "v8";
 import Sequelize from "sequelize";
 
 const eventsRouter = Router();
