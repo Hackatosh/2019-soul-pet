@@ -6,11 +6,15 @@ import {
     BelongsToManyAddAssociationsMixin,
     BelongsToManySetAssociationsMixin,
     Association,
-    BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin
+    BelongsToManyRemoveAssociationMixin,
+    BelongsToManyRemoveAssociationsMixin,
+    HasManyGetAssociationsMixin,
+    HasManyAddAssociationMixin, HasManyHasAssociationMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin
 } from 'sequelize';
 import {db} from '../connection'
 import {Specie} from "./specie";
 import {PetEvent} from "./event";
+import {AnimalPicture} from "./animalPicture";
 
 /*** Model used to represent an animal in DB ***/
 export class Animal extends Model {
@@ -27,17 +31,29 @@ export class Animal extends Model {
     public removeEvent!:BelongsToManyRemoveAssociationMixin<PetEvent,number>;
     public removeEvents!:BelongsToManyRemoveAssociationsMixin<PetEvent,number>;
 
+    public getAnimalPictures!: HasManyGetAssociationsMixin<AnimalPicture>; // Note the null assertions!
+    public addAnimalPicture!: HasManyAddAssociationMixin<AnimalPicture, number>;
+    public hasAnimalPicture!: HasManyHasAssociationMixin<AnimalPicture, number>;
+    public countAnimalPictures!: HasManyCountAssociationsMixin;
+    public createAnimalPictures!: HasManyCreateAssociationMixin<AnimalPicture>;
+    public removeAnimalPicture !: HasManyHasAssociationMixin<AnimalPicture, number>;
+    public removeAnimalPictures !: HasManyHasAssociationMixin<AnimalPicture, number>;
+
+
+
     // These will only be populated if you actively include a relation.
     public readonly events?: PetEvent[];
+    public readonly animalPictures?: AnimalPicture[];
+
 
     public static associations: {
-        events: Association<PetEvent,Animal>;
+        events: Association<Animal, PetEvent>;
+        pictures: Association<AnimalPicture,Animal>;
     }
 }
 
 /*** Function used to initialize the User Model ***/
 const initAnimalModel = async function():Promise<void> {
-
     Animal.init({
         id: {
             type: DataTypes.INTEGER.UNSIGNED,

@@ -28,16 +28,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 	}
 
     componentDidMount() {
-        AnimalService.get(this.state.id).then(a => this.prepareAnimal(a)).catch(() => history.push('/404'));   
-	}
-	
-	private prepareAnimal(animal: Animal) {
-        AnimalService.getSpecies().then(species => {
-			animal.specie = species.find(s => s.id === animal.specieId);
-            this.setState({ animal: animal });
-        }).catch(() => {
-            this.setState({ error: 'Erreur lors de la récupération des espèces' });
-        });
+        AnimalService.get(this.state.id).then(a => this.setState({ animal: a })).catch(() => history.push('/404'));   
 	}
 
     private showAnimalForm(state: boolean) {
@@ -129,7 +120,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 							</div>
 						</div>
 					</div>
-					<AnimalForm show={this.state.showAnimalForm} animal={this.state.animal} onHide={() => this.showAnimalForm(false)} onSuccess={a => this.prepareAnimal(a)} />
+					<AnimalForm show={this.state.showAnimalForm} animal={this.state.animal} onHide={() => this.showAnimalForm(false)} onSuccess={a => this.setState({ animal: a })} />
 					<DeleteConfirmation prompt='Écrivez le nom de l’animal pour confirmer la suppression' expected={this.state.animal?.name} show={this.state.showAnimalDelete} onHide={() => this.showAnimalDelete(false)} onSuccess={() => {
 						AnimalService.delete(this.state.id).then(() => history.push('/')).catch(() => this.setState({ error: 'Erreur lors de la suppression' }))
 					}} />

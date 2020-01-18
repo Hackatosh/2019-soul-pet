@@ -5,10 +5,14 @@ export class AnimalService {
     private static species: Specie[] | undefined = undefined;
     
     private static revive(a: Animal): Animal {
-		a.birthdate = new Date(a.birthdate);
+        a.birthdate = new Date(a.birthdate);
 		return a;
     }
 
+    /**
+     * Retrieves the existing species.
+     * @returns an array of species
+     */
     static async getSpecies(): Promise<Specie[]> {
         if (this.species === undefined)
             this.species = await httpClient.get<Specie[]>('/animals/species/', true).catch(() => Promise.reject('Erreur lors de la récupération des espèces'));

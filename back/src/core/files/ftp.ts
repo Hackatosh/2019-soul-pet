@@ -43,12 +43,15 @@ export class SFTPPipe {
 
 /*** Enum representing the folders accessible in the SFTP ***/
 export enum Folder {
-    Pictures,
+    AnimalPictures,
+    EventPictures,
 }
 
 /*** Enum representing the content types that can be put in and retrieved from the SFTP ***/
 export enum ContentType{
     PNG,
+    JPEG,
+    GIF,
 }
 
 
@@ -70,8 +73,10 @@ const checkFilenameForSFTP = function (filename:string) {
 const resolvePath = function(folder:Folder,filename:string):string{
     checkFilenameForSFTP(filename);
     switch (folder) {
-        case Folder.Pictures:
-            return join(env.FTP_PATH_PICTURES,filename);
+        case Folder.AnimalPictures:
+            return join(env.FTP_PATH_ANIMAL_PICTURES,filename);
+        case Folder.EventPictures:
+            return join(env.FTP_PATH_EVENT_PICTURES,filename);
         default:
             throw new Error("Unable to resolve folder path")
     }
@@ -80,8 +85,15 @@ const resolvePath = function(folder:Folder,filename:string):string{
 /*** Generate a Content-Type HttpHeader based on the ContentType enum ***/
 const generateContentTypeHeader = function (contentType:ContentType):HttpHeader {
     switch (contentType) {
+        //For .png files
         case ContentType.PNG:
             return new HttpHeader("Content-Type","image/png");
+            // For .jpg and .jpeg files
+        case ContentType.JPEG:
+            return new HttpHeader("Content-Type","image/jpeg");
+            // For .gif files
+        case ContentType.GIF:
+            return new HttpHeader("Content-Type","image/gif");
         default:
             throw new Error("Unimplemented content type. This is needed for no sniff header.")
     }
@@ -107,8 +119,8 @@ const uploadToSFTP = async function(src:Buffer,destFolder:Folder,destFilename:st
     try {
         await sftp.connect(config);
         await sftp.put(src, sftpPath, putOptions);
-        await sftp.end();
     } catch (e) {
+        console.log(e);
         throw new Error("Unable to upload file")
     } finally {
         await sftp.end();
@@ -143,4 +155,20 @@ const pipeSFTPIntoResponse = async function(res:Response,remoteFolder:Folder, re
     }
 };
 
-export { uploadToSFTP, pipeSFTPIntoResponse }
+/*** Business Logic ***/
+
+/*** Take a buffer and upload it to a given SFTP location obtained by resolving destFolder and destFilename ***/
+const deleteFromSFTP = async function(destFolder:Folder,destFilename:string):Promise<void>{
+    let sftp = new Client();
+    let sftpPath = resolvePath(destFolder, destFilename);
+    try {
+        await sftp.connect(config);
+        await sftp.delete(sftpPath);
+    } catch (e) {
+        throw new Error("Unable to delete file")
+    } finally {
+        await sftp.end();
+    }
+};
+
+export { uploadToSFTP, pipeSFTPIntoResponse, deleteFromSFTP }

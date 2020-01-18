@@ -20,14 +20,7 @@ export class HomePage extends React.Component<RouteComponentProps, HomePageState
     }
 
     componentDidMount() {
-        AnimalService.getSpecies().then(species => {
-            AnimalService.getAll(AuthenticationService.User.id).then((animals: Animal[]) => {
-                this.setState({ animals: animals.map((a: Animal) => {
-                    a.specie = species.find(s => s.id === a.specieId);
-                    return a;
-                }).reverse() });
-            }).catch(() => this.setState({ error: 'Erreur lors de la récupération des animaux' }));
-        }).catch(() => this.setState({ error: 'Erreur lors de la récupération des espèces' }));         
+        AnimalService.getAll(AuthenticationService.User.id).then((animals: Animal[]) => this.setState({ animals: animals.reverse() })).catch(() => this.setState({ error: 'Erreur lors de la récupération des animaux' }));      
     }
 
     private showAnimalForm(state: boolean) {
