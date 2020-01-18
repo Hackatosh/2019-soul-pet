@@ -2,9 +2,11 @@
 
 // @ts-ignore
 import multer, {Multer} from 'multer'
-import {Request} from "express";
+import {NextFunction, Request, Response} from "express";
 import * as path from "path";
 import {ContentType} from "./ftp";
+
+const message = "Error: unsupported picture filetype";
 
 /*** Filter to only accept files corresponding to pictures ***/
 const picturesFilter = function (req:Request, file:Multer.File, cb:(error: Error | null, acceptFile: boolean) => void) {
@@ -14,7 +16,15 @@ const picturesFilter = function (req:Request, file:Multer.File, cb:(error: Error
     if (mimetype && extname) {
         return cb(null, true);
     }
-    cb(new Error("Error: File upload only supports the following filetypes - " + filetypes), false);
+    cb(new Error(message), false);
+};
+
+const pictureErrorMW = function (err:Error, req:Request, res:Response, next: NextFunction) {
+    if(err.message === message){
+        res.status(400).send({message:"Unsupported picture filetype. Please send JPEG, JPG, PNG or GIF file."})
+    } else {
+        next();
+    }
 };
 
 /***
@@ -38,6 +48,9 @@ const resolvePictureContentType = function(file:Multer.File):ContentType {
 const memoryStorage = multer.memoryStorage();
 const inMemoryStoragePicture = multer({fileFilter:picturesFilter, storage:memoryStorage});
 
+const createPictureStorage = function (fieldName: string) {
+    return [inMemoryStoragePicture.single(fieldName), pictureErrorMW];
+};
 
 
-export { inMemoryStoragePicture, resolvePictureContentType }
+export { createPictureStorage, resolvePictureContentType }

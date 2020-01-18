@@ -1,11 +1,11 @@
 import {Response, Router} from "express";
-import {inMemoryStoragePicture, resolvePictureContentType} from "../../core/files/localStorage";
 import {ContentType, deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
 import {Animal} from "../../database/models/animal";
 import {AnimalPicture} from "../../database/models/animalPicture";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
+import {createPictureStorage, resolvePictureContentType} from "../../core/files/pictureStorage";
 
 const animalPicturesRouter = Router();
 
@@ -72,7 +72,7 @@ const postAnimalPicturesChecks = [
     check('animalId').notEmpty().isNumeric().withMessage("animalId must be a number"),
 ];
 
-animalPicturesRouter.post('/:animalId', inMemoryStoragePicture.single("picture"), postAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
+animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     try {
         const buffer = req.file.buffer;
         const filename = req.file.originalname;
