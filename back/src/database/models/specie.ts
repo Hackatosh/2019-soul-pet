@@ -7,7 +7,7 @@ import {
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     Association,
-    BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin
+    BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin, Op
 } from 'sequelize';
 import {db} from '../connection'
 import {Animal} from "./animal";
@@ -57,12 +57,21 @@ const initSpecieModel = async function (): Promise<void> {
 };
 
 const specieModelFill = async function (): Promise<void> {
-    await Specie.create({id: 1, name: "Chien"});
-    await Specie.create({id: 2, name: "Lama"});
-    await Specie.create({id: 3, name: "Chat"});
-    await Specie.create({id: 4, name: "Lapin"});
-    await Specie.create({id:5, name: "Perroquet"});
-    await Specie.create({id:6, name: "Loutre"});
+    const species: Array<{ id: number, name: string }> = [
+        {id: 1, name: "Chien"},
+        {id: 2, name: "Lama"},
+        {id: 3, name: "Chat"},
+        {id: 4, name: "Lapin"},
+        {id: 5, name: "Perroquet"},
+        {id: 6, name: "Loutre"},
+    ];
+    const addSpecie = async function(specie:{id:number,name:string}):Promise<void>{
+        const specieFound = await Specie.findOne({where: {[Op.or]: [{id:specie.id},{name:specie.name}]}});
+        if(!specieFound)
+            await Specie.create(specie);
+    };
+    const promises:Array<Promise<void>> = species.map(specie => addSpecie(specie));
+    await Promise.all(promises);
 };
 
 export {initSpecieModel, specieModelFill}

@@ -7,6 +7,7 @@ import {Specie} from "../../database/models/specie";
 import {isDateValid} from "../../core/utils";
 import {convertStringToDate} from "../../core/utils";
 import {PetEvent} from "../../database/models/event";
+import {AnimalPicture} from "../../database/models/animalPicture";
 
 const animalsRouter = Router();
 
@@ -41,7 +42,7 @@ const getUserAnimalChecks = [
 
 animalsRouter.get('/:animalId', getUserAnimalChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const animalId = parseInt(req.params.animalId);
-    const animal = await Animal.findOne({where: {id: animalId},include: [{model: PetEvent, as: "Events"},{model: Specie}]});
+    const animal = await Animal.findOne({where: {id: animalId},include: [{model: PetEvent, as: "events"},{model: AnimalPicture, as: "animalPictures"},{model: Specie}]});
     if (!animal) {
         res.sendStatus(404);
     } else if (animal.userId != req.authInfos.userId) {

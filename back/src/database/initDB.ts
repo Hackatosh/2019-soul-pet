@@ -8,6 +8,7 @@ import {initSpecieModel, specieModelFill} from "./models/specie";
 import {initAssociations} from "./associations";
 import {initAnimalModel} from "./models/animal";
 import {initPetEventModel} from "./models/event";
+import {initAnimalPicturesModel} from "./models/animalPicture";
 import {initEventCommentModel} from "./models/eventComment";
 
 /*** Loop used to wait until the DB is ready, unless the number of maxTry is reached ***/
@@ -44,12 +45,14 @@ const initDB = async function () {
         await initSpecieModel();
         await initAnimalModel();
         await initPetEventModel();
+        await initAnimalPicturesModel();
         await initEventCommentModel();
         await initAssociations();
         await db.sync();
-        //await specieModelFill();
+        await specieModelFill();
         console.log("DB initialized successfully");
     } catch (e) {
+        console.log(e);
         throw new Error("Problem when initializing the DB.")
     }
 };
