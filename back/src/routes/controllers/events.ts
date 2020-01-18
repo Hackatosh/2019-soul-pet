@@ -13,9 +13,47 @@ import {
 } from "../../core/utils";
 import {User} from "../../database/models/user";
 import {EventComment} from "../../database/models/eventComment";
-
+import Sequelize from "sequelize";
 
 const eventsRouter = Router();
+
+/*** This route is used to search for events ***/
+
+const searchEvents = [
+    check('keywords').notEmpty().isString().withMessage("keywords must be string").optional(),
+    check('beginDate').notEmpty().custom( date => isDateValid(date)).withMessage("beginDate should be a valid datetime").optional(),
+    check('endDate').notEmpty().custom( date => isDateValid(date)).withMessage("endDate should be a valid datetime").optional()
+];
+
+eventsRouter.get('/search', searchEvents, inputValidationMW, async (req:AuthenticatedRequest , res:Response) => {
+    const keywords = req.query.keywords;
+    const beginDate = req.query.beginDate ? convertStringToDate(req.query.beginDate) : null;
+    const endDate = req.query.endDate ? convertStringToDate(req.query.endDate) : null;
+    let andConditions = [];
+
+    if (keywords){
+        const listKeywords = keywords.split(" ");
+        const conditionsKeywords:any = [];
+        listKeywords.forEach(function(keyword : string){
+            conditionsKeywords.push({name : {[Sequelize.Op.like] : '%'+ keyword + '%'}});
+            conditionsKeywords.push({description : {[Sequelize.Op.like] : '%' + keyword + '%'}});
+        });
+        andConditions.push({[Sequelize.Op.or] : conditionsKeywords})
+    }
+
+    if (beginDate){
+        andConditions.push({beginDate : {[Sequelize.Op.gte] : beginDate}})
+    }
+
+    if (endDate) {
+        andConditions.push({endDate : {[Sequelize.Op.lte] : endDate}})
+    }
+
+    let searchRequest = {[Sequelize.Op.and] : andConditions};
+
+    let searchResult = await PetEvent.findAll({where : searchRequest});
+    res.status(200).send(searchResult);
+});
 
 /*** This route is used to get informations about an event ***/
 
