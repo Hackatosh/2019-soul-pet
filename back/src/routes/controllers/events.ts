@@ -51,7 +51,7 @@ eventsRouter.get('/search', searchEvents, inputValidationMW, async (req:Authenti
     let searchRequest = {[Sequelize.Op.and] : andConditions};
 
     let searchResult = await PetEvent.findAll({where : searchRequest});
-    res.send(searchResult);
+    res.status(200).send(searchResult);
 });
 
 /*** This route is used to get informations about an event ***/
