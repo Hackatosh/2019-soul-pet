@@ -47,11 +47,15 @@ export class httpClient {
     /**
      * Handles an HTTP response depending on its status.
      * @param response the Response to handle
-     * @returns A Promise containing the parsed JSON of the body or null if no body is provided
+     * @returns A Promise containing the parsed JSON of the body, or a blob if the
+     * response is an image
      */
-    private static async handleResponse(response: Response): Promise<any> {
+    private static async handleResponse<T>(response: Response): Promise<T> {
         if (!response.ok) {
             return response.json().then(({message}) => Promise.reject(message), () => Promise.reject(response.statusText));
+        }
+        if (response.headers.get('Content-Type')?.match(/image\/(?:gif|jpeg|png)/)) {
+            return response.blob().catch(() => response.json());
         }
         return response.json().catch(() => null);
     }
