@@ -36,7 +36,7 @@ export class HomePage extends React.Component<RouteComponentProps, HomePageState
 				</div>}
                 <div className="row row-cols-1 row-cols-md-3 justify-content-center">
 					<div className="col mb-4">
-						<p className="text-center"><Button variant="success" onClick={() => this.showAnimalForm(true)}>Ajouter un autre animal</Button></p>
+						<p className="text-center"><Button variant="success" onClick={() => this.showAnimalForm(true)}>Ajouter un animal</Button></p>
 					</div>
 				</div>
                 {this.state.animals.length === 0 && 
