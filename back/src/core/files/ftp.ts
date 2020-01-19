@@ -9,6 +9,7 @@ import {env} from '../../config/env'
 import {join} from 'path';
 import {Response} from "express";
 import {HttpHeader, isEmptyString, objectifyHeadersArray} from "../utils";
+import {v4} from "uuid";
 
 /***
  * CONFIGURATION DEFINITION
@@ -153,10 +154,12 @@ const generateContentLengthHeader = function (sftpPipe: SFTPPipe): HttpHeader {
 
 /***
  * Upload the provided buffer to the SFTP location obtained by resolving the provided destFolder and destFilename.
+ * Generate a random filename.
  ***/
 
-const uploadToSFTP = async function (src: Buffer, destFolder: Folder, destFilename: string): Promise<void> {
+const uploadToSFTP = async function (src: Buffer, destFolder: Folder): Promise<string> {
     let sftp = new Client();
+    const destFilename = v4();
     let sftpPath = resolvePath(destFolder, destFilename);
     try {
         await sftp.connect(config);
@@ -167,6 +170,7 @@ const uploadToSFTP = async function (src: Buffer, destFolder: Folder, destFilena
     } finally {
         await sftp.end();
     }
+    return destFilename;
 };
 
 /***

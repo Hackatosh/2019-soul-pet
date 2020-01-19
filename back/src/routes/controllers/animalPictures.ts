@@ -47,6 +47,7 @@ animalPicturesRouter.get('/', getAnimalPictureChecks, inputValidationMW, async (
     const file = await AnimalPicture.findOne({where: {filename: filename}});
     if (!file) {
         res.status(404).json({message: "This file does not exist."})
+        return;
     }
     const pet = await Animal.findOne({where: {id: file.animalId}});
     if (!pet) {
@@ -76,7 +77,6 @@ const postAnimalPicturesChecks = [
 animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     try {
         const buffer = req.file.buffer;
-        const filename = req.file.originalname;
         const contentType = resolvePictureContentType(req.file);
         const animalId = req.params.animalId;
         const userId = req.authInfos.userId;
@@ -87,7 +87,7 @@ animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAni
             res.status(403).json({message: "You don't have access to this animal"})
         } else {
             try {
-                await uploadToSFTP(buffer, Folder.AnimalPictures, filename);
+                const filename = await uploadToSFTP(buffer, Folder.AnimalPictures);
                 const animalPicture = await AnimalPicture.create({animalId, filename, contentType});
                 res.status(200).json(animalPicture);
             } catch (e) {
@@ -116,6 +116,7 @@ animalPicturesRouter.delete('/', deleteAnimalPictureChecks, inputValidationMW, a
     const file = await AnimalPicture.findOne({where: {filename: filename}});
     if (!file) {
         res.status(404).json({message: "This file does not exist."})
+        return;
     }
     const pet = await Animal.findOne({where: {id: file.animalId}});
     if (!pet) {
