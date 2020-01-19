@@ -42,7 +42,7 @@ const easterEggMarkers = [
                  info:"Parc Highground",
                  serviceType: "park"
                },
-             ]
+             ];
 
 
 class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
@@ -77,7 +77,7 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
     let markersAllTypes: ListMarkerData = []
     try{
       for (let i = 0; i < serviceTypeList.length; i++) {
-        const markers = await GetServicesServices.get_services(this.props.lat,
+        const markers = await GetServicesServices.get(this.props.lat,
           this.props.lon, this.state.radius, serviceTypeList[i].type);
           markersAllTypes = markersAllTypes.concat(markers)
         }
