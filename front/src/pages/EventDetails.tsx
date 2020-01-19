@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import peche from '../resources/events/peche.jpg';
 import {useParams, RouteComponentProps} from 'react-router-dom';
 import {PetEvent} from '../models/PetEvent';
-import { history } from '../helpers';
+import { history, httpClient } from '../helpers';
 
 export interface EventCardProps extends RouteComponentProps<{id: string}> {}
 
@@ -13,8 +13,8 @@ export interface EventPageState {
 }
 
 export class EventService {
-	static async get(id: number): Promise<Animal> {
-		return httpClient.get<Animal>(`/animals/${id}`, true).then(AnimalService.revive).catch(() => Promise.reject('Erreur lors de la récupération de l’animal'));
+	static async get(id: number): Promise<PetEvent> {
+		return httpClient.get<PetEvent>(`/events/${id}`, true).catch(() => Promise.reject('Erreur lors de la récupération de l\'event'));
 	}
 }
 
@@ -29,9 +29,16 @@ export class EventDetails extends Component<EventCardProps, EventPageState> {
 	}
 
   componentDidMount() {
+    EventService.get(this.state.id).then(a => this.prepareEvent(a)).catch(() => history.push('/404'));
+    /**
     const event:PetEvent = {id:1,title:"Mon event",description:"Ca alors quel evenement hors du commun",organisateur:"Moi meme",begin_date:new Date(),end_date:new Date()}
     this.setState({event: event}) ;
+    **/
     }
+
+    private prepareEvent(event: PetEvent) {
+      this.setState({ event: event });
+  	}
 
   render() {
 
