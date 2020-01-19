@@ -1,5 +1,6 @@
 import { PetEvent } from "./PetEvent";
 import { Specie } from "./Specie";
+import { Picture } from "./Picture";
 
 export interface Animal {
 	id?: number;
@@ -8,5 +9,6 @@ export interface Animal {
     specie?: Specie;
 	birthdate: Date;
 	name: string;
-	events?: PetEvent[];
+    events?: PetEvent[];
+    animalPictures?: Picture[];
 }
