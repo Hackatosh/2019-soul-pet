@@ -65,7 +65,7 @@ test('Get grooms', async () => {
 
 
 test('Wrong query', async () => {
-  get.mockRejectedValue('Aucn services trouvés');
+  get.mockRejectedValue('Aucun services trouvés');
   await GetServicesServices.get(queryTestFail).catch(e => expect(e).toBeDefined());
   expect.assertions(1);
 });
