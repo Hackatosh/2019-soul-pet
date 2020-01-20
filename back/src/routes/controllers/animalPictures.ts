@@ -1,11 +1,11 @@
 import {Response, Router} from "express";
-import {inMemoryStoragePicture, resolvePictureContentType} from "../../core/files/localStorage";
 import {ContentType, deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
 import {Animal} from "../../database/models/animal";
 import {AnimalPicture} from "../../database/models/animalPicture";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
+import {createPictureStorage, resolvePictureContentType} from "../../core/files/pictureStorage";
 
 const animalPicturesRouter = Router();
 
@@ -29,12 +29,12 @@ animalPicturesRouter.get('/:animalId', getAnimalPicturesChecks, inputValidationM
         res.status(403).json({message: "You don't have access to this animal"});
         return;
     }
-    const pictures = await AnimalPicture.findAll({where:{animalId:animalId}});
+    const pictures = await AnimalPicture.findAll({where: {animalId: animalId}});
     res.status(200).json(pictures);
 });
 
 /***
- * This route allows to download a pictures.
+ * This route allows to download a picture, identified by the provided filename, from the AnimalPictures folder.
  ***/
 
 const getAnimalPictureChecks = [
@@ -44,9 +44,10 @@ const getAnimalPictureChecks = [
 animalPicturesRouter.get('/', getAnimalPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const filename = req.query.filename;
     const userId = req.authInfos.userId;
-    const file = await AnimalPicture.findOne({where:{filename:filename}});
-    if(!file){
+    const file = await AnimalPicture.findOne({where: {filename: filename}});
+    if (!file) {
         res.status(404).json({message: "This file does not exist."})
+        return;
     }
     const pet = await Animal.findOne({where: {id: file.animalId}});
     if (!pet) {
@@ -58,24 +59,24 @@ animalPicturesRouter.get('/', getAnimalPictureChecks, inputValidationMW, async (
         return;
     }
     try {
-        await pipeSFTPIntoResponse(res,Folder.AnimalPictures, filename, file.contentType)
-    } catch(e){
-        res.status(400).json({message:"Problem when downloading the file"})
+        await pipeSFTPIntoResponse(res, Folder.AnimalPictures, filename, file.contentType)
+    } catch (e) {
+        res.status(400).json({message: "Problem when downloading the file"})
     }
 });
 
 /***
- * This route allows to upload a picture for a given animal.
+ * This route allows to upload a picture for a given animal into the AnimalPictures folder.
+ * The animal picture is associated to the animal profile identified by the provided animalId.
  ***/
 
 const postAnimalPicturesChecks = [
     check('animalId').notEmpty().isNumeric().withMessage("animalId must be a number"),
 ];
 
-animalPicturesRouter.post('/:animalId', inMemoryStoragePicture.single("picture"), postAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
+animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     try {
         const buffer = req.file.buffer;
-        const filename = req.file.originalname;
         const contentType = resolvePictureContentType(req.file);
         const animalId = req.params.animalId;
         const userId = req.authInfos.userId;
@@ -86,23 +87,23 @@ animalPicturesRouter.post('/:animalId', inMemoryStoragePicture.single("picture")
             res.status(403).json({message: "You don't have access to this animal"})
         } else {
             try {
-                await uploadToSFTP(buffer, Folder.AnimalPictures, filename);
+                const filename = await uploadToSFTP(buffer, Folder.AnimalPictures);
                 const animalPicture = await AnimalPicture.create({animalId, filename, contentType});
-                res.status(200).send(animalPicture);
+                res.status(200).json(animalPicture);
             } catch (e) {
                 console.log(e);
-                res.status(400).send({message: "Unable to save the picture"})
+                res.status(400).json({message: "Unable to save the picture"})
             }
         }
     } catch (e) {
         console.log(e);
-        res.status(400).send({message: "Couldn't upload the file"})
+        res.status(400).json({message: "Couldn't upload the file"})
     }
 
 });
 
 /***
- * This route allows to download a pictures.
+ * This route allows to delete a picture, identified by the provided filename, from the AnimalPictures folder.
  ***/
 
 const deleteAnimalPictureChecks = [
@@ -112,9 +113,10 @@ const deleteAnimalPictureChecks = [
 animalPicturesRouter.delete('/', deleteAnimalPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const filename = req.query.filename;
     const userId = req.authInfos.userId;
-    const file = await AnimalPicture.findOne({where:{filename:filename}});
-    if(!file){
+    const file = await AnimalPicture.findOne({where: {filename: filename}});
+    if (!file) {
         res.status(404).json({message: "This file does not exist."})
+        return;
     }
     const pet = await Animal.findOne({where: {id: file.animalId}});
     if (!pet) {
@@ -129,8 +131,8 @@ animalPicturesRouter.delete('/', deleteAnimalPictureChecks, inputValidationMW, a
     try {
         await deleteFromSFTP(Folder.AnimalPictures, filename);
         res.status(200).json(file);
-    } catch(e){
-        res.status(400).json({message:"Problem when deleting the file : file record has been deleted from the DB but the file still exists."})
+    } catch (e) {
+        res.status(400).json({message: "Problem when deleting the file : file record has been deleted from the DB but the file still exists."})
     }
 });
 

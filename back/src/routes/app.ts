@@ -1,8 +1,10 @@
-/*** This file mounts middlewares and the routers created in controllers into the express application ***/
+/***
+ * This file mounts middlewares and the routers created in the controllers into the express application
+ ***/
 
 import express, {Router, Response} from 'express';
 import helmet from 'helmet';
-import { healthRouter } from './controllers/health';
+import {healthRouter} from './controllers/health';
 import {loginRequiredMW} from "./middlewares/loginRequired";
 import {authenticationRouter} from "./controllers/authentication";
 import * as bodyParser from 'body-parser';
@@ -16,28 +18,47 @@ import {eventsRouter} from "./controllers/events";
 import {placesRouter} from "./controllers/places";
 import {eventCommentsRouter} from "./controllers/eventComments";
 
-/*** Basic middlewares mouting ***/
-const app = express();
+/***
+ * Express application creation and common middleware mounting.
+ ***/
 
+const app = express();
 app.use(corsMW);
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(helmet());
 
-/*** API routers mounting ***/
+/***
+ * API router creation and unauthenticated API routes mounting.
+ ***/
+
 const apiRouter = Router();
 apiRouter.use('/', healthRouter);
-apiRouter.use('/auth',authenticationRouter);
-apiRouter.use('*',loginRequiredMW);
+apiRouter.use('/auth', authenticationRouter);
+
+/***
+ * Authenticated API routes mounting.
+ ***/
+
+apiRouter.use('*', loginRequiredMW);
 apiRouter.use('/places', placesRouter);
-apiRouter.use('/events',eventsRouter);
-apiRouter.use('/comments',eventCommentsRouter);
-apiRouter.use('/account',accountRouter);
-apiRouter.use('/animals',animalsRouter);
-apiRouter.use('/pictures/animals',animalPicturesRouter);
-apiRouter.use('/logout',logoutRouter);
-apiRouter.use('*',handleError500MW);
+apiRouter.use('/events', eventsRouter);
+apiRouter.use('/comments', eventCommentsRouter);
+apiRouter.use('/account', accountRouter);
+apiRouter.use('/animals', animalsRouter);
+apiRouter.use('/pictures/animals', animalPicturesRouter);
+apiRouter.use('/logout', logoutRouter);
+
+/***
+ * Error handling middleware mounting.
+ ***/
+
+apiRouter.use('*', handleError500MW);
+
+/***
+ * API router mounting into Express application.
+ ***/
 
 app.use('/api', apiRouter);
 
-export { app };
+export {app};

@@ -1,7 +1,7 @@
-/*** This file is the entrypoint of the application.
- * It represents the high level operations needed to launch the server.
+/***
+ * This file defines the entrypoint of the application.
+ * It represents the highest-level operations needed to launch the server.
  ***/
-
 
 import {app} from './routes/app';
 import http from 'http';

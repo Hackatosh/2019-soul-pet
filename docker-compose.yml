@@ -77,12 +77,10 @@ services:
     container_name: 'soul-pet-sftp'
     volumes:
       - ./ftp/sftp.d:/etc/sftp.d/
-      - sftp-animal-pictures:/home/nodejs/pictures/animals/
-      - sftp-event-pictures:/home/nodejs/pictures/events/
+      - sftp-data:/home/nodejs/pictures/
     ports:
       - "2222:22"
     command: nodejs:password:::pictures
 volumes:
   db-data:
-  sftp-animal-pictures:
-  sftp-event-pictures:
+  sftp-data:

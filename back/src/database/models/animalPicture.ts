@@ -5,6 +5,12 @@ import {
 import {db} from "../connection";
 import {ContentType} from "../../core/files/ftp";
 
+/***
+ * Model used to represent a picture related to an animal in the DB.
+ * The filename is used to interact with the SFTP server.
+ * The contentType is used to provide correct headers when sending the picture through HTTP response.
+ ***/
+
 export class AnimalPicture extends Model {
     public id!: number;
     public animalId !: number;
@@ -12,35 +18,39 @@ export class AnimalPicture extends Model {
     public contentType !: ContentType;
 }
 
-    const initAnimalPicturesModel = async function():Promise<void> {
+/***
+ * Function used to initialize the AnimalPicture Model.
+ ***/
 
-        AnimalPicture.init({
-            id: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                autoIncrement: true,
-                primaryKey: true,
-            },
-            animalId: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
-                unique: false,
-            },
-            filename: {
-                type :new DataTypes.STRING(128),
-                allowNull : false,
-                unique: true,
-            },
-            contentType: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
-                unique: false,
-            },
-        }, {
-            tableName: 'animalPictures',
-            modelName: 'animalPicture',
-            sequelize: db,
-        });
-    };
+const initAnimalPicturesModel = async function (): Promise<void> {
+
+    AnimalPicture.init({
+        id: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        animalId: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: false,
+            unique: false,
+        },
+        filename: {
+            type: new DataTypes.STRING(128),
+            allowNull: false,
+            unique: true,
+        },
+        contentType: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: false,
+            unique: false,
+        },
+    }, {
+        tableName: 'animalPictures',
+        modelName: 'animalPicture',
+        sequelize: db,
+    });
+};
 
 export {initAnimalPicturesModel}
 
