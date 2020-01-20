@@ -6,6 +6,7 @@ import { AnimalForm, DeleteConfirmation, SquareImage } from '../components';
 import { Animal, Picture } from '../models';
 import { Card, Button } from 'react-bootstrap';
 import { history, titleCase, ageFromDate } from '../helpers';
+import noimage from '../resources/image-fill.svg';
 
 export interface AnimalPageProps extends RouteComponentProps<{id: string}> {}
 
@@ -56,7 +57,11 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
                 <React.Fragment>
 					<div className="row">
 						<div className="col-10 offset-1 col-md-3">
-                            <SquareImage image={this.state.pictures[this.state.pictures.length - 1]}/>
+                            {this.state.pictures.length > 0 ? (
+                            <SquareImage image={this.state.pictures[this.state.pictures.length - 1]} />
+                            ) : (
+                            <SquareImage image={noimage} />
+                            )}
 						</div>
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							{this.state.error !== '' && <div className="alert alert-danger">{this.state.error}</div>}
@@ -96,7 +101,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 								</div>
 							</div>
                             <h2>Galerie</h2>
-							<div className="row row-cols-1 row-cols-md-3">
+                            <div className="row row-cols-1 row-cols-md-3">
                                 {this.state.pictures.map((picture: string, index: number) => <div className="col mb-4"><SquareImage image={picture} key={index} /></div>)}
 							</div>
 						</div>
