@@ -20,6 +20,7 @@ test('HTTP GET Success', async () => {
     fetch.mockResolvedValueOnce<Response>({
         ok: true,
         status: 200,
+        headers: new Headers(),
         json: () => Promise.resolve(user)
     });
     await httpClient.get<User>('account/', false).then(u => expect(u).toBe(user));
@@ -29,6 +30,7 @@ test('HTTP authenticated GET', async () => {
     fetch.mockResolvedValueOnce<Response>({
         ok: true,
         status: 200,
+        headers: new Headers(),
         json: () => Promise.resolve(user)
 	});
     isLoggedIn.mockReturnValueOnce(true).mockReturnValueOnce(false);
@@ -82,6 +84,7 @@ test('HTTP POST Success', async () => {
     fetch.mockResolvedValueOnce<Response>({
         ok: true,
         status: 201,
+        headers: new Headers(),
         json: () => Promise.resolve(user)
     });
     await httpClient.post<User>('account/', user).then(u => {
@@ -95,6 +98,7 @@ test('HTTP PUT Success', async () => {
     fetch.mockResolvedValueOnce<Response>({
         ok: true,
         status: 200,
+        headers: new Headers(),
         json: () => Promise.resolve(user)
     });
     await httpClient.put<User>('account/', user).then(u => {

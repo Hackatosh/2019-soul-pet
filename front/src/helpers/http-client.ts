@@ -54,7 +54,7 @@ export class httpClient {
         if (!response.ok) {
             return response.json().then(({message}) => Promise.reject(message), () => Promise.reject(response.statusText));
         }
-        if (response.headers.get('Content-Type')?.match(/image\/(?:gif|jpeg|png)/)) {
+        if (response.headers.get('Content-Type') !== null && response.headers.get('Content-Type')?.match(/image\/(?:gif|jpeg|png)/)) {
             return response.blob().catch(() => response.json());
         }
         return response.json().catch(() => null);
