@@ -1,4 +1,4 @@
-import { Animal, Specie } from "../models";
+import { Animal, Specie, Picture } from "../models";
 import { httpClient } from "../helpers";
 
 export class AnimalService {
@@ -37,7 +37,16 @@ export class AnimalService {
 	 */
 	static async get(id: number): Promise<Animal> {
 		return httpClient.get<Animal>(`/animals/${id}`, true).then(AnimalService.revive).catch(() => Promise.reject('Erreur lors de la récupération de l’animal'));
-	}
+    }
+    
+    /**
+     * Retrieves the pictures of an animal.
+     * @param id the ID of the animal
+     * @returns an array of Picture
+     */
+    static async getPictures(id: number): Promise<Picture[]> {
+        return httpClient.get<Picture[]>(`/pictures/animals/${id}`, true).catch(() => Promise.reject('Erreur lors de la récupération des images'));
+    }
 
 	/**
 	 * Adds an animal to the user account.
