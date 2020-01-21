@@ -35,7 +35,7 @@ export class AnimalService {
 	 * @param id the ID of the animal
 	 * @returns the animal requested
 	 */
-	static async get(id: number): Promise<Animal> {
+	static async getSingle(id: number): Promise<Animal> {
 		return httpClient.get<Animal>(`/animals/${id}`, true).then(AnimalService.revive).catch(() => Promise.reject('Erreur lors de la récupération de l’animal'));
     }
     

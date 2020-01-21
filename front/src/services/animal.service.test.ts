@@ -1,13 +1,11 @@
 import { AnimalService } from "./animal.service";
 import { httpClient } from "../helpers";
-import { Animal, Specie } from "../models";
+import { Animal, Specie, Picture } from "../models";
 
 const get = jest.spyOn(httpClient, "get");
 const post = jest.spyOn(httpClient, "post");
 const put = jest.spyOn(httpClient, "put");
 const del = jest.spyOn(httpClient, "delete");
-
-const getAnimals = jest.spyOn(AnimalService, "get");
 
 const animals: Animal[] = [{
 	id: 1,
@@ -33,6 +31,8 @@ const animals: Animal[] = [{
 
 const species: Specie[] = [{ id: 1, name: 'chat'}, { id: 2, name: 'chien'}];
 
+const pictures: Picture[] = [{ id: 1, filename: 'file.jpg' }];
+
 beforeEach(() => {
 	jest.resetAllMocks();
 });
@@ -55,6 +55,22 @@ test('Get no animals', async () => {
 	get.mockRejectedValue('Error');
 	await AnimalService.getAll(1).catch(e => expect(e).toBeDefined());
 	expect.assertions(1);
+});
+
+test('Get single animal', async () => {
+    get.mockResolvedValue(animals[0]);
+    await AnimalService.getSingle(0).then(a => {
+        expect(a).toStrictEqual(animals[0]);
+        expect(a.birthdate).toBeInstanceOf(Date);
+    })
+    expect.assertions(2);
+})
+
+test('Retrieve pictures', async () => {
+    get.mockResolvedValue(pictures);
+    await AnimalService.getPictures(1).then(p => {
+        expect(p).toStrictEqual(pictures);
+    })
 });
 
 test('Add an animal', async () => {
@@ -82,7 +98,7 @@ test('Edit an animal', async () => {
 });
 
 test('Delete animal', async () => {
-	getAnimals.mockResolvedValue(animals[0]);
+    jest.spyOn(AnimalService, "getSingle").mockResolvedValue(animals[0]);
 	del.mockResolvedValueOnce(null)
 		.mockRejectedValueOnce('Error');
 	await AnimalService.delete(0).then(e => expect(e).toBeNull());

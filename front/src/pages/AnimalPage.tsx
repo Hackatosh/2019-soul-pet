@@ -29,7 +29,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 	}
 
     componentDidMount() {
-        AnimalService.get(this.state.id).then(a => {
+        AnimalService.getSingle(this.state.id).then(a => {
             this.setState({ animal: a });
             if (a.animalPictures !== undefined && a.animalPictures.length > 0) {
                 let pictures = new Array<string>(a.animalPictures.length).fill('');
