@@ -59,8 +59,9 @@ animalPicturesRouter.get('/', getAnimalPictureChecks, inputValidationMW, async (
         return;
     }
     try {
-        await pipeSFTPIntoResponse(res, Folder.AnimalPictures, filename, file.contentType)
+        await pipeSFTPIntoResponse(res, Folder.AnimalPictures, filename, file.contentType);
     } catch (e) {
+        console.log(e);
         res.status(400).json({message: "Problem when downloading the file"})
     }
 });
