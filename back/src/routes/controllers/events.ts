@@ -281,7 +281,7 @@ eventsRouter.delete('/:eventId/animals/:animalId', deleteAnimalFromEventChecks, 
     const authenticatedId = req.authInfos.userId;
     const eventId = parseInt(req.params.eventId);
     const animalId = parseInt(req.params.animalId);
-    let eventFound = await PetEvent.findOne({where: {id: eventId}});
+    let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[{model:Animal, as: "attendees"}]});
     if (!eventFound) {
         res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
         return;
@@ -293,6 +293,10 @@ eventsRouter.delete('/:eventId/animals/:animalId', deleteAnimalFromEventChecks, 
     }
     if (animalFound.userId !== authenticatedId) {
         res.status(403).json({message: "Forbidden. You don't have access to this animal."});
+        return;
+    }
+    if(!eventFound.attendees.find(animal => animalId === animal.id)){
+        res.status(400).json({message: "Bad Request: This animal is not associated to the event."});
         return;
     }
     await eventFound.removeAttendee(animalFound);
