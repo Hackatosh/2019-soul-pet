@@ -12,6 +12,7 @@ import {initAnimalModel} from "./models/animal";
 import {initPetEventModel} from "./models/event";
 import {initAnimalPicturesModel} from "./models/animalPicture";
 import {initEventCommentModel} from "./models/eventComment";
+import {initEventPicturesModel} from "./models/eventPicture";
 
 /***
  * Loop used to wait until the DB is ready, unless the number of maxTry is reached
@@ -51,6 +52,7 @@ const initDB = async function () {
         await initPetEventModel();
         await initAnimalPicturesModel();
         await initEventCommentModel();
+        await initEventPicturesModel();
         await initAssociations();
         await db.sync();
         await specieModelFill();

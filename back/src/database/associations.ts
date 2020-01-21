@@ -9,6 +9,7 @@ import {Specie} from "./models/specie";
 import {PetEvent} from "./models/event";
 import {AnimalPicture} from "./models/animalPicture";
 import {EventComment} from "./models/eventComment";
+import {EventPicture} from "./models/eventPicture";
 
 const initAssociations = function () {
     User.hasMany(Animal, {foreignKey: 'userId', sourceKey: 'id'});
@@ -25,6 +26,8 @@ const initAssociations = function () {
     EventComment.belongsTo(User, {foreignKey: 'userId', targetKey: 'id'});
     PetEvent.hasMany(EventComment, {foreignKey: 'eventId', sourceKey: 'id', as:"eventComments"});
     EventComment.belongsTo(PetEvent, {foreignKey: 'eventId', targetKey: 'id'});
+    PetEvent.hasMany(EventPicture,{foreignKey: 'eventId', sourceKey: 'id'});
+    EventPicture.belongsTo(PetEvent,{foreignKey: 'eventId', targetKey: 'id'});
 };
 
 export { initAssociations }
