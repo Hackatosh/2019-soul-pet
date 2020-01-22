@@ -41,7 +41,7 @@ eventPicturesRouter.get('/', getEventPictureChecks, inputValidationMW, async (re
     const filename = req.query.filename;
     const file = await EventPicture.findOne({where: {filename: filename}});
     if (!file) {
-        res.status(404).json({message: "This file does not exist."})
+        res.status(404).json({message: "This file does not exist."});
         return;
     }
     const event = await PetEvent.findOne({where: {id: file.eventId}});
@@ -106,18 +106,19 @@ eventPicturesRouter.delete('/', deleteEventPictureChecks, inputValidationMW, asy
     const eventId = req.params.eventId;
     const file = await EventPicture.findOne({where: {filename: filename}});
     if (!file) {
-        res.status(404).json({message: "This file does not exist."})
+        res.status(404).json({message: "This file does not exist."});
         return;
     }
     const picture = await EventPicture.findOne({where: {id: file.eventId}});
-    console.log(userId);
-    console.log(picture);
+    const event = await PetEvent.findOne({where:{id: file.eventId}});
+
     if (!picture) {
         res.status(404).json({message: "This event does not exist"});
         return;
     }
 
-    else if (picture.userId !== userId) {
+
+    else if (picture.userId !== userId && event.userId !== userId ) {
         res.status(403).json({message: "You don't have access to this picture "});
         return;
     }
