@@ -113,7 +113,6 @@ eventPicturesRouter.delete('/', deleteEventPictureChecks, inputValidationMW, asy
 
     if (!file || !event ) {
         res.status(404).json({message: "This event does not exist"});
-        return;
     }
 
     else if (file.userId !== userId && event.userId !== userId ) {
