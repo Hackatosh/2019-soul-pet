@@ -11,6 +11,7 @@ import {
 import {db} from '../connection'
 import {Animal} from "./animal";
 import {EventComment} from "./eventComment";
+import {EventPicture} from "./eventPicture";
 
 /***
  * Model used to represent an user in DB.
@@ -34,13 +35,21 @@ export class User extends Model {
     public countComments!: HasManyCountAssociationsMixin;
     public createComment!: HasManyCreateAssociationMixin<EventComment>;
 
+    public getEventPicture!: HasManyGetAssociationsMixin<EventPicture>;
+    public addEventPicture!: HasManyAddAssociationMixin<EventPicture, number>;
+    public hasEventPicture!: HasManyHasAssociationMixin<EventPicture, number>;
+    public countEventPictures!: HasManyCountAssociationsMixin;
+    public createEventPicture!: HasManyCreateAssociationMixin<EventPicture>;
+
     // These will only be populated if you actively include a relation.
     public readonly animals?: Animal[];
     public readonly eventComments?: EventComment[];
+    public readonly eventPictures?: EventPicture[];
 
     public static associations: {
         animals: Association<User, Animal>;
-        eventComments: Association<User, EventComment>
+        eventComments: Association<User, EventComment>;
+        eventPictures:Association<User, EventPicture>;
     };
 }
 
@@ -70,6 +79,11 @@ const initUserModel = async function():Promise<void> {
             type: new DataTypes.STRING(128),
             allowNull: false
         },
+        eventPictureId:{
+            type:DataTypes.INTEGER.UNSIGNED,
+            allowNull: true,
+            unique:false
+        }
     }, {
         tableName: 'users',
         modelName: 'user',

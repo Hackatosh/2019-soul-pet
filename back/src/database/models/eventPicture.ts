@@ -14,8 +14,10 @@ import {ContentType} from "../../core/files/ftp";
 export class EventPicture extends Model {
     public id!: number;
     public eventId !: number;
+    public userId: number;
     public filename  !: string;
     public contentType !: ContentType;
+
 }
 
 /***
@@ -31,6 +33,11 @@ const initEventPicturesModel = async function (): Promise<void> {
             primaryKey: true,
         },
         eventId: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: false,
+            unique: false,
+        },
+        userId: {
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             unique: false,

@@ -22,12 +22,16 @@ const initAssociations = function () {
     PetEvent.belongsToMany(Specie, {as: 'authorizedSpecies', through: 'eventSpecies', foreignKey: 'eventId'});
     Animal.hasMany(AnimalPicture,{foreignKey: 'animalId', sourceKey: 'id'});
     AnimalPicture.belongsTo(Animal,{foreignKey: 'animalId', targetKey: 'id'});
+
     User.hasMany(EventComment, {foreignKey: 'userId', sourceKey: 'id', as:"eventComments"});
     EventComment.belongsTo(User, {foreignKey: 'userId', targetKey: 'id'});
     PetEvent.hasMany(EventComment, {foreignKey: 'eventId', sourceKey: 'id', as:"eventComments"});
     EventComment.belongsTo(PetEvent, {foreignKey: 'eventId', targetKey: 'id'});
+
+    User.hasMany(EventPicture,{foreignKey:"userId",sourceKey:"id", as:"eventPictures"});
+    EventPicture.belongsTo(User, {foreignKey: 'userId', targetKey: 'id'});
     PetEvent.hasMany(EventPicture,{foreignKey: 'eventId', sourceKey: 'id'});
-    EventPicture.belongsTo(PetEvent,{foreignKey: 'eventId', targetKey: 'id'});
+    EventPicture.belongsTo(PetEvent,{foreignKey: 'eventId', targetKey: 'id',as:"eventPictures"});
 };
 
 export { initAssociations }

@@ -30,7 +30,7 @@ eventPicturesRouter.get('/:eventId', getEventPicturesChecks, inputValidationMW, 
 });
 
 /***
- * This route allows to download a picture, identified by the provided filename, from the AnimalPictures folder.
+ * This route allows to download a picture, identified by the provided filename, from the EventPictures folder.
  ***/
 
 const getEventPictureChecks = [
@@ -44,7 +44,7 @@ eventPicturesRouter.get('/', getEventPictureChecks, inputValidationMW, async (re
         res.status(404).json({message: "This file does not exist."})
         return;
     }
-    const event = await Animal.findOne({where: {id: file.eventId}});
+    const event = await PetEvent.findOne({where: {id: file.eventId}});
     if (!event) {
         res.status(404).json({message: "This event does not exist"});
         return;
@@ -58,18 +58,19 @@ eventPicturesRouter.get('/', getEventPictureChecks, inputValidationMW, async (re
 });
 
 /***
- * This route allows to upload a picture for a given animal into the AnimalPictures folder.
- * The animal picture is associated to the animal profile identified by the provided animalId.
+ * This route allows to upload a picture for a given animal into the EventPictures folder.
+ * The event picture is associated to the event profile identified by the provided eventId.
  ***/
 
-const postAnimalPicturesChecks = [
+const postEventPicturesChecks = [
     check('eventId').notEmpty().isNumeric().withMessage("eventId must be a number"),
 ];
 
-eventPicturesRouter.post('/:eventId', createPictureStorage("picture"), postAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
+eventPicturesRouter.post('/:eventId', createPictureStorage("picture"), postEventPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     try {
         const buffer = req.file.buffer;
         const contentType = resolvePictureContentType(req.file);
+        const userId = req.authInfos.userId;
         const eventId = req.params.eventId;
         const event = await PetEvent.findOne({where: {id: eventId}});
         if (!event) {
@@ -77,7 +78,7 @@ eventPicturesRouter.post('/:eventId', createPictureStorage("picture"), postAnima
         } else {
             try {
                 const filename = await uploadToSFTP(buffer, Folder.EventPictures);
-                const eventPicture = await EventPicture.create({eventId, filename, contentType});
+                const eventPicture = await EventPicture.create({eventId,userId, filename, contentType});
                 res.status(200).json(eventPicture);
             } catch (e) {
                 console.log(e);
@@ -92,36 +93,42 @@ eventPicturesRouter.post('/:eventId', createPictureStorage("picture"), postAnima
 });
 
 /***
- * This route allows to delete a picture, identified by the provided filename, from the AnimalPictures folder.
+ * This route allows to delete a picture, identified by the provided filename, from the EventPictures folder.
  ***/
 
-const deleteAnimalPictureChecks = [
+const deleteEventPictureChecks = [
     check('filename').notEmpty().isString().withMessage("filename must be a string"),
 ];
 
-eventPicturesRouter.delete('/', deleteAnimalPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
+eventPicturesRouter.delete('/', deleteEventPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const filename = req.query.filename;
     const userId = req.authInfos.userId;
+    const eventId = req.params.eventId;
     const file = await EventPicture.findOne({where: {filename: filename}});
     if (!file) {
         res.status(404).json({message: "This file does not exist."})
         return;
     }
-    const event = await PetEvent.findOne({where: {id: file.eventId}});
-    if (!event) {
+    const picture = await EventPicture.findOne({where: {id: file.eventId}});
+    console.log(userId);
+    console.log(picture);
+    if (!picture) {
         res.status(404).json({message: "This event does not exist"});
         return;
     }
-    if (event.userId !== userId) {
-        res.status(403).json({message: "You don't have access to this event "});
+
+    else if (picture.userId !== userId) {
+        res.status(403).json({message: "You don't have access to this picture "});
         return;
     }
-    await file.destroy();
-    try {
-        await deleteFromSFTP(Folder.EventPictures, filename);
-        res.status(200).json(file);
-    } catch (e) {
-        res.status(400).json({message: "Problem when deleting the file : file record has been deleted from the DB but the file still exists."})
+    else {
+        await file.destroy();
+        try {
+            await deleteFromSFTP(Folder.EventPictures, filename);
+            res.status(200).json(file);
+        } catch (e) {
+            res.status(400).json({message: "Problem when deleting the file : file record has been deleted from the DB but the file still exists."})
+        }
     }
 });
 
