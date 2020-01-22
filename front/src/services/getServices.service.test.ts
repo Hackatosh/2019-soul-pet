@@ -1,10 +1,7 @@
-import { httpClient, history } from "../helpers";
-import { ListMarkerData, MarkerData } from "../models";
+import { httpClient } from "../helpers";
 import { GetServicesServices } from "./getServices.service"
 
 const get = jest.spyOn(httpClient, "get");
-const getServices = jest.spyOn(GetServicesServices, "get");
-
 
 const queryTestGroom = {
   lat: 48.864716,
@@ -50,6 +47,19 @@ const markerDataTestGroom = [
   }
 ]
 
+// We generate the answer of the back from what we actually expect…
+const backMarkers = markerDataTestGroom.map(marker => {
+    const addressSeparator = marker.info.lastIndexOf(',');
+    return {
+        id: marker.key,
+        name: addressSeparator == - 1 ? marker.info : marker.info.substring(0, addressSeparator),
+        location: {
+            address: addressSeparator == - 1 ? '' : marker.info.substring(addressSeparator + 2),
+            lat: marker.position[0],
+            lng: marker.position[1]
+        }
+    }
+});
 
 beforeEach(() => {
 	jest.resetAllMocks();
@@ -57,8 +67,8 @@ beforeEach(() => {
 
 
 test('Get grooms', async () => {
-  get.mockResolvedValue(markerDataTestGroom);
-  await GetServicesServices.get(queryTestGroom).then(g => {
+  get.mockResolvedValue({response: {venues: backMarkers}});
+  await GetServicesServices.get(queryTestGroom.lat, queryTestGroom.lon, queryTestGroom.radius, queryTestGroom.placeType).then(g => {
     expect(g).toStrictEqual(markerDataTestGroom);
   });
 });
@@ -66,6 +76,6 @@ test('Get grooms', async () => {
 
 test('Wrong query', async () => {
   get.mockRejectedValue('Aucun services trouvés');
-  await GetServicesServices.get(queryTestFail).catch(e => expect(e).toBeDefined());
+  await GetServicesServices.get(queryTestFail.lat, queryTestFail.lon, queryTestFail.radius, queryTestFail.placeType).catch(e => expect(e).toBeDefined());
   expect.assertions(1);
 });
