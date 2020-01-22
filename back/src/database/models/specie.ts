@@ -7,13 +7,16 @@ import {
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     Association,
-    BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin
+    BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin, Op
 } from 'sequelize';
 import {db} from '../connection'
 import {Animal} from "./animal";
 import {PetEvent} from "./event";
 
-/*** Model used to represent a specie in DB ***/
+/***
+ * Model used to represent a specie in the DB.
+ ***/
+
 export class Specie extends Model {
     public id!: number;
     public name!: string;
@@ -24,7 +27,6 @@ export class Specie extends Model {
     public countAnimals!: HasManyCountAssociationsMixin;
     public createAnimal!: HasManyCreateAssociationMixin<Animal>;
 
-
     // These will only be populated if you actively include a relation.
     public readonly animals?: Animal[];
 
@@ -33,8 +35,11 @@ export class Specie extends Model {
     };
 }
 
-/*** Function used to initialize the User Model ***/
-const initSpecieModel = async function():Promise<void> {
+/***
+ * Function used to initialize the Specie Model.
+ ***/
+
+const initSpecieModel = async function (): Promise<void> {
 
     Specie.init({
         id: {
@@ -56,4 +61,22 @@ const initSpecieModel = async function():Promise<void> {
 
 };
 
-export {initSpecieModel}
+const specieModelFill = async function (): Promise<void> {
+    const species: Array<{ id: number, name: string }> = [
+        {id: 1, name: "Chien"},
+        {id: 2, name: "Lama"},
+        {id: 3, name: "Chat"},
+        {id: 4, name: "Lapin"},
+        {id: 5, name: "Perroquet"},
+        {id: 6, name: "Loutre"},
+    ];
+    const addSpecie = async function(specie:{id:number,name:string}):Promise<void>{
+        const specieFound = await Specie.findOne({where: {[Op.or]: [{id:specie.id},{name:specie.name}]}});
+        if(!specieFound)
+            await Specie.create(specie);
+    };
+    const promises:Array<Promise<void>> = species.map(specie => addSpecie(specie));
+    await Promise.all(promises);
+};
+
+export {initSpecieModel, specieModelFill}

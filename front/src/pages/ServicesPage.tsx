@@ -2,10 +2,7 @@ import React from 'react';
 import { ServicesMap } from '../components';
 import './ServicesPage.css';
 
-
 class ServicesPage extends React.Component<{}> {
-
-
   render(){
     const data = {
         lat: 48.864716,

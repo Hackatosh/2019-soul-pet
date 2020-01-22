@@ -1,9 +1,12 @@
 import {Model, DataTypes} from 'sequelize';
 import {db} from '../connection'
 
-/*** Model used to represent a token in DB ***/
+/***
+ * Model used to represent a token in DB.
+ ***/
+
 export class Token extends Model {
-    public token!: number; // Note that the `null assertion` `!` is required in strict mode.
+    public token!: number;
     public userId!: string;
 
     // timestamps!
@@ -11,7 +14,10 @@ export class Token extends Model {
     public readonly updatedAt!: Date;
 }
 
-/*** Function used to initialize the Token Model ***/
+/***
+ * Function used to initialize the Token Model.
+ ***/
+
 const initTokenModel = async function():Promise<void> {
 
     Token.init({

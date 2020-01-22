@@ -1,8 +1,10 @@
-/*** This file binds the ENV variables defined in docker-compose.yml or in dotenv (for local debugging)
- * to constants exported through the env object***/
+/***
+ * This file imports all the environment variables from process.env needed for the service.
+ * It then performs test to ensure that they are correctly defined and export them through the env object.
+ ***/
 
 if (process.env.SERVER_PORT === undefined)
-	require('dotenv').config();
+    require('dotenv').config();
 
 const SERVER_PORT = process.env.SERVER_PORT;
 const TOKEN_LIFETIME_SEC = process.env.TOKEN_LIFETIME_SEC;
@@ -16,7 +18,8 @@ const FTP_HOST = process.env.FTP_HOST;
 const FTP_PORT = process.env.FTP_PORT;
 const FTP_USER = process.env.FTP_USER;
 const FTP_PASSWORD = process.env.FTP_PASSWORD;
-const FTP_PATH_PICTURES = process.env.FTP_PATH_PICTURES;
+const FTP_PATH_ANIMAL_PICTURES = process.env.FTP_PATH_ANIMAL_PICTURES;
+const FTP_PATH_EVENT_PICTURES = process.env.FTP_PATH_EVENT_PICTURES;
 const PLACES_API_ID = process.env.PLACES_API_ID;
 const PLACES_API_SECRET = process.env.PLACES_API_SECRET;
 
@@ -68,11 +71,15 @@ if (FTP_PASSWORD == undefined) {
     throw new Error('FTP_PASSWORD is not a valid env variable');
 }
 
-if (FTP_PATH_PICTURES == undefined) {
-    throw new Error('FTP_PATH_PICTURES is not a valid env variable');
+if (FTP_PATH_ANIMAL_PICTURES == undefined) {
+    throw new Error('FTP_PATH_ANIMAL_PICTURES is not a valid env variable');
 }
 
-if (PLACES_API_ID  == undefined) {
+if (FTP_PATH_EVENT_PICTURES == undefined) {
+    throw new Error('FTP_PATH_EVENT_PICTURES is not a valid env variable');
+}
+
+if (PLACES_API_ID == undefined) {
     throw new Error('PLACES_API_ID is not a valid env variable');
 }
 
@@ -82,9 +89,9 @@ if (PLACES_API_SECRET == undefined) {
 
 const env = {
     SERVER_PORT,
-    TOKEN_LIFETIME_SEC:parseInt(TOKEN_LIFETIME_SEC),
+    TOKEN_LIFETIME_SEC: parseInt(TOKEN_LIFETIME_SEC),
     DB_HOST,
-    DB_PORT:parseInt(DB_PORT),
+    DB_PORT: parseInt(DB_PORT),
     DB_USER,
     DB_PASSWORD,
     DB_NAME,
@@ -93,9 +100,10 @@ const env = {
     FTP_PORT,
     FTP_USER,
     FTP_PASSWORD,
-    FTP_PATH_PICTURES,
+    FTP_PATH_ANIMAL_PICTURES,
+    FTP_PATH_EVENT_PICTURES,
     PLACES_API_ID,
     PLACES_API_SECRET,
 };
 
-export { env };
+export {env};

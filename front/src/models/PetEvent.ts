@@ -1,8 +1,9 @@
 export interface PetEvent {
 	id: number;
-	title: string;
+	name: string;
+	beginDate: Date;
+	endDate: Date;
+	userId?: number;
+	location?: string;
 	description: string;
-	organisateur: string;
-	begin_date: Date;
-	end_date: Date;
 }

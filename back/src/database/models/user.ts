@@ -10,30 +10,44 @@ import {
 } from 'sequelize';
 import {db} from '../connection'
 import {Animal} from "./animal";
+import {EventComment} from "./eventComment";
 
-/*** Model used to represent a user in DB ***/
+/***
+ * Model used to represent an user in DB.
+ ***/
+
 export class User extends Model {
-    public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+    public id!: number;
     public username!: string;
     public email!: string;
     public hashedPassword!: string;
 
-    public getAnimals!: HasManyGetAssociationsMixin<Animal>; // Note the null assertions!
+    public getAnimals!: HasManyGetAssociationsMixin<Animal>;
     public addAnimal!: HasManyAddAssociationMixin<Animal, number>;
     public hasAnimal!: HasManyHasAssociationMixin<Animal, number>;
     public countAnimals!: HasManyCountAssociationsMixin;
     public createAnimal!: HasManyCreateAssociationMixin<Animal>;
 
+    public getComments!: HasManyGetAssociationsMixin<EventComment>;
+    public addComment!: HasManyAddAssociationMixin<EventComment, number>;
+    public hasComment!: HasManyHasAssociationMixin<EventComment, number>;
+    public countComments!: HasManyCountAssociationsMixin;
+    public createComment!: HasManyCreateAssociationMixin<EventComment>;
+
     // These will only be populated if you actively include a relation.
     public readonly animals?: Animal[];
+    public readonly eventComments?: EventComment[];
 
     public static associations: {
         animals: Association<User, Animal>;
+        eventComments: Association<User, EventComment>
     };
-
 }
 
-/*** Function used to initialize the User Model ***/
+/***
+ * Function used to initialize the User Model.
+ ***/
+
 const initUserModel = async function():Promise<void> {
 
     User.init({
