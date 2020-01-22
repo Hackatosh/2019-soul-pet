@@ -103,22 +103,17 @@ const deleteEventPictureChecks = [
 eventPicturesRouter.delete('/', deleteEventPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const filename = req.query.filename;
     const userId = req.authInfos.userId;
-    const eventId = req.params.eventId;
     const file = await EventPicture.findOne({where: {filename: filename}});
     if (!file) {
         res.status(404).json({message: "This file does not exist."});
         return;
     }
     const event = await PetEvent.findOne({where:{id: file.eventId}});
-
-    if (!file || !event ) {
+    if (!event) {
         res.status(404).json({message: "This event does not exist"});
-    }
-
-    else if (file.userId !== userId && event.userId !== userId ) {
+    } else if (file.userId !== userId && event.userId !== userId ) {
         res.status(403).json({message: "You don't have access to this picture "});
-    }
-    else {
+    } else {
         await file.destroy();
         try {
             await deleteFromSFTP(Folder.EventPictures, filename);

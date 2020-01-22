@@ -71,7 +71,7 @@ export class PetEvent extends Model {
         attendees: Association<PetEvent, Animal>;
         authorizedSpecies: Association<PetEvent, Specie>;
         comments: Association<PetEvent, EventComment>;
-        eventPictures: Association<EventPicture, EventPicture>;
+        eventPictures: Association<PetEvent, EventPicture>;
     };
 
 }
