@@ -121,18 +121,18 @@ animalPicturesRouter.delete('/', deleteAnimalPictureChecks, inputValidationMW, a
     const pet = await Animal.findOne({where: {id: file.animalId}});
     if (!pet) {
         res.status(404).json({message: "This animal does not exist"});
-        return;
     }
-    if (pet.userId !== userId) {
+    else if (pet.userId !== userId) {
         res.status(403).json({message: "You don't have access to this animal"});
-        return;
     }
-    await file.destroy();
-    try {
-        await deleteFromSFTP(Folder.AnimalPictures, filename);
-        res.status(200).json(file);
-    } catch (e) {
-        res.status(400).json({message: "Problem when deleting the file : file record has been deleted from the DB but the file still exists."})
+    else {
+        await file.destroy();
+        try {
+            await deleteFromSFTP(Folder.AnimalPictures, filename);
+            res.status(200).json(file);
+        } catch (e) {
+            res.status(400).json({message: "Problem when deleting the file : file record has been deleted from the DB but the file still exists."})
+        }
     }
 });
 
