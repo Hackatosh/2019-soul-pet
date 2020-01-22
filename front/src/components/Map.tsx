@@ -1,34 +1,48 @@
 import React from 'react';
+import { PServicesMap, SServicesMap, ListMarkerData } from '../models';
+import { GetServicesServices } from '../services';
+import { iconVet, iconPark, iconGroom } from '../models';
+//import { getUserLocation } from '../helpers';
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
-interface SServicesMap{
-  toDisplay: Array<string>;
-  radius: number;
-}
-
-interface PServicesMap{
-  lat: number;
-  lon: number;
-  zoom: number;
-  size: string;
-  markers: Array<MarkerData>;
-}
 
 const serviceTypeList = [
   {type:"vet",
-  name: "Vétérinaires"},
+  name: "Vétérinaires",
+  icon: iconVet},
   {type:"park",
-  name: "Parcs"},
+  name: "Parcs",
+  icon: iconPark},
   {type:"groom",
-  name : "Toiletteurs"}
+  name : "Toiletteurs",
+  icon: iconGroom}
 ]
-
-interface MarkerData{
-  key:string;
-  position: Array<number>;
-  info: string;
-  serviceType: string;
-}
+const easterEggMarkers = [
+               {
+                 key: "marker1",
+                 position: [48.86471, 2.349014],
+                 info:"Dr Obiwan Kenobi, 18b rue Tiquetonne",
+                 serviceType: "vet"
+               },
+               {
+                 key: "marker2",
+                 position: [48.865, 2.338],
+                 info:"Parc Grasswalker",
+                 serviceType: "park"
+               },
+               {
+                 key: "marker3",
+                 position: [48.86, 2.36],
+                 info:"Chewbacca's style, 3 rue des Quatre Fils",
+                 serviceType: "groom"
+               },
+               {
+                 key: "marker4",
+                 position: [48.862, 2.33],
+                 info:"Parc Highground",
+                 serviceType: "park"
+               },
+             ];
 
 
 class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
@@ -36,8 +50,16 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
     super(props);
     const toDisplay = serviceTypeList.map(el => (el.type))
 
-    this.state= {toDisplay: toDisplay,
-                 radius: 5000}
+
+    this.state= {userPosition: [this.props.lat, this.props.lon],
+                 toDisplay: toDisplay,
+                 radius: 5000,
+                 markers: []
+               }
+  }
+
+  async componentDidMount(){
+    this.queryAPIServices({});
   }
 
   updateRadius = (event:any) => {
@@ -51,22 +73,45 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
     this.setState({toDisplay : newDisplay});
   }
 
+  queryAPIServices = async (event : any) => {
+    let markersAllTypes: ListMarkerData = []
+    try{
+      for (let i = 0; i < serviceTypeList.length; i++) {
+        const markers = await GetServicesServices.get(this.props.lat,
+          this.props.lon, this.state.radius, serviceTypeList[i].type);
+          markersAllTypes = markersAllTypes.concat(markers)
+        }
+        this.setState({markers: ((markersAllTypes===[]) ? easterEggMarkers : markersAllTypes)})
+
+      } catch(error){
+        this.setState({markers: easterEggMarkers});
+      }
+
+
+  }
+
+
   render(){
 
 
-    const position=[this.props.lat, this.props.lon];
     return(
       <div className="ServicesMap">
         <div className="container_leaflet">
-          <LeafletMap center={position} zoom={this.props.zoom} style={{height: this.props.size, width: this.props.size}}>
+          <LeafletMap center={this.state.userPosition} zoom={this.props.zoom} style={{height: this.props.size, width: this.props.size}}>
             <TileLayer
                      attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                    />
-              {this.props.markers.map(el => {
+            <Marker position={this.state.userPosition} >
+              <Popup>
+                Vous êtes ici !
+              </Popup>
+            </Marker>
+        {this.state.markers.map(el => {
+        const icon = (serviceTypeList.filter(serviceType => (serviceType.type === el.serviceType)))[0].icon
 				if (this.state.toDisplay.includes(el.serviceType))
 					return (
-						<Marker key={el.key} position={el.position}>
+						<Marker key={el.key} position={el.position} icon={icon}>
 							<Popup>
 								{el.info}
 							</Popup>
@@ -88,7 +133,9 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
         <label>{serviceType.name}</label></li>
           ))}
           </ul>
+
           </form>
+          <button className="btn btn-primary btn-block" onClick={this.queryAPIServices}>Recherche</button>
         </div>
       </div>
     );
