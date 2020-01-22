@@ -79,11 +79,7 @@ const initUserModel = async function():Promise<void> {
             type: new DataTypes.STRING(128),
             allowNull: false
         },
-        eventPictureId:{
-            type:DataTypes.INTEGER.UNSIGNED,
-            allowNull: true,
-            unique:false
-        }
+
     }, {
         tableName: 'users',
         modelName: 'user',
