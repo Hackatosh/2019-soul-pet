@@ -109,18 +109,15 @@ eventPicturesRouter.delete('/', deleteEventPictureChecks, inputValidationMW, asy
         res.status(404).json({message: "This file does not exist."});
         return;
     }
-    const picture = await EventPicture.findOne({where: {id: file.eventId}});
     const event = await PetEvent.findOne({where:{id: file.eventId}});
 
-    if (!picture) {
+    if (!file || !event ) {
         res.status(404).json({message: "This event does not exist"});
         return;
     }
 
-
-    else if (picture.userId !== userId && event.userId !== userId ) {
+    else if (file.userId !== userId && event.userId !== userId ) {
         res.status(403).json({message: "You don't have access to this picture "});
-        return;
     }
     else {
         await file.destroy();

@@ -121,11 +121,9 @@ animalPicturesRouter.delete('/', deleteAnimalPictureChecks, inputValidationMW, a
     const pet = await Animal.findOne({where: {id: file.animalId}});
     if (!pet) {
         res.status(404).json({message: "This animal does not exist"});
-        return;
     }
     else if (pet.userId !== userId) {
         res.status(403).json({message: "You don't have access to this animal"});
-        return;
     }
     else {
         await file.destroy();
