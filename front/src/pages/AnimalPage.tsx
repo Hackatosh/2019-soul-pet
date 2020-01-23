@@ -34,7 +34,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
             if (a.animalPictures !== undefined && a.animalPictures.length > 0) {
                 let pictures = new Array<string>(a.animalPictures.length).fill('');
                 this.setState({ pictures: pictures });
-                a.animalPictures.forEach((p: Picture, i: number) => PictureService.getPicture('animals', p.filename).then(c => {
+                a.animalPictures.reverse().forEach((p: Picture, i: number) => PictureService.get('animals', p.filename).then(c => {
                     pictures[i] = c;
                     this.setState({ pictures: pictures });
                 }));

@@ -25,7 +25,7 @@ export class AnimalCard extends React.Component<AnimalCardProps, AnimalCardState
             AnimalService.getPictures(this.props.animal.id).then(pictures => {
                 this.setState({ pictureCount: pictures.length });
                 if (pictures.length > 1)
-                    PictureService.getPicture('animals', pictures[pictures.length - 1].filename).then(p => this.setState({ picture: p }));
+                    PictureService.get('animals', pictures[pictures.length - 1].filename).then(p => this.setState({ picture: p }));
                 else
                     this.setState({ picture: noimage });
             });

@@ -8,7 +8,7 @@ export class PictureService {
      * @param filename the name of the picture to retrieve
      * @returns The image as a string
      */
-    static async getPicture(repository: string, filename: string): Promise<string> {
+    static async get(repository: string, filename: string): Promise<string> {
         return httpClient.get<Blob>(`/pictures/${repository}/?filename=${filename}`, true).then(b => URL.createObjectURL(b), () => Promise.reject('Erreur lors de la récupération de l’image'));
     }
 }
