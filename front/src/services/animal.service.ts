@@ -48,6 +48,18 @@ export class AnimalService {
         return httpClient.get<Picture[]>(`/pictures/animals/${id}`, true).catch(() => Promise.reject('Erreur lors de la récupération des images'));
     }
 
+    /**
+     * Posts a picture associated with an animal.
+     * @param id the ID of the animal
+     * @param picture the picture to post, as a blob
+     * @returns the Picture object
+     */
+    static async postPicture(id: number, picture: Blob): Promise<Picture> {
+        const form = new FormData();
+        form.append('picture', picture);
+        return httpClient.post<Picture>(`/pictures/animals/${id}`, form, true).catch(() => Promise.reject('Erreur lors de l’envoi de l’image'));
+    }
+
 	/**
 	 * Adds an animal to the user account.
 	 * @param animal the animal to add
