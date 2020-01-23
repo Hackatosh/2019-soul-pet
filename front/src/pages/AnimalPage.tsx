@@ -79,7 +79,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							{this.state.error !== '' && <div className="alert alert-danger">{this.state.error}</div>}
 							<h1 className="display-3">{this.state.animal.name}</h1>
-							<p className="lead text-muted">{this.state.animal.specie !== undefined ? titleCase(this.state.animal.specie?.name) : ''} né le {this.state.animal.birthdate.toLocaleDateString()} ({ageFromDate(this.state.animal.birthdate)} ans) &middot; <Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button> &middot; <Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button></p>
+							<p className="lead text-muted">{this.state.animal.specie !== undefined ? titleCase(this.state.animal.specie?.name) : ''} né le {this.state.animal.birthdate.toLocaleDateString()} ({ageFromDate(this.state.animal.birthdate)}) &middot; <Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button> &middot; <Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button></p>
 							<h2>Événements</h2>
 							<div className="row row-cols-1 row-cols-md-3">
 								<div className="col mb-4">

@@ -1,11 +1,16 @@
 /**
  * Computes the number of full years elapsed since a given date.
+ * @returns a string expressing the age
  */
-export function ageFromDate(date: Date): number {
+export function ageFromDate(date: Date): string {
     const now = new Date();
     if (date > now)
         throw new Error('La date ne peut pas être dans le futur !');
-    return Math.floor((now.getTime() - date.getTime()) / 31536000000);
+    const age = Math.floor((now.getTime() - date.getTime()) / 31536000000);
+    if (age === 0)
+        return 'moins d’un an';
+    else
+        return age + ' an' + (age > 1 ? 's' : '');
 }
 
 /**
