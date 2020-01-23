@@ -31,14 +31,14 @@ export class httpClient {
      * @returns The generated RequestInit object
      */
     private static options(authenticated: boolean, method: string, body: string | FormData = ''): RequestInit {
-        console.log(typeof body !== typeof FormData.prototype);
+        const getOrDelete = method === 'GET' || method === 'DELETE';
         const requestOptions: RequestInit = {
             method: method,
-            headers: this.headers(authenticated, method !== 'GET' && !(body instanceof FormData)),
+            headers: this.headers(authenticated, !getOrDelete && !(body instanceof FormData)),
             mode: 'cors',
             credentials: 'include'
         };
-        if (method !== 'GET' && body !== '')
+        if (!getOrDelete && body !== '')
             requestOptions.body = body;
         return requestOptions;
     }
