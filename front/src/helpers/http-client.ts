@@ -8,16 +8,16 @@ export class httpClient {
     /**
      * Generates headers for an HTTP request.
      * @param authenticated Indicates whether the request should be authenticated or not.
-     * @param body Indicates whether the request has a body or not.
+     * @param json Indicates whether the request contains a JSON object or not.
      * @returns The generated headers
      */
-    private static headers(authenticated: boolean, body: boolean): Headers {
+    private static headers(authenticated: boolean, json: boolean): Headers {
         const headers = new Headers();
         if (authenticated && AuthenticationService.isLoggedIn && AuthenticationService.User.token)
             headers.append('Authorization', `JWT ${AuthenticationService.User.token}`);
         else if (authenticated)
             throw new Error('User is not authenticated');
-        if (body)
+        if (json)
             headers.append('Content-Type', 'application/json');
         headers.append('Accept', 'application/json');
         return headers;
@@ -30,17 +30,16 @@ export class httpClient {
      * @param body Contains the body of the request, if need be.
      * @returns The generated RequestInit object
      */
-    private static options(authenticated: boolean, method: string, body = ''): RequestInit {
-        const hasBody = method !== 'GET' && body !== '';
+    private static options(authenticated: boolean, method: string, body: string | FormData = ''): RequestInit {
+        console.log(typeof body !== typeof FormData.prototype);
         const requestOptions: RequestInit = {
             method: method,
-            headers: this.headers(authenticated, hasBody),
+            headers: this.headers(authenticated, method !== 'GET' && !(body instanceof FormData)),
             mode: 'cors',
             credentials: 'include'
         };
-        if (hasBody) {
+        if (method !== 'GET' && body !== '')
             requestOptions.body = body;
-        }
         return requestOptions;
     }
 
@@ -93,8 +92,9 @@ export class httpClient {
      * @param authenticated Indicates whether the request should be authenticated.
      * @returns A promise containing an object of type T
      */
-    public static async post<T>(endpoint: string, body: T, authenticated = false): Promise<T> {
-        return await this.request<T>(endpoint, this.options(authenticated, 'POST', JSON.stringify(body)));
+    public static async post<T>(endpoint: string, body: T | FormData, authenticated = false): Promise<T> {
+        // If the body is a form, then we must send it as-is.
+        return await this.request<T>(endpoint, this.options(authenticated, 'POST', body instanceof FormData ? body as FormData : JSON.stringify(body)));
     }
 
     /**
