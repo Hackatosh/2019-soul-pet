@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnimalService, PictureService } from '../services';
 import { RouteComponentProps } from 'react-router';
-import './HomePage.css';
+import './AnimalPage.css';
 import { AnimalForm, DeleteConfirmation, SquareImage } from '../components';
 import { Animal, Picture } from '../models';
 import { Card, Button } from 'react-bootstrap';
@@ -20,12 +20,16 @@ export interface AnimalPageState {
 }
 
 export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState> {
+    private fileInput: React.RefObject<HTMLInputElement>;
+
 	constructor(props: AnimalPageProps) {
-		super(props);
+        super(props);
 		if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
 			history.push('/404')
 		else
             this.state = { error: '', id: parseInt(this.props.match.params.id), animal: undefined, pictures: [], showAnimalForm: false, showAnimalDelete: false };
+        this.loadPicture = this.loadPicture.bind(this);
+        this.fileInput = React.createRef();
 	}
 
     componentDidMount() {
@@ -50,6 +54,15 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
         this.setState({ showAnimalDelete: state });
     }
 
+    private loadPicture() {
+        if (this.fileInput.current === null || this.fileInput.current.files === null)
+            return;
+        const picture = this.fileInput.current.files[0];
+        AnimalService.postPicture(1, picture).then(_ => {
+            this.setState({ pictures: [URL.createObjectURL(picture)].concat(this.state.pictures) })
+        }).catch(e => this.setState({ error: e }));
+    }
+
     render() {
 		return (
 			<div className="container">
@@ -58,7 +71,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 					<div className="row">
 						<div className="col-10 offset-1 col-md-3">
                             {this.state.pictures.length > 0 ? (
-                            <SquareImage image={this.state.pictures[this.state.pictures.length - 1]} />
+                            <SquareImage image={this.state.pictures[0]} />
                             ) : (
                             <SquareImage image={noimage} />
                             )}
@@ -102,7 +115,16 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 							</div>
                             <h2>Galerie</h2>
                             <div className="row row-cols-1 row-cols-md-3">
-                                {this.state.pictures.map((picture: string, index: number) => <div className="col mb-4"><SquareImage image={picture} key={index} /></div>)}
+                                <div className="col mb-4">
+                                    <div className="text-center add-picture">
+                                        <Button onClick={() => this.fileInput.current?.click()} variant="success">Ajouter une photo</Button>
+                                        <p className="text-muted">Taille limitée à 1&nbsp;Mo</p>
+                                        <form encType="multipart/form-data">
+                                            <input type="file" ref={this.fileInput} onChange={this.loadPicture} name="picture" />
+                                        </form>
+                                    </div>
+                                </div>
+                                {this.state.pictures.map((picture: string, index: number) => <div className="col mb-4" key={index}><SquareImage image={picture} /></div>)}
 							</div>
 						</div>
 					</div>
