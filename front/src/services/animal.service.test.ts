@@ -41,14 +41,14 @@ test('Get all species', async () => {
 	get.mockResolvedValue(species);
 	await AnimalService.getSpecies().then(s => {
 		expect(s).toStrictEqual(species);
-    });
+	});
 });
 
 test('Get all animals', async () => {
 	get.mockResolvedValue(animals);
 	await AnimalService.getAll(1).then(a => {
 		expect(a).toStrictEqual(animals);
-    });
+	});
 });
 
 test('Get no animals', async () => {
@@ -58,39 +58,39 @@ test('Get no animals', async () => {
 });
 
 test('Get single animal', async () => {
-    get.mockResolvedValue(animals[0]);
-    await AnimalService.getSingle(0).then(a => {
-        expect(a).toStrictEqual(animals[0]);
-        expect(a.birthdate).toBeInstanceOf(Date);
-    })
-    expect.assertions(2);
+	get.mockResolvedValue(animals[0]);
+	await AnimalService.getSingle(0).then(a => {
+		expect(a).toStrictEqual(animals[0]);
+		expect(a.birthdate).toBeInstanceOf(Date);
+	})
+	expect.assertions(2);
 })
 
 test('Retrieve pictures', async () => {
-    get.mockResolvedValue(pictures);
-    await AnimalService.getPictures(1).then(p => {
-        expect(p).toStrictEqual(pictures);
-    })
+	get.mockResolvedValue(pictures);
+	await AnimalService.getPictures(1).then(p => {
+		expect(p).toStrictEqual(pictures);
+	})
 });
 
 test('Post picture', async () => {
-    const id = 0;
-    post.mockResolvedValue(pictures[0]);
-    await AnimalService.postPicture(id, new Blob()).finally(() => {
-        expect(post.mock.calls[0][0]).toBe(`/pictures/animals/${id}`);
-        const form = new FormData();
-        form.append('picture', new Blob());
-        expect(post.mock.calls[0][1]).toStrictEqual(form);
-    });
-    expect.assertions(2);
+	const id = 0;
+	post.mockResolvedValue(pictures[0]);
+	await AnimalService.postPicture(id, new Blob()).finally(() => {
+		expect(post.mock.calls[0][0]).toBe(`/pictures/animals/${id}`);
+		const form = new FormData();
+		form.append('picture', new Blob());
+		expect(post.mock.calls[0][1]).toStrictEqual(form);
+	});
+	expect.assertions(2);
 });
 
 test('Delete a picture', async () => {
-    del.mockResolvedValue(null);
-    await AnimalService.deletePicture(pictures[0]).finally(() => {
-        expect(del.mock.calls[0][0]).toBe(`/pictures/animals/?filename=${pictures[0].filename}`);
-    });
-    expect.assertions(1);
+	del.mockResolvedValue(null);
+	await AnimalService.deletePicture(pictures[0]).finally(() => {
+		expect(del.mock.calls[0][0]).toBe(`/pictures/animals/?filename=${pictures[0].filename}`);
+	});
+	expect.assertions(1);
 })
 
 test('Add an animal', async () => {
@@ -118,7 +118,7 @@ test('Edit an animal', async () => {
 });
 
 test('Delete animal', async () => {
-    jest.spyOn(AnimalService, "getSingle").mockResolvedValue(animals[0]);
+	jest.spyOn(AnimalService, "getSingle").mockResolvedValue(animals[0]);
 	del.mockResolvedValueOnce(null)
 		.mockRejectedValueOnce('Error');
 	await AnimalService.delete(0).then(e => expect(e).toBeNull());

@@ -5,10 +5,10 @@ import { Picture } from "./Picture";
 export interface Animal {
 	id?: number;
 	userId: number;
-    specieId: number;
-    specie?: Specie;
+	specieId: number;
+	specie?: Specie;
 	birthdate: Date;
 	name: string;
-    events?: PetEvent[];
-    animalPictures?: Picture[];
+	events?: PetEvent[];
+	animalPictures?: Picture[];
 }

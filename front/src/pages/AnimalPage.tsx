@@ -11,86 +11,86 @@ import noimage from '../resources/image-fill.svg';
 export interface AnimalPageProps extends RouteComponentProps<{id: string}> {}
 
 export interface AnimalPageState {
-    error: string;
-    id: number;
-    animal: Animal | undefined;
+	error: string;
+	id: number;
+	animal: Animal | undefined;
 	showAnimalForm: boolean;
-    showAnimalDelete: boolean;
+	showAnimalDelete: boolean;
 }
 
 export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState> {
 	constructor(props: AnimalPageProps) {
-        super(props);
+		super(props);
 		if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
 			history.push('/404')
 		else
-            this.state = { error: '', id: parseInt(this.props.match.params.id), animal: undefined, showAnimalForm: false, showAnimalDelete: false };
-        this.loadPicture = this.loadPicture.bind(this);
+			this.state = { error: '', id: parseInt(this.props.match.params.id), animal: undefined, showAnimalForm: false, showAnimalDelete: false };
+		this.loadPicture = this.loadPicture.bind(this);
 	}
 
-    componentDidMount() {
-        AnimalService.getSingle(this.state.id).then(a => {
-            this.setState({ animal: a });
-            AnimalService.getPictures(this.state.id).then(pictures => {
-                a.animalPictures = pictures.reverse();
-                this.setState({ animal: a });
-                pictures.forEach((p: Picture, i: number) => {
-                        pictures[i].picture = '';
-                        a.animalPictures = pictures;
-                        this.setState({ animal: a });
-                        PictureService.get('animals', p.filename).then(c => {
-                            pictures[i].picture = c;
-                        }).catch(_ => {
-                            pictures[i].picture = noimage;
-                        }).finally(() => {
-                            a.animalPictures = pictures;
-                            console.log(a.animalPictures);
-                            this.setState({ animal: a });
-                        });
-                    });
-            });
-        }).catch(() => history.push('/404'));   
+	componentDidMount() {
+		AnimalService.getSingle(this.state.id).then(a => {
+			this.setState({ animal: a });
+			AnimalService.getPictures(this.state.id).then(pictures => {
+				a.animalPictures = pictures.reverse();
+				this.setState({ animal: a });
+				pictures.forEach((p: Picture, i: number) => {
+						pictures[i].picture = '';
+						a.animalPictures = pictures;
+						this.setState({ animal: a });
+						PictureService.get('animals', p.filename).then(c => {
+							pictures[i].picture = c;
+						}).catch(_ => {
+							pictures[i].picture = noimage;
+						}).finally(() => {
+							a.animalPictures = pictures;
+							console.log(a.animalPictures);
+							this.setState({ animal: a });
+						});
+					});
+			});
+		}).catch(() => history.push('/404'));   
 	}
 
-    private showAnimalForm(state: boolean) {
-        this.setState({ showAnimalForm: state });
+	private showAnimalForm(state: boolean) {
+		this.setState({ showAnimalForm: state });
 	}
 	
 	private showAnimalDelete(state: boolean) {
-        this.setState({ showAnimalDelete: state });
-    }
+		this.setState({ showAnimalDelete: state });
+	}
 
-    private loadPicture(f: File) {
-        AnimalService.postPicture(this.state.id, f).then(p => {
-            p.picture = URL.createObjectURL(f);
-            this.state.animal?.animalPictures?.unshift(p);
-            this.setState({ animal: this.state.animal });
-        }).catch(e => this.setState({ error: e }));
-    }
+	private loadPicture(f: File) {
+		AnimalService.postPicture(this.state.id, f).then(p => {
+			p.picture = URL.createObjectURL(f);
+			this.state.animal?.animalPictures?.unshift(p);
+			this.setState({ animal: this.state.animal });
+		}).catch(e => this.setState({ error: e }));
+	}
 
-    private deletePicture(index: number) {
-        if (this.state.animal?.animalPictures === undefined) {
-            this.setState({ error: 'Erreur lors de la suppression de l’image' });
-            return;
-        }
-        AnimalService.deletePicture(this.state.animal?.animalPictures[index]).then(_ => {
-            this.state.animal?.animalPictures?.splice(index, 1);
-            this.setState({ animal: this.state.animal });
-        }).catch(e => this.setState({ error: e }));
-    }
+	private deletePicture(index: number) {
+		if (this.state.animal?.animalPictures === undefined) {
+			this.setState({ error: 'Erreur lors de la suppression de l’image' });
+			return;
+		}
+		AnimalService.deletePicture(this.state.animal?.animalPictures[index]).then(_ => {
+			this.state.animal?.animalPictures?.splice(index, 1);
+			this.setState({ animal: this.state.animal });
+		}).catch(e => this.setState({ error: e }));
+	}
 
-    render() {
+	render() {
 		return (
 			<div className="container">
 				{this.state.animal !== undefined && 
-                <React.Fragment>
+				<React.Fragment>
 					<div className="row">
 						<div className="col-10 offset-1 col-md-3">
-                            {this.state.animal.animalPictures !== undefined && this.state.animal.animalPictures.length > 0 ? (
-                            <SquareImage image={this.state.animal.animalPictures[0].picture} />
-                            ) : (
-                            <SquareImage image={noimage} />
-                            )}
+							{this.state.animal.animalPictures !== undefined && this.state.animal.animalPictures.length > 0 ? (
+							<SquareImage image={this.state.animal.animalPictures[0].picture} />
+							) : (
+							<SquareImage image={noimage} />
+							)}
 						</div>
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							{this.state.error !== '' && <div className="alert alert-danger">{this.state.error}</div>}
@@ -129,12 +129,12 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 									</Card>
 								</div>
 							</div>
-                            <h2>Galerie</h2>
-                            <div className="row row-cols-1 row-cols-md-3">
-                                <div className="col mb-4">
-                                    <AddImage exportPicture={this.loadPicture} />
-                                </div>
-                                {this.state.animal.animalPictures?.map((picture: Picture, index: number) => <div className="col mb-4" key={index}><div className="mask-buttons"><Button variant="danger" onClick={() => this.deletePicture(index)}>&times;</Button></div><SquareImage image={picture.picture} /></div>)}
+							<h2>Galerie</h2>
+							<div className="row row-cols-1 row-cols-md-3">
+								<div className="col mb-4">
+									<AddImage exportPicture={this.loadPicture} />
+								</div>
+								{this.state.animal.animalPictures?.map((picture: Picture, index: number) => <div className="col mb-4" key={index}><div className="mask-buttons"><Button variant="danger" onClick={() => this.deletePicture(index)}>&times;</Button></div><SquareImage image={picture.picture} /></div>)}
 							</div>
 						</div>
 					</div>
@@ -143,7 +143,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 						AnimalService.delete(this.state.id).then(() => history.push('/')).catch(() => this.setState({ error: 'Erreur lors de la suppression' }))
 					}} />
 				</React.Fragment>}
-            </div>
+			</div>
 		);
 	}
 }
