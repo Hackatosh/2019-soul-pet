@@ -31,7 +31,7 @@ const animals: Animal[] = [{
 
 const species: Specie[] = [{ id: 1, name: 'chat'}, { id: 2, name: 'chien'}];
 
-const pictures: Picture[] = [{ id: 1, filename: 'file.jpg' }];
+const pictures: Picture[] = [{ id: 1, filename: 'file.jpg', picture: '' }];
 
 beforeEach(() => {
 	jest.resetAllMocks();
@@ -72,6 +72,26 @@ test('Retrieve pictures', async () => {
         expect(p).toStrictEqual(pictures);
     })
 });
+
+test('Post picture', async () => {
+    const id = 0;
+    post.mockResolvedValue(pictures[0]);
+    await AnimalService.postPicture(id, new Blob()).finally(() => {
+        expect(post.mock.calls[0][0]).toBe(`/pictures/animals/${id}`);
+        const form = new FormData();
+        form.append('picture', new Blob());
+        expect(post.mock.calls[0][1]).toStrictEqual(form);
+    });
+    expect.assertions(2);
+});
+
+test('Delete a picture', async () => {
+    del.mockResolvedValue(null);
+    await AnimalService.deletePicture(pictures[0]).finally(() => {
+        expect(del.mock.calls[0][0]).toBe(`/pictures/animals/?filename=${pictures[0].filename}`);
+    });
+    expect.assertions(1);
+})
 
 test('Add an animal', async () => {
 	post.mockResolvedValueOnce(animals[0])

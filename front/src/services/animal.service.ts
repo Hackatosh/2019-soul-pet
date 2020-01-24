@@ -62,10 +62,10 @@ export class AnimalService {
 
     /**
      * Deletes a picture.
-     * @param filename the name of the picture to delete
+     * @param picture the picture to delete
      */
-    static async deletePicture(filename: string) {
-        return httpClient.delete(`/pictures/animals/?filename=${filename}`, true).catch(() => Promise.reject('Erreur lors de la suppression de l’image'));
+    static async deletePicture(picture: Picture) {
+        return httpClient.delete(`/pictures/animals/?filename=${picture.filename}`, true).catch(() => Promise.reject('Erreur lors de la suppression de l’image'));
     }
 
 	/**
