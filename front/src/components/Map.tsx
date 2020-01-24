@@ -1,21 +1,26 @@
 import React from 'react';
+import { Switch } from './ToggleSwitch'
 import { PServicesMap, SServicesMap, ListMarkerData } from '../models';
 import { GetServicesServices } from '../services';
-import { iconVet, iconPark, iconGroom } from '../models';
+import { iconVet, iconPark, iconGroom, imageVet, imagePark, imageGroom } from '../models';
 //import { getUserLocation } from '../helpers';
+import { Button } from 'react-bootstrap'
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 
 const serviceTypeList = [
   {type:"vet",
   name: "Vétérinaires",
-  icon: iconVet},
+  icon: iconVet,
+imagePath: imageVet},
   {type:"park",
   name: "Parcs",
-  icon: iconPark},
+  icon: iconPark,
+imagePath: imagePark},
   {type:"groom",
   name : "Toiletteurs",
-  icon: iconGroom}
+  icon: iconGroom,
+imagePath: imageGroom}
 ]
 const easterEggMarkers = [
                {
@@ -124,23 +129,25 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
           </LeafletMap>
         </div>
         <div className="services_displayed">
-          <input type="range" min="1" max="100" name="distance" onChange={this.updateRadius}/>
-          <label>Rayon de recherche : {this.state.radius/1000}</label>
-          <form>
           <ul>
           {serviceTypeList.map(serviceType => (
-            <li><input type="checkbox" value={serviceType.type} id={serviceType.type} defaultChecked={this.state.toDisplay.includes(serviceType.type)} onChange={this.handleChange}/>
-        <label>{serviceType.name}</label></li>
+            <li><Switch value={serviceType.type} id={serviceType.type}
+            defaultChecked={this.state.toDisplay.includes(serviceType.type)} onChange={this.handleChange} />
+            <label>{serviceType.name}</label><img src={serviceType.imagePath} style={{width: "20px"}}></img></li>
           ))}
           </ul>
-
-          </form>
-          <button className="btn btn-primary btn-block" onClick={this.queryAPIServices}>Recherche</button>
+          <input type="range" min="1" max="100" name="distance" onChange={this.updateRadius}/>
+          <label>Rayon de recherche : {this.state.radius/1000}</label>
+          <Button className="btn btn-primary btn-block" onClick={this.queryAPIServices}>Recherche</Button>
         </div>
       </div>
     );
   }
 }
 
+
+/* value={serviceType.type} id={serviceType.type}
+defaultChecked={this.state.toDisplay.includes(serviceType.type)} onChange={this.handleChange}></Switch>
+<label>{serviceType.name}</label>*/
 
 export { ServicesMap };

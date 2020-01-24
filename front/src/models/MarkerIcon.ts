@@ -36,4 +36,4 @@ const iconGroom = L.icon({
 });
 
 
-export { iconPark, iconGroom, iconVet };
+export { iconPark, iconGroom, iconVet, imageVet, imagePark, imageGroom };
