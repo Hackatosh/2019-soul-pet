@@ -41,6 +41,9 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
                 a.animalPictures.reverse().forEach((p: Picture, i: number) => PictureService.get('animals', p.filename).then(c => {
                     pictures[i] = c;
                     this.setState({ pictures: pictures });
+                }).catch(_ => {
+                    pictures[i] = noimage;
+                    this.setState({ pictures: pictures });
                 }));
             }
         }).catch(() => history.push('/404'));   
@@ -116,7 +119,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
                             <h2>Galerie</h2>
                             <div className="row row-cols-1 row-cols-md-3">
                                 <div className="col mb-4">
-                                    <div className="text-center add-picture">
+                                    <div className="bg-dark text-center add-picture">
                                         <Button onClick={() => this.fileInput.current?.click()} variant="success">Ajouter une photo</Button>
                                         <p className="text-muted">Taille limitée à 1&nbsp;Mo</p>
                                         <form encType="multipart/form-data">
