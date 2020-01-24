@@ -60,6 +60,14 @@ export class AnimalService {
         return httpClient.post<Picture>(`/pictures/animals/${id}`, form, true).catch(() => Promise.reject('Erreur lors de l’envoi de l’image'));
     }
 
+    /**
+     * Deletes a picture.
+     * @param filename the name of the picture to delete
+     */
+    static async deletePicture(filename: string) {
+        return httpClient.delete(`/pictures/animals/?filename=${filename}`, true).catch(() => Promise.reject('Erreur lors de la suppression de l’image'));
+    }
+
 	/**
 	 * Adds an animal to the user account.
 	 * @param animal the animal to add

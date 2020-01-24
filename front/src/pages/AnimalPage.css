@@ -1,3 +1,7 @@
 .add-picture {border: 1px solid rgba(0, 0, 0, 0.125); height: 0; padding-top: 35%; padding-bottom: 65%;}
 .add-picture p {margin-top: 5%;}
 .add-picture input {height: 0; width: 0;}
+.mask-buttons {height: 100%; position: absolute; width: calc(100% - 30px);}
+.mask-buttons Button {display: none;}
+.mask-buttons:hover {background-color: rgba(0, 0, 0, 0.33333);}
+.mask-buttons:hover Button {display: block;}
