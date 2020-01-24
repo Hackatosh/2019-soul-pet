@@ -2,7 +2,7 @@ import React from 'react';
 import { AnimalService, PictureService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './AnimalPage.css';
-import { AnimalForm, DeleteConfirmation, SquareImage } from '../components';
+import { AnimalForm, DeleteConfirmation, SquareImage, AddImage } from '../components';
 import { Animal, Picture } from '../models';
 import { Card, Button } from 'react-bootstrap';
 import { history, titleCase, ageFromDate } from '../helpers';
@@ -19,8 +19,6 @@ export interface AnimalPageState {
 }
 
 export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState> {
-    private fileInput: React.RefObject<HTMLInputElement>;
-
 	constructor(props: AnimalPageProps) {
         super(props);
 		if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
@@ -28,26 +26,29 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 		else
             this.state = { error: '', id: parseInt(this.props.match.params.id), animal: undefined, showAnimalForm: false, showAnimalDelete: false };
         this.loadPicture = this.loadPicture.bind(this);
-        this.fileInput = React.createRef();
 	}
 
     componentDidMount() {
         AnimalService.getSingle(this.state.id).then(a => {
             this.setState({ animal: a });
-            if (a.animalPictures !== undefined && a.animalPictures.length > 0) {
-                a.animalPictures.reverse().forEach((p: Picture, i: number) => {
-                    if (a.animalPictures !== undefined)
-                        a.animalPictures[i].picture = '';
-                    this.setState({ animal: this.state.animal });
-                    PictureService.get('animals', p.filename).then(c => {
-                        if (a.animalPictures !== undefined)
-                            a.animalPictures[i].picture = c;
-                    }).catch(_ => {
-                        if (a.animalPictures !== undefined)
-                            a.animalPictures[i].picture = noimage;
-                    }).finally(() => this.setState({ animal: a }))
-                });
-            }
+            AnimalService.getPictures(this.state.id).then(pictures => {
+                a.animalPictures = pictures.reverse();
+                this.setState({ animal: a });
+                pictures.forEach((p: Picture, i: number) => {
+                        pictures[i].picture = '';
+                        a.animalPictures = pictures;
+                        this.setState({ animal: a });
+                        PictureService.get('animals', p.filename).then(c => {
+                            pictures[i].picture = c;
+                        }).catch(_ => {
+                            pictures[i].picture = noimage;
+                        }).finally(() => {
+                            a.animalPictures = pictures;
+                            console.log(a.animalPictures);
+                            this.setState({ animal: a });
+                        });
+                    });
+            });
         }).catch(() => history.push('/404'));   
 	}
 
@@ -59,12 +60,9 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
         this.setState({ showAnimalDelete: state });
     }
 
-    private loadPicture() {
-        if (this.fileInput.current === null || this.fileInput.current.files === null)
-            return;
-        const picture = this.fileInput.current.files[0];
-        AnimalService.postPicture(1, picture).then(p => {
-            p.picture = URL.createObjectURL(picture);
+    private loadPicture(f: File) {
+        AnimalService.postPicture(this.state.id, f).then(p => {
+            p.picture = URL.createObjectURL(f);
             this.state.animal?.animalPictures?.unshift(p);
             this.setState({ animal: this.state.animal });
         }).catch(e => this.setState({ error: e }));
@@ -134,13 +132,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
                             <h2>Galerie</h2>
                             <div className="row row-cols-1 row-cols-md-3">
                                 <div className="col mb-4">
-                                    <div className="bg-dark text-center add-picture">
-                                        <Button onClick={() => this.fileInput.current?.click()} variant="success">Ajouter une photo</Button>
-                                        <p className="text-muted">Taille limitée à 1&nbsp;Mo</p>
-                                        <form encType="multipart/form-data">
-                                            <input type="file" ref={this.fileInput} onChange={this.loadPicture} name="picture" />
-                                        </form>
-                                    </div>
+                                    <AddImage exportPicture={this.loadPicture} />
                                 </div>
                                 {this.state.animal.animalPictures?.map((picture: Picture, index: number) => <div className="col mb-4" key={index}><div className="mask-buttons"><Button variant="danger" onClick={() => this.deletePicture(index)}>&times;</Button></div><SquareImage image={picture.picture} /></div>)}
 							</div>
