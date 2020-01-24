@@ -1,3 +1,14 @@
-<svg class="bi bi-image-fill" width="1em" height="1em" viewBox="0 0 20 20" fill="#999" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M2.002 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2h-12a2 2 0 01-2-2V5zm1 9l2.646-2.354a.5.5 0 01.63-.062l2.66 1.773 3.71-3.71a.5.5 0 01.577-.094l3.777 1.947V15a1 1 0 01-1 1h-12a1 1 0 01-1-1v-1zm5-6.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" clip-rule="evenodd"/>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" width="8.47mm" height="8.47mm" viewBox="0 0 24 24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #999;
+      }
+    </style>
+  </defs>
+  <title>image-fill</title>
+  <g>
+    <polygon class="cls-1" points="11.2 15.63 9.18 13.21 6.37 16.83 17.63 16.83 14.01 12 11.2 15.63"/>
+    <path class="cls-1" d="M0,0V24H24V0ZM19.24,17.63a1.61,1.61,0,0,1-1.61,1.61H6.37a1.61,1.61,0,0,1-1.61-1.61V6.37A1.61,1.61,0,0,1,6.37,4.76H17.63a1.61,1.61,0,0,1,1.61,1.61Z"/>
+  </g>
 </svg>
