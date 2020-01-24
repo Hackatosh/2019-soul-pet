@@ -75,7 +75,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
             this.setState({ error: 'Erreur lors de la suppression de l’image' });
             return;
         }
-        AnimalService.deletePicture(this.state.animal?.animalPictures[index].filename).then(_ => {
+        AnimalService.deletePicture(this.state.animal?.animalPictures[index]).then(_ => {
             this.state.animal?.animalPictures?.splice(index, 1);
             this.setState({ animal: this.state.animal });
         }).catch(e => this.setState({ error: e }));
