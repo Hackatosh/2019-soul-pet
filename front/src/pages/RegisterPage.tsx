@@ -42,13 +42,13 @@ export class RegisterPage extends React.Component<RouteComponentProps, {}> {
 										<div className={'alert alert-danger'}>{status}</div>
 									}
 									<label htmlFor="username" className="sr-only">Pseudo</label>
-									<Field name="username" placeholder="Pseudo (plus de 3 caractères)" className={'form-control'}/>
+									<Field name="username" required placeholder="Pseudo (plus de 3 caractères)" className={'form-control'} />
 									<label htmlFor="email" className="sr-only">E-mail</label>
-									<Field name="email" type="email" placeholder="E-mail" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
+									<Field name="email" required type="email" placeholder="E-mail" className={'form-control' + (errors.email && touched.email ? ' is-invalid' : '')} />
 									<label htmlFor="password" className="sr-only">Mot de passe</label>
-									<Field name="password" type="password" placeholder="Mot de passe (plus de 8 caractères)" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
+									<Field name="password" required type="password" placeholder="Mot de passe (plus de 8 caractères)" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
 									<label htmlFor="password" className="sr-only">Confirmez votre mot de passe</label>
-									<Field name="confirmpassword" type="password" placeholder="Mot de passe (confirmation)" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
+									<Field name="confirmpassword" required type="password" placeholder="Mot de passe (confirmation)" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
 									<button type="submit" className="btn btn-primary btn-block" disabled={isSubmitting}>S'enregister</button>
 								</Form>
 							)}
