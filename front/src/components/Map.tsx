@@ -66,6 +66,8 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 			radius: 5000,
 			markers: []
 		};
+
+		this.createMarker = this.createMarker.bind(this);
 	}
 
 	async componentDidMount(){
@@ -97,35 +99,31 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 		}
 	}
 
+	private createMarker(service: any): JSX.Element | null {
+		const icon = (serviceTypeList.filter(serviceType => (serviceType.type === service.serviceType)))[0].icon;
+		if (this.state.toDisplay.includes(service.serviceType))
+			return (
+				<Marker key={service.key} position={service.position} icon={icon}>
+					<Popup>{service.info}</Popup>
+				</Marker>
+			);
+		return null;
+	}
+
 	render() {
 		return(
 			<div className="container">
 				<div className="row">
 					<div className="col-10 offset-1 col-md-6" style={{ minHeight: '60vh' }}>
 						<LeafletMap center={this.state.userPosition} zoom={this.props.zoom} style={{height: '100%', width: '100%'}}>
-						<TileLayer
+							<TileLayer
 								attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 								url="https://cartodb-basemaps-1.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
 							/>
-						<Marker position={this.state.userPosition} >
-						<Popup>
-							Vous êtes ici !
-						</Popup>
-						</Marker>
-					{this.state.markers.map(el => {
-					const icon = (serviceTypeList.filter(serviceType => (serviceType.type === el.serviceType)))[0].icon
-							if (this.state.toDisplay.includes(el.serviceType))
-								return (
-									<Marker key={el.key} position={el.position} icon={icon}>
-										<Popup>
-											{el.info}
-										</Popup>
-									</Marker>
-								);
-							return null;
-							}
-						)}
-
+							<Marker position={this.state.userPosition}>
+								<Popup>Vous êtes ici !</Popup>
+							</Marker>
+							{this.state.markers.map(this.createMarker)}
 					</LeafletMap>
 					</div>
 					<div className="col-10 offset-1 col-md-2 offset-md-0">
