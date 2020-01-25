@@ -12,7 +12,7 @@ const watchPosition = jest.spyOn(global.navigator.geolocation, 'watchPosition');
 const clearWatch = jest.spyOn(global.navigator.geolocation, 'clearWatch');
 const getPosition = jest.spyOn(global.navigator.geolocation, 'getCurrentPosition');
 
-test.only('Get coordinates ', async () => {
+test('Get coordinates ', async () => {
 	getPosition.mockImplementation(s => {
 		s({coords: {} as Coordinates});
 	});
