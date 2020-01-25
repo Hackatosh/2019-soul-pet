@@ -54,7 +54,7 @@ eventsRouter.get('/search', searchEvents, inputValidationMW, async (req: Authent
 
     let searchRequest = {[Sequelize.Op.and]: andConditions};
 
-    let searchResult = await PetEvent.findAll({where: searchRequest});
+    let searchResult = await PetEvent.findAll({where: searchRequest, include:[{model:User,attributes:["username"]}]});
     res.status(200).json(searchResult);
 });
 

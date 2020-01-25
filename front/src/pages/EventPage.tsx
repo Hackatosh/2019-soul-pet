@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import peche from '../resources/events/peche.jpg';
 import {useParams, RouteComponentProps} from 'react-router-dom';
-import {PetEvent} from '../models/PetEvent';
+import {PetEvent} from '../models';
 import { history, httpClient } from '../helpers';
 import {EventService} from "../services/event.service";
 
@@ -12,7 +12,7 @@ export interface EventPageState {
   id: number;
   event: PetEvent | undefined;
 }
-export class EventDetails extends Component<EventCardProps, EventPageState> {
+export class EventPage extends Component<EventCardProps, EventPageState> {
 
   constructor(props: EventCardProps) {
 		super(props);

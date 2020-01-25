@@ -1,10 +1,10 @@
 import React from 'react';
-import {EventCard} from './EventCard';
+import {EventCard} from '../components/EventCard';
 import { RouteComponentProps } from 'react-router';
 import Pagination from 'react-bootstrap/Pagination'
-import { PetEvent } from '../models/PetEvent';
+import { PetEvent } from '../models';
 
-export class EventList extends React.Component<RouteComponentProps, {}> {
+export class EventsSearchPage extends React.Component<RouteComponentProps, {}> {
 
   render() {
 
@@ -46,9 +46,9 @@ export class EventList extends React.Component<RouteComponentProps, {}> {
           </div>
         </div>
         <div className="row row-cols-2 row-cols-md-3 justify-content-center">
-          <EventCard event={event}/>
-          <EventCard event={event}/>
-          <EventCard event={event}/>
+          <EventCard key={1} event={event}/>
+          <EventCard key={2} event={event}/>
+          <EventCard key={3} event={event}/>
         </div>
         {paginationBasic}
       </div>

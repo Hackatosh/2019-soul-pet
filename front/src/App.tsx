@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
 import { PrivateRoute, NavBar } from './components';
-import { HomePage, LoginPage, RegisterPage, EventList, EventDetails, ServicesPage, AnimalPage, NotFoundPage } from './pages';
+import { HomePage, LoginPage, RegisterPage, EventsSearchPage, EventPage, ServicesPage, AnimalPage, NotFoundPage } from './pages';
 import { history } from './helpers';
 import { AuthenticationService } from './services';
 
@@ -19,8 +19,8 @@ class App extends React.Component<{}, {}> {
 					<Route path="/login" component={LoginPage} />
 					<Route path="/register" component={RegisterPage} />
 
-					<Route path="/events/list" component={EventList} />
-					<Route path="/events/:id" component={EventDetails} />
+					<PrivateRoute path="/events/list" component={EventsSearchPage} />
+					<PrivateRoute path="/events/:id" component={EventPage} />
 					<PrivateRoute path="/services" component={ServicesPage} />
 					<PrivateRoute exact path="/" component={HomePage} />
 					<PrivateRoute exact path="/animal/:id" component={AnimalPage} />
