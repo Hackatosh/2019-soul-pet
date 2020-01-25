@@ -15,12 +15,14 @@ export class GeolocationService {
     }
 
     public static async getCoordinates(startWatching: boolean = false): Promise<Coordinates> {
-        if (this.coordinates !== undefined) {
+		// If we do not want to start watching, or are already watching, and we already
+		// have the coordinates, we send them as-is.
+        if (this.coordinates !== undefined && (!startWatching || this.watchId !== 0)) {
             return this.coordinates;
         } else {
             if ("geolocation" in navigator) {
                 try {
-                    this.coordinates = await this.getCurrentPositionWrapper();
+					this.coordinates = await this.getCurrentPositionWrapper();
                     if (startWatching) {
                         this.startWatchingGeoloc();
                     }
