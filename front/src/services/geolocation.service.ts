@@ -1,3 +1,6 @@
+/**
+ * This is used to retrieve the position of the user.
+ */
 export class GeolocationService {
     private static coordinates: Coordinates | undefined = undefined;
     private static watchId: number = 0;
@@ -14,6 +17,11 @@ export class GeolocationService {
         )
     }
 
+	/**
+	 * Retrieves the coordinates of the user.
+	 * @param startWatching whether to start watching the user as well
+	 * @see GeolocationService.startWatchingGeoloc about use of the ‘watch mode’
+	 */
     public static async getCoordinates(startWatching: boolean = false): Promise<Coordinates> {
 		// If we do not want to start watching, or are already watching, and we already
 		// have the coordinates, we send them as-is.
@@ -36,6 +44,12 @@ export class GeolocationService {
         }
     }
 
+	/**
+	 * Begins watching the position of the user, regularly updating the coordinates,
+	 * which can then be retrieved with getCoordinates.
+	 * Do not forget to call stopWatchinGeoloc when you dismount your component.
+	 * @see GeolocationService.stopWatchinGeoloc
+	 */
     public static startWatchingGeoloc(): void {
         if (this.watchId === 0) {
             const cb_success = (position: Position) => {
@@ -53,6 +67,9 @@ export class GeolocationService {
         }
     }
 
+	/**
+	 * Stops watching the position of the user.
+	 */
     public static stopWatchingGeoloc(): void {
         if (this.watchId !== 0) {
             navigator.geolocation.clearWatch(this.watchId);
