@@ -1,11 +1,7 @@
 import React from 'react';
 import {EventCard} from './EventCard';
-import peche from '../resources/events/peche.jpg';
-import rencontre from '../resources/events/rencontre.jpg';
-import randonnee from '../resources/events/randonnee.jpg';
 import { RouteComponentProps } from 'react-router';
 import Pagination from 'react-bootstrap/Pagination'
-import PageItem from 'react-bootstrap/PageItem'
 import { PetEvent } from '../models/PetEvent';
 
 export class EventList extends React.Component<RouteComponentProps, {}> {
@@ -27,7 +23,7 @@ export class EventList extends React.Component<RouteComponentProps, {}> {
           <Pagination>{items}</Pagination>
         </div>
       );
-      const event:PetEvent = {id:1,title:"Mon event",description:"Ca alors quel evenement hors du commun",organisateur:"Moi meme",begin_date:new Date(),end_date:new Date()}
+      const event:PetEvent = {id:1,name:"Mon event",description:"Ca alors quel evenement hors du commun",userId:1,beginDate:new Date(),endDate:new Date()};
 
       let numberEvent = [];
       for (let number = 1; number <= 5; number++) {
