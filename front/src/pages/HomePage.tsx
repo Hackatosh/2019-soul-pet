@@ -5,6 +5,7 @@ import { Button } from 'react-bootstrap';
 import './HomePage.css';
 import { AnimalCard, AnimalForm } from '../components';
 import { Animal } from '../models';
+import { history } from '../helpers';
 
 export interface HomePageState {
 	error: string;
@@ -36,7 +37,7 @@ export class HomePage extends React.Component<RouteComponentProps, HomePageState
 				</div>}
 				<div className="row row-cols-1 row-cols-md-3 justify-content-center">
 					<div className="col mb-4">
-						<p className="text-center"><Button variant="success" onClick={() => this.showAnimalForm(true)}>Ajouter un autre animal</Button></p>
+						<p className="text-center"><Button variant="success" onClick={() => this.showAnimalForm(true)}>Ajouter un animal</Button></p>
 					</div>
 				</div>
 				{this.state.animals.length === 0 && 
@@ -46,8 +47,8 @@ export class HomePage extends React.Component<RouteComponentProps, HomePageState
 				<div className="row row-cols-1 row-cols-md-3 justify-content-center">
 					{this.state.animals.map(a => <div className="col mb-4" key={a.id}><AnimalCard animal={a} /></div>)}
 				</div>
-				<AnimalForm show={this.state.showAnimalForm} onHide={() => this.showAnimalForm(false)} onSuccess={(animal: Animal) => this.setState({ animals: [animal].concat(this.state.animals) })} />
-			</div>
+                <AnimalForm show={this.state.showAnimalForm} onHide={() => this.showAnimalForm(false)} onSuccess={(animal: Animal) => history.push(`animal/${animal.id}`) } />
+            </div>
 		);
 	}
 }
