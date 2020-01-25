@@ -3,10 +3,9 @@ import { AnimalService, PictureService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './AnimalPage.css';
 import { AnimalForm, DeleteConfirmation, SquareImage, AddImage } from '../components';
-import { Animal, Picture } from '../models';
+import { Animal, Picture, NoImage } from '../models';
 import { Card, Button } from 'react-bootstrap';
 import { history, titleCase, ageFromDate } from '../helpers';
-import noimage from '../resources/image-fill.svg';
 
 export interface AnimalPageProps extends RouteComponentProps<{id: string}> {}
 
@@ -38,10 +37,10 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 						pictures[i].content = '';
 						a.animalPictures = pictures;
 						this.setState({ animal: a });
-						PictureService.get('animals', p.filename).then(c => {
-							pictures[i].content = c;
+						PictureService.loadPictureContent('animals', p).then(loadedPicture => {
+							pictures[i] = loadedPicture;
 						}).catch(_ => {
-							pictures[i].content = noimage;
+							pictures[i] = NoImage;
 						}).finally(() => {
 							a.animalPictures = pictures;
 							console.log(a.animalPictures);
@@ -87,9 +86,9 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 					<div className="row">
 						<div className="col-10 offset-1 col-md-3">
 							{this.state.animal.animalPictures !== undefined && this.state.animal.animalPictures.length > 0 ? (
-							<SquareImage image={this.state.animal.animalPictures[0].content} />
+							<SquareImage image={this.state.animal.animalPictures[0]} />
 							) : (
-							<SquareImage image={noimage} />
+							<SquareImage image={NoImage} />
 							)}
 						</div>
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
@@ -134,7 +133,13 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 								<div className="col mb-4">
 									<AddImage exportPicture={this.loadPicture} />
 								</div>
-								{this.state.animal.animalPictures?.map((picture: Picture, index: number) => <div className="col mb-4" key={index}><div className="mask-buttons"><Button variant="danger" onClick={() => this.deletePicture(index)}>&times;</Button></div><SquareImage image={picture.content} /></div>)}
+								{this.state.animal.animalPictures?.map((picture: Picture, index: number) => 
+								<div className="col mb-4" key={index}>
+									<div className="mask-buttons">
+										<Button variant="danger" onClick={() => this.deletePicture(index)}>&times;</Button>
+									</div>
+									<SquareImage image={picture} />
+								</div>)}
 							</div>
 						</div>
 					</div>

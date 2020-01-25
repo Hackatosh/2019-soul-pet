@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Animal, Picture } from '../models';
+import { Animal, Picture, NoImage } from '../models';
 import { PictureService, AnimalService } from '../services';
 import { SquareImage } from './SquareImage';
-import noimage from '../resources/image-fill.svg';
 
 export interface AnimalCardProps {
 	animal: Animal;
@@ -25,13 +24,12 @@ export class AnimalCard extends React.Component<AnimalCardProps, AnimalCardState
 			AnimalService.getPictures(this.props.animal.id).then(pictures => {
 				this.setState({ pictureCount: pictures.length });
 				if (pictures.length > 1)
-					PictureService.get('animals', pictures[pictures.length - 1].filename).then(p => {
-						pictures[pictures.length - 1].content = p;
+					PictureService.loadPictureContent('animals', pictures[pictures.length - 1]).then(p => {
+						pictures[pictures.length - 1] = p;
 						this.setState({ picture: pictures[pictures.length - 1] });
 					});
 				else {
-					this.state.picture.content = noimage;
-					this.setState({ picture: this.state.picture });
+					this.setState({ picture: NoImage });
 				}
 			});
 	}

@@ -9,7 +9,7 @@ export interface SquareImageProps {
 
 export class SquareImage extends React.Component<SquareImageProps> {
 	render() {
-		// We render a loading spinner if the image is an empty string.
+		// We render a loading spinner if the content of the picture is an empty string.
 		return this.props.image.content !== '' ? (
 				<div className="rounded img-fluid" style={{backgroundImage: `url(${this.props.image.content})`}}></div>
 			) : (
