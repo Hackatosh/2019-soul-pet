@@ -2,8 +2,8 @@ import React from 'react';
 import { AnimalService, PictureService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './AnimalPage.css';
-import { AnimalForm, DeleteConfirmation, SquareImage, AddImage, Gallery } from '../components';
-import { Animal, Picture, NoImage, Directory } from '../models';
+import { AnimalForm, DeleteConfirmation, SquareImage, Gallery } from '../components';
+import { Animal, NoImage, Directory } from '../models';
 import { Card, Button } from 'react-bootstrap';
 import { history, titleCase, ageFromDate } from '../helpers';
 
