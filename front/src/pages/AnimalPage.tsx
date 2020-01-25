@@ -33,7 +33,8 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 			a.animalPictures?.reverse();
 			this.setState({ animal: a });
 			AnimalService.getPictures(this.state.id).then(pictures => {
-				a.animalPictures = pictures.reverse();
+				a.animalPictures = pictures.reverse()
+				a.animalPictures[0].content = '';
 				this.setState({ animal: a });
 				PictureService.loadPictureContent(Directory.Animals, a.animalPictures[0]).then(loadedPicture => {
 					pictures[0] = loadedPicture;
