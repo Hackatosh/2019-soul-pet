@@ -2,7 +2,7 @@ import React from 'react';
 import { AnimalService, PictureService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './AnimalPage.css';
-import { AnimalForm, DeleteConfirmation, SquareImage, AddImage } from '../components';
+import { AnimalForm, DeleteConfirmation, SquareImage, AddImage, Gallery } from '../components';
 import { Animal, Picture, NoImage, Directory } from '../models';
 import { Card, Button } from 'react-bootstrap';
 import { history, titleCase, ageFromDate } from '../helpers';
@@ -25,28 +25,24 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 		else
 			this.state = { error: '', id: parseInt(this.props.match.params.id), animal: undefined, showAnimalForm: false, showAnimalDelete: false };
 		this.loadPicture = this.loadPicture.bind(this);
+		this.deletePicture = this.deletePicture.bind(this);
 	}
 
 	componentDidMount() {
 		AnimalService.getSingle(this.state.id).then(a => {
+			a.animalPictures?.reverse();
 			this.setState({ animal: a });
 			AnimalService.getPictures(this.state.id).then(pictures => {
 				a.animalPictures = pictures.reverse();
 				this.setState({ animal: a });
-				pictures.forEach((p: Picture, i: number) => {
-						pictures[i].content = '';
-						a.animalPictures = pictures;
-						this.setState({ animal: a });
-						PictureService.loadPictureContent(Directory.Animals, p).then(loadedPicture => {
-							pictures[i] = loadedPicture;
-						}).catch(_ => {
-							pictures[i] = NoImage;
-						}).finally(() => {
-							a.animalPictures = pictures;
-							console.log(a.animalPictures);
-							this.setState({ animal: a });
-						});
-					});
+				PictureService.loadPictureContent(Directory.Animals, a.animalPictures[0]).then(loadedPicture => {
+					pictures[0] = loadedPicture;
+				}).catch(_ => {
+					pictures[0] = NoImage;
+				}).finally(() => {
+					a.animalPictures = pictures;
+					this.setState({ animal: a });
+				});
 			});
 		}).catch(() => history.push('/404'));   
 	}
@@ -129,18 +125,9 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 								</div>
 							</div>
 							<h2>Galerie</h2>
-							<div className="row row-cols-1 row-cols-md-3">
-								<div className="col mb-4">
-									<AddImage exportPicture={this.loadPicture} />
-								</div>
-								{this.state.animal.animalPictures?.map((picture: Picture, index: number) => 
-								<div className="col mb-4" key={index}>
-									<div className="mask-buttons">
-										<Button variant="danger" onClick={() => this.deletePicture(index)}>&times;</Button>
-									</div>
-									<SquareImage image={picture} />
-								</div>)}
-							</div>
+							{this.state.animal.animalPictures !== undefined &&
+							<Gallery pictures={this.state.animal.animalPictures} directory={Directory.Animals}
+							delete={this.deletePicture} add={this.loadPicture} />}
 						</div>
 					</div>
 					<AnimalForm show={this.state.showAnimalForm} animal={this.state.animal} onHide={() => this.showAnimalForm(false)} onSuccess={a => this.setState({ animal: a })} />
