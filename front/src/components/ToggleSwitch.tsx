@@ -15,8 +15,9 @@ export class Switch extends React.Component<any>{
         value={this.props.value}
       />
       <label
+        style={{ background: this.props.defaultChecked && '#304e6e' }}
         className="react-switch-label"
-        htmlFor={`react-switch-new`}
+        htmlFor={this.props.id}
       >
         <span className={`react-switch-button`} />
       </label>
