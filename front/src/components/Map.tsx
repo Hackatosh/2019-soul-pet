@@ -143,7 +143,7 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 											<Form.Check type="switch" id={serviceType.type} label={serviceType.name}
 											onChange={this.handleChange} value={serviceType.type}
 											checked={this.state.toDisplay.includes(serviceType.type)} />
-											<img src={serviceType.imagePath} style={{width: "20px"}}></img>
+											<img alt ="" src={serviceType.imagePath} style={{width: "20px"}}></img>
 										</li>
 									))}
 								</ul>
