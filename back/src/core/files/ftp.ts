@@ -185,8 +185,6 @@ const createSFTPPipe = async function (remoteFolder: Folder, remoteFilename: str
         return new SFTPPipe(await sftp.get(sftpPath), sftp.end);
     } catch (e) {
         throw new Error("Unable to create a pipe to download file");
-    } finally {
-        await sftp.end();
     }
 };
 
@@ -203,7 +201,11 @@ const pipeSFTPIntoResponse = async function (res: Response, remoteFolder: Folder
     } catch (e) {
         throw new Error("Problem when piping into response object")
     } finally {
-        await sftpPipe.end()
+        try{
+            await sftpPipe.end();
+        } catch(e){
+            //Swallow exception thrown by clean up
+        }
     }
 };
 
