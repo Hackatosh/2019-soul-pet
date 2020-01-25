@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Animal, Picture, NoImage } from '../models';
+import { Animal, Picture, NoImage, Directory } from '../models';
 import { PictureService, AnimalService } from '../services';
 import { SquareImage } from './SquareImage';
 
@@ -24,7 +24,7 @@ export class AnimalCard extends React.Component<AnimalCardProps, AnimalCardState
 			AnimalService.getPictures(this.props.animal.id).then(pictures => {
 				this.setState({ pictureCount: pictures.length });
 				if (pictures.length > 1)
-					PictureService.loadPictureContent('animals', pictures[pictures.length - 1]).then(p => {
+					PictureService.loadPictureContent(Directory.Animals, pictures[pictures.length - 1]).then(p => {
 						pictures[pictures.length - 1] = p;
 						this.setState({ picture: pictures[pictures.length - 1] });
 					});

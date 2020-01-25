@@ -3,7 +3,7 @@ import { AnimalService, PictureService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './AnimalPage.css';
 import { AnimalForm, DeleteConfirmation, SquareImage, AddImage } from '../components';
-import { Animal, Picture, NoImage } from '../models';
+import { Animal, Picture, NoImage, Directory } from '../models';
 import { Card, Button } from 'react-bootstrap';
 import { history, titleCase, ageFromDate } from '../helpers';
 
@@ -37,7 +37,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 						pictures[i].content = '';
 						a.animalPictures = pictures;
 						this.setState({ animal: a });
-						PictureService.loadPictureContent('animals', p).then(loadedPicture => {
+						PictureService.loadPictureContent(Directory.Animals, p).then(loadedPicture => {
 							pictures[i] = loadedPicture;
 						}).catch(_ => {
 							pictures[i] = NoImage;

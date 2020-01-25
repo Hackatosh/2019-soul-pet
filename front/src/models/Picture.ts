@@ -9,3 +9,7 @@ export const NoImage: Picture = {
 	filename: '',
 	content: require('../resources/image-fill.svg'),
 }
+
+export enum Directory {
+	Animals = 'animals'
+}
