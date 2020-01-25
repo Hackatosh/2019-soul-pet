@@ -37,8 +37,7 @@
       "!*/models/*",
       "!**/index.ts",
       "!*/config.ts",
-      "!*/react-app-env.d.ts",
-      "!src/helpers/location.ts"
+      "!*/react-app-env.d.ts"
     ],
     "coverageThreshold": {
       "global": {
