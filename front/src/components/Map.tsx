@@ -74,18 +74,18 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 		this.queryAPIServices();
 	}
 
-	updateRadius = (event: any) => {
+	private updateRadius = (event: any) => {
 		this.setState({radius: event.target.value *1000})
 	}
 
-	handleChange = (event: any) => {
+	private handleChange = (event: any) => {
 		const newDisplay = this.state.toDisplay.filter(el => el !== event.target.value)
 		if (!newDisplay.includes(event.target.value) && event.target.checked)
 			newDisplay.push(event.target.value);
 		this.setState({toDisplay : newDisplay});
 	}
 
-	queryAPIServices = async () => {
+	private queryAPIServices = async () => {
 		let markersAllTypes: ListMarkerData = [];
 		try {
 			for (let i = 0; i < serviceTypeList.length; i++) {
