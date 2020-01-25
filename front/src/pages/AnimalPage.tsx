@@ -35,13 +35,13 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 				a.animalPictures = pictures.reverse();
 				this.setState({ animal: a });
 				pictures.forEach((p: Picture, i: number) => {
-						pictures[i].picture = '';
+						pictures[i].content = '';
 						a.animalPictures = pictures;
 						this.setState({ animal: a });
 						PictureService.get('animals', p.filename).then(c => {
-							pictures[i].picture = c;
+							pictures[i].content = c;
 						}).catch(_ => {
-							pictures[i].picture = noimage;
+							pictures[i].content = noimage;
 						}).finally(() => {
 							a.animalPictures = pictures;
 							console.log(a.animalPictures);
@@ -62,7 +62,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 
 	private loadPicture(f: File) {
 		AnimalService.postPicture(this.state.id, f).then(p => {
-			p.picture = URL.createObjectURL(f);
+			p.content = URL.createObjectURL(f);
 			this.state.animal?.animalPictures?.unshift(p);
 			this.setState({ animal: this.state.animal });
 		}).catch(e => this.setState({ error: e }));
@@ -87,7 +87,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 					<div className="row">
 						<div className="col-10 offset-1 col-md-3">
 							{this.state.animal.animalPictures !== undefined && this.state.animal.animalPictures.length > 0 ? (
-							<SquareImage image={this.state.animal.animalPictures[0].picture} />
+							<SquareImage image={this.state.animal.animalPictures[0].content} />
 							) : (
 							<SquareImage image={noimage} />
 							)}
@@ -134,7 +134,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 								<div className="col mb-4">
 									<AddImage exportPicture={this.loadPicture} />
 								</div>
-								{this.state.animal.animalPictures?.map((picture: Picture, index: number) => <div className="col mb-4" key={index}><div className="mask-buttons"><Button variant="danger" onClick={() => this.deletePicture(index)}>&times;</Button></div><SquareImage image={picture.picture} /></div>)}
+								{this.state.animal.animalPictures?.map((picture: Picture, index: number) => <div className="col mb-4" key={index}><div className="mask-buttons"><Button variant="danger" onClick={() => this.deletePicture(index)}>&times;</Button></div><SquareImage image={picture.content} /></div>)}
 							</div>
 						</div>
 					</div>

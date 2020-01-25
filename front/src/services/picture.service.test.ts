@@ -4,7 +4,7 @@ import { PictureService } from "./picture.service";
 
 const get = jest.spyOn(httpClient, "get");
 
-const picture: Picture = {id: 0, filename: 'image.jpg', picture: ''};
+const picture: Picture = {id: 0, filename: 'image.jpg', content: ''};
 
 test('Get picture', async () => {
 	get.mockRejectedValue('');

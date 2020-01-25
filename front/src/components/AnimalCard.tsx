@@ -17,7 +17,7 @@ export interface AnimalCardState {
 export class AnimalCard extends React.Component<AnimalCardProps, AnimalCardState> {
 	constructor(props: AnimalCardProps) {
 		super(props);
-		this.state = { picture: { id: 0, filename: '', picture: '' }, pictureCount: 0 };
+		this.state = { picture: { id: 0, filename: '', content: '' }, pictureCount: 0 };
 	}
 
 	componentDidMount() {
@@ -26,11 +26,11 @@ export class AnimalCard extends React.Component<AnimalCardProps, AnimalCardState
 				this.setState({ pictureCount: pictures.length });
 				if (pictures.length > 1)
 					PictureService.get('animals', pictures[pictures.length - 1].filename).then(p => {
-						pictures[pictures.length - 1].picture = p;
+						pictures[pictures.length - 1].content = p;
 						this.setState({ picture: pictures[pictures.length - 1] });
 					});
 				else {
-					this.state.picture.picture = noimage;
+					this.state.picture.content = noimage;
 					this.setState({ picture: this.state.picture });
 				}
 			});

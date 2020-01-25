@@ -31,7 +31,7 @@ const animals: Animal[] = [{
 
 const species: Specie[] = [{ id: 1, name: 'chat'}, { id: 2, name: 'chien'}];
 
-const pictures: Picture[] = [{ id: 1, filename: 'file.jpg', picture: '' }];
+const pictures: Picture[] = [{ id: 1, filename: 'file.jpg', content: '' }];
 
 beforeEach(() => {
 	jest.resetAllMocks();
