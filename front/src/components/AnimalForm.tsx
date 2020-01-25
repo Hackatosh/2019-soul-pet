@@ -55,7 +55,6 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
                         // Else we are editing an existing animal
                         else
                             AnimalService.update(animal).then(_ => {
-                                console.log(animal);
                                 this.props.onSuccess(animal);
                                 this.props.onHide();
                             }).catch(() => this.setState({ error: 'Erreur lors de l’enregistrement de l’animal' }));
