@@ -4,10 +4,12 @@ import { PrivateRoute, NavBar } from './components';
 import { HomePage, LoginPage, RegisterPage, EventList, EventDetails, ServicesPage, AnimalPage, NotFoundPage } from './pages';
 import { history } from './helpers';
 import { AuthenticationService } from './services';
+import {GeolocationService} from "./services/geolocation.service";
 
 class App extends React.Component<{}, {}> {
 	constructor() {
 		super({});
+		GeolocationService.startWatchingGeoloc();
 		AuthenticationService.restoreUser();
 	}
 
