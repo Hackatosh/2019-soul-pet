@@ -28,7 +28,6 @@ export class GeolocationService {
                     }
                     return this.coordinates;
                 } catch (e) {
-                    console.log(e);
                     return await Promise.reject(e);
                 }
             } else {
@@ -41,11 +40,8 @@ export class GeolocationService {
         if (this.watchId === 0) {
             const cb_success = (position: Position) => {
                 this.coordinates = position.coords;
-                console.log("New coordinates obtained : ");
-                console.log(this.coordinates);
             };
             const cb_error = () => {
-                console.log("Problem when retrieving the geolocation, stopping watching the position...");
                 this.stopWatchingGeoloc();
             };
             const geo_options: PositionOptions = {
@@ -53,7 +49,6 @@ export class GeolocationService {
                 maximumAge: 30000,
                 timeout: 27000
             };
-            console.log("Starting Geolocation service...");
             this.watchId = navigator.geolocation.watchPosition(cb_success, cb_error, geo_options);
         }
     }
@@ -64,5 +59,4 @@ export class GeolocationService {
             this.watchId = 0;
         }
     }
-
 }
