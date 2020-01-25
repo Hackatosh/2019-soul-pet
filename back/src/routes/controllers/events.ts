@@ -14,6 +14,7 @@ import {
 import {User} from "../../database/models/user";
 import {EventComment} from "../../database/models/eventComment";
 import Sequelize from "sequelize";
+import {EventPicture} from "../../database/models/eventPicture";
 
 const eventsRouter = Router();
 
@@ -74,6 +75,9 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: Aut
             include: [{model: Animal, as: "attendees"}, {model: Specie, as: "authorizedSpecies"}, {
                 model: EventComment,
                 as: "eventComments"
+            }, {
+                model: EventPicture,
+                as: "eventPictures",
             }]
         });
         if (!eventFound) {

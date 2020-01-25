@@ -15,6 +15,7 @@ import {db} from '../connection'
 import {Animal} from "./animal";
 import {Specie} from "./specie";
 import {EventComment} from "./eventComment";
+import {EventPicture} from "./eventPicture";
 
 /***
  * Model used to represent an event in the DB.
@@ -54,15 +55,23 @@ export class PetEvent extends Model {
     public countComments!: HasManyCountAssociationsMixin;
     public createComment!: HasManyCreateAssociationMixin<EventComment>;
 
+    public getEventPictures!: HasManyGetAssociationsMixin<EventPicture>; // Note the null assertions!
+    public addEventPictures!: HasManyAddAssociationMixin<EventPicture, number>;
+    public hasEventPictures!: HasManyHasAssociationMixin<EventPicture, number>;
+    public countEventPictures!: HasManyCountAssociationsMixin;
+    public createEventPictures!: HasManyCreateAssociationMixin<EventPicture>;
+
     // These will only be populated if you actively include a relation.
     public readonly attendees?: Animal[];
     public readonly authorizedSpecies?: Specie[];
     public readonly comments?: EventComment[];
+    public readonly eventPictures?:EventPicture[];
 
     public static associations: {
         attendees: Association<PetEvent, Animal>;
         authorizedSpecies: Association<PetEvent, Specie>;
-        comments: Association<PetEvent, EventComment>
+        comments: Association<PetEvent, EventComment>;
+        eventPictures: Association<PetEvent, EventPicture>;
     };
 
 }

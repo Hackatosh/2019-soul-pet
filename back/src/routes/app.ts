@@ -17,6 +17,7 @@ import {accountRouter} from "./controllers/account";
 import {eventsRouter} from "./controllers/events";
 import {placesRouter} from "./controllers/places";
 import {eventCommentsRouter} from "./controllers/eventComments";
+import {eventPicturesRouter} from "./controllers/eventPictures";
 
 /***
  * Express application creation and common middleware mounting.
@@ -47,6 +48,7 @@ apiRouter.use('/comments', eventCommentsRouter);
 apiRouter.use('/account', accountRouter);
 apiRouter.use('/animals', animalsRouter);
 apiRouter.use('/pictures/animals', animalPicturesRouter);
+apiRouter.use('/pictures/events', eventPicturesRouter);
 apiRouter.use('/logout', logoutRouter);
 
 /***
