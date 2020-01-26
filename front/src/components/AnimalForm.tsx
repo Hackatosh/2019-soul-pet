@@ -2,7 +2,7 @@ import React from 'react';
 import { Animal, Specie } from '../models';
 import { Modal, Form, Alert, Button } from 'react-bootstrap';
 import { Formik } from 'formik';
-import { AnimalService } from '../services';
+import { AnimalService, AuthenticationService } from '../services';
 
 export interface AnimalFormProps {
 	/** If in edition mode, the current values of the animal */
@@ -41,7 +41,8 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
                     <Modal.Title id="contained-modal-title-vcenter">Ajouter un animal</Modal.Title>
                 </Modal.Header>
                 <Formik onSubmit={values => {
-                        const animal = this.props.animal === undefined ? {} as Animal : this.props.animal;
+						const animal = this.props.animal === undefined ? {} as Animal : this.props.animal;
+						animal.userId = AuthenticationService.User.id;
                         animal.name = values.name;
                         animal.birthdate = new Date(values.birthdate);
                         animal.specieId = parseInt(values.specieId);
