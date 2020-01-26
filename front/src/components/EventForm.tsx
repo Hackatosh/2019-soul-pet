@@ -83,7 +83,7 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                                 <Alert variant="danger">{this.state.error}</Alert>
                                 }
                                 <Form.Group controlId="eventName">
-                                    <Form.Label>Quel est le nom de votre évènement&nbsp;?</Form.Label>
+                                    <Form.Label>Quel est le nom de votre événement&nbsp;?</Form.Label>
                                     <Form.Control name="name" type="text" placeholder="Entrez le nom de l’événement"
                                                   onChange={props.handleChange} value={props.values.name} required/>
                                 </Form.Group>
