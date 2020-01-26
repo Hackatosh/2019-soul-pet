@@ -1,5 +1,5 @@
 import React from 'react';
-import {Animal, PetEvent, Specie} from '../models';
+import {PetEvent, Specie} from '../models';
 import {Modal, Form, Alert, Button} from 'react-bootstrap';
 import {Field, FieldArray, Formik} from 'formik';
 import {AnimalService, AuthenticationService} from '../services';

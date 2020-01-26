@@ -1,4 +1,4 @@
-import {Animal, PetEvent} from "../models";
+import {PetEvent} from "../models";
 import {httpClient} from "../helpers";
 
 export class EventService {

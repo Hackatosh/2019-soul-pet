@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import peche from '../resources/events/peche.jpg';
 import {RouteComponentProps} from 'react-router-dom';
 import {PetEvent} from '../models';
-import { history, httpClient, titleCase} from '../helpers';
+import { history } from '../helpers';
 import {EventService} from "../services/event.service";
 import {Button, Spinner} from "react-bootstrap";
 import { AuthenticationService} from "../services";
@@ -51,7 +51,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
             return (
                 <div className="col mb-4">
                     <div className="card">
-                        <img src={peche} className="card-img-top"/>
+                        <img src={peche} className="card-img-top" alt={"Main image of the event"}/>
                         <div className="card-body">
                             <h5 className="card-title">{event.name}</h5>
                             <p className="lead text-muted">

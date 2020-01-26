@@ -1,11 +1,9 @@
 import React from 'react';
 import {EventCard} from '../components/EventCard';
 import {RouteComponentProps} from 'react-router';
-import Pagination from 'react-bootstrap/Pagination'
-import {Animal, PetEvent} from '../models';
+import {PetEvent} from '../models';
 import {Button} from "react-bootstrap";
 import {EventForm} from "../components/EventForm";
-import {AnimalService, AuthenticationService} from "../services";
 import {EventService} from "../services/event.service";
 
 interface EventsSearchPageState {
