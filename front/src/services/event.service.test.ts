@@ -27,6 +27,16 @@ beforeEach(() => {
 	jest.resetAllMocks();
 });
 
+test('Event errors', async () => {
+	get.mockRejectedValue('');
+	post.mockRejectedValue('');
+	del.mockRejectedValue('');
+	await EventService.getAll().catch(e => expect(e).toBeDefined());
+	await EventService.add(events[0]).catch(e => expect(e).toBeDefined());
+	await EventService.delete(1).catch(e => expect(e).toBeDefined());
+	expect.assertions(3);
+});
+
 test('Get all events', async () => {
 	get.mockResolvedValue(events);
 	await EventService.getAll().then(e => expect(e).toStrictEqual(events));
