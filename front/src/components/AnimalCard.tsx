@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Animal, Picture, NoImage, Directory } from '../models';
-import { PictureService, AnimalService } from '../services';
+import { AnimalService } from '../services';
 import { SquareImage } from './SquareImage';
 
 export interface AnimalCardProps {
@@ -16,28 +16,24 @@ export interface AnimalCardState {
 export class AnimalCard extends React.Component<AnimalCardProps, AnimalCardState> {
 	constructor(props: AnimalCardProps) {
 		super(props);
-		this.state = { picture: { id: 0, filename: '', content: '' }, pictureCount: 0 };
+		this.state = { picture: {} as Picture, pictureCount: 0 };
 	}
 
 	componentDidMount() {
 		if (this.props.animal.id !== undefined)
 			AnimalService.getPictures(this.props.animal.id).then(pictures => {
 				this.setState({ pictureCount: pictures.length });
-				if (pictures.length > 1)
-					PictureService.loadPictureContent(Directory.Animals, pictures[pictures.length - 1]).then(p => {
-						pictures[pictures.length - 1] = p;
-						this.setState({ picture: pictures[pictures.length - 1] });
-					});
-				else {
+				if (pictures.length >= 1)
+					this.setState({ picture: pictures[pictures.length - 1] });
+				else
 					this.setState({ picture: NoImage });
-				}
 			});
 	}
 
 	render() {
 		return (
 			<div className="card">
-				<SquareImage image={this.state.picture}/>
+				<SquareImage image={this.state.picture} directory={Directory.Animals} key={this.state.picture.filename} />
 				<div className="card-body">
 					<h5 className="card-title">{this.props.animal.name}</h5>
 					<p className="card-text">Né le {this.props.animal.birthdate.toLocaleDateString()} 

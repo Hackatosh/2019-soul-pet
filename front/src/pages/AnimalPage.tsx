@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnimalService, PictureService } from '../services';
+import { AnimalService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './AnimalPage.css';
 import { AnimalForm, DeleteConfirmation, SquareImage, Gallery } from '../components';
@@ -34,16 +34,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 			this.setState({ animal: a });
 			AnimalService.getPictures(this.state.id).then(pictures => {
 				a.animalPictures = pictures.reverse()
-				a.animalPictures[0].content = '';
 				this.setState({ animal: a });
-				PictureService.loadPictureContent(Directory.Animals, a.animalPictures[0]).then(loadedPicture => {
-					pictures[0] = loadedPicture;
-				}).catch(_ => {
-					pictures[0] = NoImage;
-				}).finally(() => {
-					a.animalPictures = pictures;
-					this.setState({ animal: a });
-				});
 			});
 		}).catch(() => history.push('/404'));   
 	}
@@ -83,7 +74,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 					<div className="row">
 						<div className="col-10 offset-1 col-md-3">
 							{this.state.animal.animalPictures !== undefined && this.state.animal.animalPictures.length > 0 ? (
-							<SquareImage image={this.state.animal.animalPictures[0]} />
+							<SquareImage image={this.state.animal.animalPictures[0]} directory={Directory.Animals} key={this.state.animal.animalPictures[0].id} />
 							) : (
 							<SquareImage image={NoImage} />
 							)}
