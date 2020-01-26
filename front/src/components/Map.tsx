@@ -65,7 +65,8 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 			userPosition: [this.props.lat, this.props.lon],
 			toDisplay: toDisplay,
 			radius: 5000,
-			markers: []
+			markers: [],
+			isQuerying: false,
 		};
 
 		this.createMarker = this.createMarker.bind(this);
@@ -73,36 +74,51 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 	}
 
 	async componentDidMount() {
-		this.geolocate();
+		await this.geolocate();
 		await this.queryAPIServices();
 	}
 
-	async componentDidUpdate() {
-		await this.queryAPIServices();
+	async componentDidUpdate(prevProps:Readonly<PServicesMap>, prevState:Readonly<SServicesMap>, snapshot?:any) {
+		const isDifferent = (this.state.userPosition[0] !== prevState.userPosition[0]) || (this.state.userPosition[1] !== prevState.userPosition[1]) || (this.state.radius !== prevState.radius);
+		if(!this.state.isQuerying && isDifferent){
+			await this.queryAPIServices();
+		}
 	}
 
 	private updateRadius = (event: any) => {
 		this.setState({radius: event.target.value *1000})
-	}
+	};
 
 	private handleChange = (event: any) => {
-		const newDisplay = this.state.toDisplay.filter(el => el !== event.target.value)
+		const newDisplay = this.state.toDisplay.filter(el => el !== event.target.value);
 		if (!newDisplay.includes(event.target.value) && event.target.checked)
 			newDisplay.push(event.target.value);
 		this.setState({toDisplay : newDisplay});
-	}
+	};
 
 	private queryAPIServices = async () => {
-		let markersAllTypes: ListMarkerData = [];
-		try {
-			for (let i = 0; i < serviceTypeList.length; i++) {
-				const markers = await GetServicesServices.get(this.props.lat,
-				this.props.lon, this.state.radius, serviceTypeList[i].type);
-				markersAllTypes = markersAllTypes.concat(markers);
+		if(!this.state.isQuerying){
+			this.setState({isQuerying:true});
+			let markersAllTypes: ListMarkerData = [];
+			try {
+				for (let i = 0; i < serviceTypeList.length; i++) {
+					const markers = await GetServicesServices.get(this.props.lat,
+						this.props.lon, this.state.radius, serviceTypeList[i].type);
+					markersAllTypes = markersAllTypes.concat(markers);
+				}
+				this.setState({isQuerying: false, markers: ((markersAllTypes===[]) ? easterEggMarkers : markersAllTypes)});
+			} catch(error) {
+				this.setState({isQuerying: false, markers: easterEggMarkers});
 			}
-			this.setState({markers: ((markersAllTypes===[]) ? easterEggMarkers : markersAllTypes)});
-		} catch(error) {
-			this.setState({markers: easterEggMarkers});
+		}
+	};
+
+	private async geolocate():Promise<void> {
+		try {
+			const c = await GeolocationService.getCoordinates();
+			this.setState({ notice: '', userPosition: [c.latitude, c.longitude] });
+		} catch(e){
+			this.setState({ notice: 'Impossible de récupérer votre position' });
 		}
 	}
 
@@ -115,14 +131,6 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 				</Marker>
 			);
 		return null;
-	}
-
-	private geolocate() {
-		GeolocationService.getCoordinates().then(c => {
-			console.log('changed');
-			this.setState({ notice: '', userPosition: [c.latitude, c.longitude] });
-		})
-		.catch(_ => this.setState({ notice: 'Impossible de récupérer votre position' }));
 	}
 
 	render() {
@@ -152,7 +160,7 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 								<Form.Label>Services disponibles&nbsp;:</Form.Label>
 								<ul className="list-group">
 									{serviceTypeList.map(serviceType => (
-										<li className="list-group-item d-flex justify-content-between align-items-center">
+										<li className="list-group-item d-flex justify-content-between align-items-center" key={serviceType.type}>
 											<Form.Check type="switch" id={serviceType.type} label={serviceType.name}
 											onChange={this.handleChange} value={serviceType.type}
 											checked={this.state.toDisplay.includes(serviceType.type)} />

@@ -4,6 +4,7 @@ interface SServicesMapType{
   toDisplay: Array<string>;
   radius: number;
   markers: Array<MarkerDataType>;
+  isQuerying: boolean;
 }
 
 interface QueryServiceType{
