@@ -23,7 +23,7 @@ export interface EventFormState {
 
 /**
  * A form used to add or edit an event
- * TODO : ADD SPECIES SUPPORT
+ * TODO : ADD SPECIES AND LOCATION SUPPORT
  */
 export class EventForm extends React.Component<EventFormProps, EventFormState> {
     constructor(props: EventFormProps) {
@@ -85,7 +85,7 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                                 </Form.Group>
                                 <Form.Group controlId="eventDescription">
                                     <Form.Label>Une petite description&nbsp;?</Form.Label>
-                                    <Form.Control name="name" type="text" placeholder="Entrez la description de l'évènement" onChange={props.handleChange} value={props.values.description} required />
+                                    <Form.Control name="description" type="text" placeholder="Entrez la description de l'évènement" onChange={props.handleChange} value={props.values.description} required />
                                 </Form.Group>
                             </Modal.Body>
                             <Modal.Footer>
