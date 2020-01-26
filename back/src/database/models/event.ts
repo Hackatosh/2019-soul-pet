@@ -16,6 +16,7 @@ import {Animal} from "./animal";
 import {Specie} from "./specie";
 import {EventComment} from "./eventComment";
 import {EventPicture} from "./eventPicture";
+import {User} from "./user";
 
 /***
  * Model used to represent an event in the DB.
@@ -66,6 +67,7 @@ export class PetEvent extends Model {
     public readonly authorizedSpecies?: Specie[];
     public readonly comments?: EventComment[];
     public readonly eventPictures?:EventPicture[];
+    public readonly user?: User;
 
     public static associations: {
         attendees: Association<PetEvent, Animal>;
