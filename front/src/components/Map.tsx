@@ -160,7 +160,7 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 								<Form.Label>Services disponibles&nbsp;:</Form.Label>
 								<ul className="list-group">
 									{serviceTypeList.map(serviceType => (
-										<li className="list-group-item d-flex justify-content-between align-items-center">
+										<li className="list-group-item d-flex justify-content-between align-items-center" key={serviceType.type}>
 											<Form.Check type="switch" id={serviceType.type} label={serviceType.name}
 											onChange={this.handleChange} value={serviceType.type}
 											checked={this.state.toDisplay.includes(serviceType.type)} />
