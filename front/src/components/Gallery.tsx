@@ -26,7 +26,7 @@ export class Gallery extends React.Component<GalleryProps> {
 					<div className="mask-buttons">
 						<Button variant="danger" onClick={() => this.props.delete !== undefined && this.props.delete(index)}>&times;</Button>
 					</div>}
-					<SquareImage image={picture} directory={Directory.Animals} key={picture.filename} />
+					<SquareImage image={picture} directory={this.props.directory} key={picture.filename} />
 				</div>)}
 			</div>
 		);
