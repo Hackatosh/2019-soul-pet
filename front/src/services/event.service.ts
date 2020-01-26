@@ -2,7 +2,6 @@ import {PetEvent} from "../models";
 import {httpClient} from "../helpers";
 
 export class EventService {
-
     private static revive(e: PetEvent): PetEvent {
         e.beginDate = new Date(e.beginDate);
         e.endDate = new Date(e.endDate);
