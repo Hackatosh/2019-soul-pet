@@ -54,20 +54,17 @@ test('Get single event', async () => {
 test('Add event', async () => {
 	post.mockResolvedValue(events[0]);
 	await EventService.add(events[0]).then(e => {
-		expect(e.specieIds).toBeDefined();
-		expect(e.specieIds).toHaveLength(1);
 		expect(e).toStrictEqual(events[0]);
 	});
-	expect.assertions(3);
+	expect.assertions(1);
 });
 
 test('Update event', async () => {
 	put.mockResolvedValue(events[1]);
 	await EventService.update(events[1]).then(e => {
-		expect(e.specieIds).toBeDefined();
 		expect(e).toStrictEqual(events[1]);
 	});
-	expect.assertions(2);
+	expect.assertions(1);
 });
 
 test('Delete event', async () => {
