@@ -10,16 +10,16 @@ interface EventCardProps {
 export class EventCard extends Component<EventCardProps, {}> {
 
     render() {
-        const {event} = this.props;
+		const {event} = this.props;
         return (
             <div className="col mb-4">
                 <div className="card">
                     <img src={peche} className="card-img-top" alt="Peche"/>
                     <div className="card-body">
                         <h5 className="card-title">{event.name}</h5>
-                        <h6 className="card-title">Organisé par {event.user ? event.user.username : "Inconnu(e)"}</h6>
-                        <h6 className="card-title">Début : {event.beginDate.toDateString()}</h6>
-                        <h6 className="card-title">Fin : {event.endDate.toDateString()}</h6>
+                        <h6 className="card-title">Organisé par {event.user ? event.user.username : "Inconnu&middot;e"}</h6>
+                        <h6 className="card-title">Début : {event.beginDate.toLocaleDateString(undefined, {year: "numeric", month: "long", day: "numeric"})}</h6>
+                        <h6 className="card-title">Fin : {event.endDate.toLocaleDateString(undefined, {year: "numeric", month: "long", day: "numeric"})}</h6>
                         <p className="card-text">{event.description}</p>
                         <Link to={`/events/${event.id}`} className="btn btn-primary">Détails</Link>
                     </div>

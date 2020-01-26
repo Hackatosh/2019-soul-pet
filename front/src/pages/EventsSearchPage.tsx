@@ -53,12 +53,12 @@ export class EventsSearchPage extends React.Component<RouteComponentProps, Event
                 <div className="row row-cols-1 row-cols-md-3 justify-content-center">
                     <div className="col mb-4">
                         <p className="text-center"><Button variant="success" onClick={() => this.showEventForm(true)}>Créer
-                            un évènement</Button></p>
+                            un événement</Button></p>
                     </div>
                 </div>
                 {this.state.events.length === 0 &&
                 <div className="row mb-5">
-                    <div className="col-sm-6 offset-sm-3"><div className="alert alert-primary">Aucun évènement trouvé...</div></div>
+                    <div className="col-sm-6 offset-sm-3"><div className="alert alert-primary">Aucun événement trouvé…</div></div>
                 </div>}
                 <div className="row row-cols-2 row-cols-md-3 justify-content-center">
                     {this.state.events.map(event => <EventCard key={event.id} event={event}/>)}

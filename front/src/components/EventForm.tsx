@@ -42,7 +42,7 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                    centered>
                 <Modal.Header closeButton>
                     <Modal.Title
-                        id="contained-modal-title-vcenter">{this.props.event === undefined ? "Ajouter un évènement" : "Modifier un évènement"}</Modal.Title>
+                        id="contained-modal-title-vcenter">{this.props.event === undefined ? "Ajouter un événement" : "Modifier un événement"}</Modal.Title>
                 </Modal.Header>
                 <Formik onSubmit={values => {
                     const event = this.props.event === undefined ? {} as PetEvent : this.props.event;
@@ -57,14 +57,14 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                         EventService.add(event).then(e => {
                             this.props.onSuccess(e);
                             this.props.onHide();
-                        }).catch(() => this.setState({error: 'Erreur lors de la création de l’évènement'}));
+                        }).catch(() => this.setState({error: 'Erreur lors de la création de l’événement'}));
                     }
                     // Else we are editing an existing event
                     else {
                         EventService.update(event).then(_ => {
                             this.props.onSuccess(event);
                             this.props.onHide();
-                        }).catch(() => this.setState({error: 'Erreur lors de la mise à jour de l’évènement'}));
+                        }).catch(() => this.setState({error: 'Erreur lors de la mise à jour de l’événement'}));
                     }
                 }}
                         initialValues={this.props.event === undefined ?
@@ -84,11 +84,11 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                                 }
                                 <Form.Group controlId="eventName">
                                     <Form.Label>Quel est le nom de votre évènement&nbsp;?</Form.Label>
-                                    <Form.Control name="name" type="text" placeholder="Entrez le nom de l'évènement"
+                                    <Form.Control name="name" type="text" placeholder="Entrez le nom de l’événement"
                                                   onChange={props.handleChange} value={props.values.name} required/>
                                 </Form.Group>
                                 <Form.Group controlId="eventBeginDate">
-                                    <Form.Label>Quand commence-t-il ?&nbsp;?</Form.Label>
+                                    <Form.Label>Quand commence-t-il&nbsp;?</Form.Label>
                                     <Form.Control type="date" name="beginDate" onChange={props.handleChange}
                                                   value={props.values.beginDate} required/>
                                 </Form.Group>
@@ -100,7 +100,7 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                                 <Form.Group controlId="eventDescription">
                                     <Form.Label>Une petite description&nbsp;?</Form.Label>
                                     <Form.Control name="description" type="text"
-                                                  placeholder="Entrez la description de l'évènement"
+                                                  placeholder="Entrez la description de l’événement"
                                                   onChange={props.handleChange} value={props.values.description}
                                                   required/>
                                 </Form.Group>
