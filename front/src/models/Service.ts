@@ -1,4 +1,5 @@
 interface SServicesMapType{
+  notice: string;
   userPosition: Array<number>;
   toDisplay: Array<string>;
   radius: number;
@@ -16,7 +17,6 @@ interface PServicesMapType{
   lat: number;
   lon: number;
   zoom: number;
-  size: string;
 }
 
 interface MarkerDataType{

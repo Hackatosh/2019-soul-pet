@@ -2,15 +2,8 @@ import React from 'react';
 import { ServicesMap } from '../components';
 import './ServicesPage.css';
 
-class ServicesPage extends React.Component<{}> {
-  	render() {
-		const data = {
-			lat: 48.864716,
-			lon: 2.349014,
-			zoom : 14,
-			size : "500px"
-	  	};
-
+export class ServicesPage extends React.Component {
+	render() {
 		return (
 			<div className="container">
 				<div className="row">
@@ -18,10 +11,8 @@ class ServicesPage extends React.Component<{}> {
 						<h1 className="text-center display-4">De quels services avez-vous besoin&nbsp;?</h1>
 					</div>
 				</div>
-				<ServicesMap {...data}/>
+				<ServicesMap lat={48.864716} lon={2.349014} zoom={14} />
 			</div>
 		);
   	}
 }
-
-export { ServicesPage };
