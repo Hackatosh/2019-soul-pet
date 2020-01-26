@@ -9,8 +9,21 @@ export class EventService {
         return e;
     }
 
+    /**
+     * Retrieves all the events.
+     * @returns an array containing the events
+     */
+    static async getAll(): Promise<PetEvent[]> {
+        return httpClient.get<PetEvent[]>(`/events/search`, true).then(events => events.map(EventService.revive)).catch(() => Promise.reject('Erreur lors de la récupération des évènements'));
+    }
+
+    /**
+     * Retrieves an event.
+     * @param id the ID of the event
+     * @returns the event requested
+     */
     static async get(id: number): Promise<PetEvent> {
-        return httpClient.get<PetEvent>(`/events/${id}`, true).then(this.revive).catch(() => Promise.reject('Erreur lors de la récupération de l\'event'));
+        return httpClient.get<PetEvent>(`/events/${id}`, true).then(this.revive).catch(() => Promise.reject('Erreur lors de la récupération de l\'évènement'));
     }
 
     /**
@@ -19,6 +32,7 @@ export class EventService {
      * @returns the event saved into the database
      */
     static async add(event:PetEvent): Promise<PetEvent> {
+        event.specieIds = event.authorizedSpecies !== undefined ? event.authorizedSpecies.map(specie => specie.id) : [];
         return httpClient.post<PetEvent>('/events/', event, true).then(EventService.revive).catch(() => Promise.reject(`Erreur lors de la création de l'évènement : ${event.name}`));
     }
 
@@ -28,6 +42,7 @@ export class EventService {
      * @returns the event saved into the database
      */
     static async update(event:PetEvent): Promise<PetEvent> {
+        event.specieIds = event.authorizedSpecies !== undefined ? event.authorizedSpecies.map(specie => specie.id) : [];
         return httpClient.put<PetEvent>(`/events/${event.id}`, event, true).then(EventService.revive).catch(() => Promise.reject(`Erreur lors de la mise à jour de l'évènement d'identifiant ${event.id}`));
     }
 

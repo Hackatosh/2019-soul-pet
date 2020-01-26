@@ -45,7 +45,7 @@ const isEmptyString = function (str: string): boolean {
 
 const isNumericArray = function (arr: Array<any>): boolean {
     for (let e of arr) {
-        if (!isNumeric(e)) {
+        if (typeof e !== 'number' && !isNumeric(e)) {
             return false;
         }
     }
