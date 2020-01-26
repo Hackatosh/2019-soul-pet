@@ -51,7 +51,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
             return (
                 <div className="col mb-4">
                     <div className="card">
-                        <img src={peche} className="card-img-top" alt={"Main image of the event"}/>
+                        <img src={peche} className="card-img-top" alt={"The event"}/>
                         <div className="card-body">
                             <h5 className="card-title">{event.name}</h5>
                             <p className="lead text-muted">
