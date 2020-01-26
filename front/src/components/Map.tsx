@@ -116,7 +116,6 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 	private async geolocate():Promise<void> {
 		try {
 			const c = await GeolocationService.getCoordinates();
-			console.log('changed');
 			this.setState({ notice: '', userPosition: [c.latitude, c.longitude] });
 		} catch(e){
 			this.setState({ notice: 'Impossible de récupérer votre position' });
