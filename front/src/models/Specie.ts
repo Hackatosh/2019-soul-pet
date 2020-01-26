@@ -1,4 +1,4 @@
 export interface Specie {
-    id: number,
-    name: string,
+	id: number,
+	name: string,
 }

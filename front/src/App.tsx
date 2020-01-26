@@ -5,9 +5,9 @@ import { HomePage, LoginPage, RegisterPage, EventList, EventDetails, ServicesPag
 import { history } from './helpers';
 import { AuthenticationService } from './services';
 
-class App extends React.Component<{}, {}> {
-	constructor() {
-		super({});
+class App extends React.Component {
+	constructor(props: Readonly<{}>) {
+		super(props);
 		AuthenticationService.restoreUser();
 	}
 

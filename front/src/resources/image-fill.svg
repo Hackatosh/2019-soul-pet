@@ -1,0 +1,14 @@
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" width="8.47mm" height="8.47mm" viewBox="0 0 24 24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #999;
+      }
+    </style>
+  </defs>
+  <title>image-fill</title>
+  <g>
+    <polygon class="cls-1" points="11.2 15.63 9.18 13.21 6.37 16.83 17.63 16.83 14.01 12 11.2 15.63"/>
+    <path class="cls-1" d="M0,0V24H24V0ZM19.24,17.63a1.61,1.61,0,0,1-1.61,1.61H6.37a1.61,1.61,0,0,1-1.61-1.61V6.37A1.61,1.61,0,0,1,6.37,4.76H17.63a1.61,1.61,0,0,1,1.61,1.61Z"/>
+  </g>
+</svg>

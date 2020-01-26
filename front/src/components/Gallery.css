@@ -1,0 +1,4 @@
+.mask-buttons {height: 100%; position: absolute; width: calc(100% - 30px);}
+.mask-buttons Button {display: none;}
+.mask-buttons:hover {background-color: rgba(0, 0, 0, 0.33333);}
+.mask-buttons:hover Button {display: block;}

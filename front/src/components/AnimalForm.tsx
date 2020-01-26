@@ -2,36 +2,36 @@ import React from 'react';
 import { Animal, Specie } from '../models';
 import { Modal, Form, Alert, Button } from 'react-bootstrap';
 import { Formik } from 'formik';
-import { AnimalService } from '../services';
+import { AnimalService, AuthenticationService } from '../services';
 
 export interface AnimalFormProps {
-    /** If in edition mode, the current values of the animal */
-    animal?: Animal,
-    /** Called to hide the modal */
-    onHide: () => void,
-    /** Whether or not to show the modal */
-    show: boolean,
-    /** Called when the post of the animal was successful */
-    onSuccess: (animal: Animal) => void
+	/** If in edition mode, the current values of the animal */
+	animal?: Animal,
+	/** Called to hide the modal */
+	onHide: () => void,
+	/** Whether or not to show the modal */
+	show: boolean,
+	/** Called when the post of the animal was successful */
+	onSuccess: (animal: Animal) => void
 }
 
 export interface AnimalFormState {
-    error: string;
-    species: Specie[];
+	error: string;
+	species: Specie[];
 }
 
 /**
  * A form used to add or edit an animal
  */
 export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState> {
-    constructor(props: AnimalFormProps) {
-        super(props);
+	constructor(props: AnimalFormProps) {
+		super(props);
 
 		this.state = { error: '', species: [] };
-    }
+	}
 
-    componentDidMount() {
-        AnimalService.getSpecies().then(species => this.setState({ species: species })).catch(() => this.setState({ error: 'Erreur lors de la récupération des espèces' }));
+	componentDidMount() {
+		AnimalService.getSpecies().then(species => this.setState({ species: species })).catch(() => this.setState({ error: 'Erreur lors de la récupération des espèces' }));
 	}
 	
 	render() {
@@ -41,7 +41,8 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
                     <Modal.Title id="contained-modal-title-vcenter">Ajouter un animal</Modal.Title>
                 </Modal.Header>
                 <Formik onSubmit={values => {
-                        const animal = this.props.animal === undefined ? {} as Animal : this.props.animal;
+						const animal = this.props.animal === undefined ? {} as Animal : this.props.animal;
+						animal.userId = AuthenticationService.User.id;
                         animal.name = values.name;
                         animal.birthdate = new Date(values.birthdate);
                         animal.specieId = parseInt(values.specieId);

@@ -51,7 +51,7 @@ export class LoginPage extends React.Component<RouteComponentProps, {}> {
 						<Link className="btn btn-success" to="/register">Inscrivez-vous</Link>
 					</div>
 				</div>
-            </div>
+			</div>
 		);
 	}
 }

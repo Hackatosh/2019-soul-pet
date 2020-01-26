@@ -1,20 +1,44 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import parrot from '../resources/animals/parrot.jpg';
-import { Animal } from '../models';
+import { Animal, Picture, NoImage, Directory } from '../models';
+import { AnimalService } from '../services';
+import { SquareImage } from './SquareImage';
 
 export interface AnimalCardProps {
-	animal: Animal
+	animal: Animal;
 }
 
-export class AnimalCard extends React.Component<AnimalCardProps, {}> {
-    render() {
+export interface AnimalCardState {
+	picture: Picture;
+	pictureCount: number;
+}
+
+export class AnimalCard extends React.Component<AnimalCardProps, AnimalCardState> {
+	constructor(props: AnimalCardProps) {
+		super(props);
+		this.state = { picture: {} as Picture, pictureCount: 0 };
+	}
+
+	componentDidMount() {
+		if (this.props.animal.id !== undefined)
+			AnimalService.getPictures(this.props.animal.id).then(pictures => {
+				this.setState({ pictureCount: pictures.length });
+				if (pictures.length >= 1)
+					this.setState({ picture: pictures[pictures.length - 1] });
+				else
+					this.setState({ picture: NoImage });
+			});
+	}
+
+	render() {
 		return (
-			<div className="card ">
-				<img src={parrot} className="card-img-top" alt="Parrot" />
+			<div className="card">
+				<SquareImage image={this.state.picture} directory={Directory.Animals} key={this.state.picture.filename} />
 				<div className="card-body">
 					<h5 className="card-title">{this.props.animal.name}</h5>
-					<p className="card-text">Né le {this.props.animal.birthdate.toLocaleDateString()} &middot; 0 photo &middot; {this.props.animal.events ? this.props.animal.events.length : 0} événement{this.props.animal.events && this.props.animal.events.length > 1 && "s"}</p>
+					<p className="card-text">Né le {this.props.animal.birthdate.toLocaleDateString()} 
+					&nbsp;&middot; {this.state.pictureCount} photo{this.state.pictureCount > 1 && 's'} 
+					&nbsp;&middot; {this.props.animal.events ? this.props.animal.events.length : 0} événement{this.props.animal.events && this.props.animal.events.length > 1 && "s"}</p>
 					<Link to={"/animal/" + this.props.animal.id} className="btn btn-primary">Détails</Link>
 				</div>
 			</div>

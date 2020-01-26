@@ -4,3 +4,6 @@ export * from './AnimalCard';
 export * from './AnimalForm';
 export * from './Map';
 export * from './DeleteConfirmation';
+export * from './SquareImage';
+export * from './AddImage';
+export * from './Gallery';

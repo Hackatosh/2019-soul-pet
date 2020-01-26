@@ -13,7 +13,7 @@ export class NotFoundPage extends React.Component<RouteComponentProps, {}> {
 						<img src={notFound} style={{maxHeight: '40vh'}} alt="" />
 					</div>
 				</div>
-            </div>
+			</div>
 		);
 	}
 }
