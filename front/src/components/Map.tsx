@@ -2,8 +2,8 @@ import React from 'react';
 import { PServicesMap, SServicesMap, ListMarkerData } from '../models';
 import { GetServicesServices } from '../services';
 import { iconVet, iconPark, iconGroom, imageVet, imagePark, imageGroom } from '../models';
-//import { getUserLocation } from '../helpers';
 import { Form } from 'react-bootstrap';
+import { GeolocationService } from '../services/geolocation.service';
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 const serviceTypeList = [
@@ -61,6 +61,7 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 		super(props);
 		const toDisplay = serviceTypeList.map(el => (el.type));
 		this.state= {
+			notice: '',
 			userPosition: [this.props.lat, this.props.lon],
 			toDisplay: toDisplay,
 			radius: 5000,
@@ -68,10 +69,16 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 		};
 
 		this.createMarker = this.createMarker.bind(this);
+		this.geolocate = this.geolocate.bind(this);
 	}
 
-	async componentDidMount(){
-		this.queryAPIServices();
+	async componentDidMount() {
+		this.geolocate();
+		await this.queryAPIServices();
+	}
+
+	async componentDidUpdate() {
+		await this.queryAPIServices();
 	}
 
 	private updateRadius = (event: any) => {
@@ -110,12 +117,20 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 		return null;
 	}
 
+	private geolocate() {
+		GeolocationService.getCoordinates().then(c => {
+			console.log('changed');
+			this.setState({ notice: '', userPosition: [c.latitude, c.longitude] });
+		})
+		.catch(_ => this.setState({ notice: 'Impossible de récupérer votre position' }));
+	}
+
 	render() {
 		return(
 			<div className="container">
 				<div className="row">
 					<div className="col-10 offset-1 col-md-6" style={{ minHeight: '60vh' }}>
-						<LeafletMap center={this.state.userPosition} zoom={this.props.zoom} style={{height: '100%', width: '100%'}}>
+						<LeafletMap key={this.state.userPosition.join('')} center={this.state.userPosition} zoom={this.props.zoom} style={{height: '100%', width: '100%'}}>
 							<TileLayer
 								attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 								url="https://cartodb-basemaps-1.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
@@ -124,14 +139,14 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 								<Popup>Vous êtes ici !</Popup>
 							</Marker>
 							{this.state.markers.map(this.createMarker)}
-					</LeafletMap>
+						</LeafletMap>
 					</div>
-					<div className="col-10 offset-1 col-md-2 offset-md-0">
-						<h2>Recherche</h2>
+					<div className="col-10 offset-1 col-md-4 offset-md-0">
+						{this.state.notice !== '' && <div className="alert alert-info" style={{ width: '300px' }}>{this.state.notice}</div>}
 						<Form>
 							<Form.Group>
 								<Form.Label>Localisation&nbsp;:</Form.Label>
-								<button type="button" className="btn btn-success btn-lg disabled" style={{ width: '300px' }}>Me localiser</button>
+								<button type="button" className="btn btn-success btn-lg" style={{ width: '300px' }} onClick={this.geolocate}>Me localiser</button>
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>Services disponibles&nbsp;:</Form.Label>

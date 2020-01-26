@@ -19,7 +19,7 @@ export class GeolocationService {
 
 	/**
 	 * Retrieves the coordinates of the user.
-	 * @param startWatching whether to start watching the user as well
+	 * @param startWatching whether to start watching the user as well (false by default)
 	 * @see GeolocationService.startWatchingGeoloc about use of the ‘watch mode’
 	 */
     public static async getCoordinates(startWatching: boolean = false): Promise<Coordinates> {
