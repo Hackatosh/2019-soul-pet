@@ -63,9 +63,10 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                     }
                     // Else we are editing an existing event
                     else {
-                        EventService.update(event).then(_ => {
-                            this.props.onSuccess(event);
-                            this.props.onHide();
+                        EventService.update(event).then(e => {
+							e.userId = AuthenticationService.User.id;
+                            this.props.onSuccess(e);
+							this.props.onHide();
                         }).catch(() => this.setState({error: 'Erreur lors de la mise à jour de l’événement'}));
                     }
                 }}

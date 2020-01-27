@@ -5,6 +5,7 @@ import {PetEvent} from '../models';
 import {Button} from "react-bootstrap";
 import {EventForm} from "../components/EventForm";
 import {EventService} from "../services/event.service";
+import {history} from '../helpers';
 
 interface EventsSearchPageState {
     showEventForm: boolean;
@@ -64,7 +65,7 @@ export class EventsSearchPage extends React.Component<RouteComponentProps, Event
                     {this.state.events.map(event => <EventCard key={event.id} event={event}/>)}
                 </div>
                 <EventForm show={this.state.showEventForm} onHide={() => this.showEventForm(false)}
-                           onSuccess={(event: PetEvent) => this.setState({events: [event].concat(this.state.events)})}/>
+                           onSuccess={(event: PetEvent) => history.push(`/events/${event.id}`)}/>
             </div>
 
         )

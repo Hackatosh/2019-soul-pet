@@ -21,13 +21,11 @@ export interface EventPageState {
 }
 
 export class EventPage extends Component<EventCardProps, EventPageState> {
-
     constructor(props: EventCardProps) {
         super(props);
         if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
             history.push('/404');
-        else
-            this.state = {error: '', event: undefined, id: parseInt(this.props.match.params.id), showEventForm: false, showEventDelete: false};
+        this.state = {error: '', event: undefined, id: parseInt(this.props.match.params.id), showEventForm: false, showEventDelete: false};
     }
 
     componentDidMount() {
