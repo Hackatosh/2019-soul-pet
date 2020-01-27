@@ -32,6 +32,12 @@ services:
     volumes:
       - ./back:/usr/app/
       - /usr/app/node_modules
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+        reservations:
+          memory: 100M
   front:
     container_name: "soul-pet-front"
     build:
@@ -42,10 +48,16 @@ services:
     restart: always
     environment:
       PORT: 3000
-      REACT_APP_BACK_URL: "http://soulpet.cs-campus.fr/api"
+      REACT_APP_BACK_URL: "http://localhost/api"
     volumes:
       - ./front:/usr/app/
       - /usr/app/node_modules
+    deploy:
+      resources:
+        limits:
+          memory: 30M
+        reservations:
+          memory: 20M
   db:
     image: mariadb:10.4
     container_name: "soul-pet-db"
@@ -59,21 +71,12 @@ services:
       MYSQL_PASSWORD: password
     volumes:
       - db-data:/var/lib/mariadb/data
-  admin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: "soul-pet-phpmyadmin"
-    restart: always
-    environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOST=db
-    links:
-      - db
-    depends_on:
-      - db
-    networks:
-      - inner
-    ports:
-      - "8080:80"
+    deploy:
+      resources:
+        limits:
+          memory: 120M
+        reservations:
+          memory: 100M
   sftp:
     image: atmoz/sftp
     container_name: 'soul-pet-sftp'
@@ -83,6 +86,12 @@ services:
     networks:
       - inner
     command: nodejs:password:::pictures
+    deploy:
+      resources:
+        limits:
+          memory: 15M
+        reservations:
+          memory: 10M
   apache:
     container_name: "soul-pet-apache"
     build:
@@ -90,7 +99,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      HTTPD_SERVERNAME: soulpet.cs-campus.fr
+      HTTPD_SERVERNAME: localhost
     tty: true
     networks:
       - inner
@@ -100,6 +109,12 @@ services:
     volumes:
       - ./apache/conf:/usr/local/apache2/conf
       - ./apache/logs:/var/log/apache2
+    deploy:
+      resources:
+        limits:
+          memory: 15M
+        reservations:
+          memory: 10M
 volumes:
   db-data:
   sftp-data:

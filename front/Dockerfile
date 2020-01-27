@@ -7,5 +7,6 @@ COPY package.json .
 COPY yarn.lock .
 RUN yarn install
 COPY . .
-EXPOSE 3000
-CMD ["yarn","start"]
+RUN npm install -g serve
+RUN yarn build
+CMD ["serve", "-s", "build", "-l", "3000"]
