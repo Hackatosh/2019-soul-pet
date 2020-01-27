@@ -5,8 +5,8 @@ services:
     build:
       context: ./back
       dockerfile: Dockerfile
-    ports:
-      - "8001:8000"
+    networks:
+      - inner
     restart: always
     links:
       - db
@@ -37,20 +37,20 @@ services:
     build:
       context: ./front
       dockerfile: Dockerfile
-    ports:
-      - "3001:3000"
+    networks:
+      - inner
     restart: always
     environment:
       PORT: 3000
-      REACT_APP_BACK_URL: "http://localhost:8001/api"
+      REACT_APP_BACK_URL: "http://localhost/api"
     volumes:
       - ./front:/usr/app/
       - /usr/app/node_modules
   db:
     image: mariadb:10.4
     container_name: "soul-pet-db"
-    ports:
-      - "3307:3306"
+    networks:
+      - inner
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: strongpassword
@@ -70,17 +70,36 @@ services:
       - db
     depends_on:
       - db
-    ports:
-      - "8080:80"
+    networks:
+      - inner
   sftp:
     image: atmoz/sftp
     container_name: 'soul-pet-sftp'
     volumes:
       - ./ftp/sftp.d:/etc/sftp.d/
       - sftp-data:/home/nodejs/pictures/
-    ports:
-      - "2222:22"
+    networks:
+      - inner
     command: nodejs:password:::pictures
+  apache:
+    container_name: "soul-pet-apache"
+    build:
+      context: ./apache
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      HTTPD_SERVERNAME: localhost
+    tty: true
+    networks:
+      - inner
+    ports:
+      - "80:80"
+      - "3001:3001"
+    volumes:
+      - ./apache/conf:/usr/local/apache2/conf
+      - ./apache/logs:/var/log/apache2
 volumes:
   db-data:
   sftp-data:
+networks:
+  inner:
