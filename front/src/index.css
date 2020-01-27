@@ -21,3 +21,6 @@ button.btn-block {margin: 1rem auto;}
 .center-form input {border-color: #e0e0e0; border-radius: 0; border-top-width: 0; height: 50px; padding: 20px;}
 .center-form input:first-of-type {border-top-left-radius: 0.25rem; border-top-right-radius: 0.25rem;}
 .center-form input:last-of-type {border-bottom-left-radius: 0.25rem; border-bottom-right-radius: 0.25rem;}
+
+/* Fix margins with rows */
+.row {margin-right: 0; margin-left: 0;}

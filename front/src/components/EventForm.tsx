@@ -91,14 +91,14 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
 												onChange={props.handleChange} value={props.values.name} required/>
 							</Form.Group>
 							<div className="form-row">
-								<div className="col">
+								<div className="col-md">
 									<Form.Group controlId="eventBeginDate">
 										<Form.Label>Quand commence-t-il&nbsp;?</Form.Label>
 										<Form.Control type="date" name="beginDate" onChange={props.handleChange}
 														value={props.values.beginDate} required/>
 									</Form.Group>
 								</div>
-								<div className="col">
+								<div className="col-md">
 									<Form.Group controlId="eventEndDate">
 										<Form.Label>Quand se termine-t-il&nbsp;?</Form.Label>
 										<Form.Control type="date" name="endDate" onChange={props.handleChange}
@@ -106,22 +106,29 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
 									</Form.Group>
 								</div>
 							</div>
-							<Form.Group controlId="eventDescription">
-								<Form.Label>Une petite description&nbsp;?</Form.Label>
-								<Form.Control name="description" type="text"
-												placeholder="Entrez la description de l’événement"
-												onChange={props.handleChange} value={props.values.description}
-												required/>
-							</Form.Group>
-							<Form.Group controlId="eventSpecies">
-								<Form.Label>Quelles espèces sont les bienvenues&nbsp;?</Form.Label>
-								<Field as="select" name="specieIds" className="form-control" multiple={true} onChange={(evt: Event) => {
-									props.values.specieIds = Array.prototype.slice.call((evt.target as HTMLSelectElement).selectedOptions).map((option: HTMLOptionElement) => option.value);
-									props.setFieldValue("specieIds", props.values.specieIds);
-								}} value={props.values.specieIds} type="select-multiple">
-									{this.state.species.map(specie => <option value={specie.id} key={specie.id}>{titleCase(specie.name)}</option>)}
-								</Field>
-							</Form.Group>
+							<div className="form-row">
+								<div className="col-md">
+									<Form.Group controlId="eventDescription">
+										<Form.Label>Une petite description&nbsp;?</Form.Label>
+										<Form.Control name="description" as="textarea"
+														placeholder="Entrez la description de l’événement"
+														onChange={props.handleChange} value={props.values.description}
+														required/>
+									</Form.Group>
+								</div>
+								<div className="col-md">
+									<Form.Group controlId="eventSpecies">
+										<Form.Label>Quelles espèces sont les bienvenues&nbsp;?</Form.Label>
+										<Field as="select" name="specieIds" className="form-control" multiple={true} onChange={(evt: Event) => {
+											props.values.specieIds = Array.prototype.slice.call((evt.target as HTMLSelectElement).selectedOptions).map((option: HTMLOptionElement) => option.value);
+											props.setFieldValue("specieIds", props.values.specieIds);
+										}} value={props.values.specieIds} type="select-multiple">
+											{this.state.species.map(specie => <option value={specie.id} key={specie.id}>{titleCase(specie.name)}</option>)}
+										</Field>
+										<small className="form-text text-muted">Utilisez <kbd>ctrl</kbd> et <kbd>maj</kbd> pour sélectionner plusieurs espèces.</small>
+									</Form.Group>
+								</div>
+							</div>
 						</Modal.Body>
 						<Modal.Footer>
 							<Button variant="primary"

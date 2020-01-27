@@ -61,8 +61,8 @@ export class EventsSearchPage extends React.Component<RouteComponentProps, Event
                 <div className="row mb-5">
                     <div className="col-sm-6 offset-sm-3"><div className="alert alert-primary">Aucun événement trouvé…</div></div>
                 </div>}
-                <div className="row row-cols-2 row-cols-md-3 justify-content-center">
-                    {this.state.events.map(event => <EventCard key={event.id} event={event}/>)}
+                <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 justify-content-center">
+                    {this.state.events.map(event => <div className="col mb-4" key={event.id}><EventCard event={event}/></div>)}
                 </div>
                 <EventForm show={this.state.showEventForm} onHide={() => this.showEventForm(false)}
                            onSuccess={(event: PetEvent) => history.push(`/events/${event.id}`)}/>
