@@ -42,7 +42,7 @@ services:
     restart: always
     environment:
       PORT: 3000
-      REACT_APP_BACK_URL: "http://localhost/api"
+      REACT_APP_BACK_URL: "http://soulpet.cs-campus.fr/api"
     volumes:
       - ./front:/usr/app/
       - /usr/app/node_modules
@@ -72,6 +72,8 @@ services:
       - db
     networks:
       - inner
+    ports:
+      - "8080:80"
   sftp:
     image: atmoz/sftp
     container_name: 'soul-pet-sftp'
@@ -88,7 +90,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      HTTPD_SERVERNAME: localhost
+      HTTPD_SERVERNAME: soulpet.cs-campus.fr
     tty: true
     networks:
       - inner
