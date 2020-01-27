@@ -102,10 +102,12 @@ export class httpClient {
 	 * @param endpoint The endpoint to send the request to, as a *non-absolute* URL
 	 * @param body The body, of type T, of the request
 	 * @param authenticated Indicates whether the request should be authenticated.
-	 * @returns A promise containing an object of type T
+	 * @returns A promise containing an object of type T, with updated properties
 	 */
 	public static async put<T>(endpoint: string, body: T, authenticated = false): Promise<T> {
-		return await this.request<T>(endpoint, this.options(authenticated, 'PUT', JSON.stringify(body)));
+		return this.request<T>(endpoint, this.options(authenticated, 'PUT', JSON.stringify(body))).then(o => {
+			return Object.defineProperties(body, Object.getOwnPropertyDescriptors(o));
+		});
 	}
 
 	/**
