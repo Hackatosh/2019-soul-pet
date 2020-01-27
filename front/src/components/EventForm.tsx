@@ -62,13 +62,12 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                         }).catch(() => this.setState({error: 'Erreur lors de la création de l’événement'}));
                     }
                     // Else we are editing an existing event
-                    else {
+                    else
                         EventService.update(event).then(e => {
 							e.userId = AuthenticationService.User.id;
                             this.props.onSuccess(e);
 							this.props.onHide();
-                        }).catch(() => this.setState({error: 'Erreur lors de la mise à jour de l’événement'}));
-                    }
+						}).catch(() => this.setState({error: 'Erreur lors de la mise à jour de l’événement'}));
                 }}
 				initialValues={this.props.event === undefined ?
 					{name: '', beginDate: '', endDate: '', description: '', specieIds: []} :
@@ -77,8 +76,8 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
 						beginDate: this.props.event.beginDate.toISOString().substr(0, 10),
 						endDate: this.props.event.endDate.toISOString().substr(0, 10),
 						description: this.props.event.description,
-						specieIds: this.props.event.authorizedSpecies !== undefined ? 
-						this.props.event.authorizedSpecies.map(species => species.id.toString()) : [],
+						specieIds: this.props.event.specieIds !== undefined ? 
+						this.props.event.specieIds.map(s => s.toString()) : [],
 				}}>
 					{props => (
 					<Form onSubmit={props.handleSubmit}>
@@ -91,16 +90,22 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
 								<Form.Control name="name" type="text" placeholder="Entrez le nom de l’événement"
 												onChange={props.handleChange} value={props.values.name} required/>
 							</Form.Group>
-							<Form.Group controlId="eventBeginDate">
-								<Form.Label>Quand commence-t-il&nbsp;?</Form.Label>
-								<Form.Control type="date" name="beginDate" onChange={props.handleChange}
-												value={props.values.beginDate} required/>
-							</Form.Group>
-							<Form.Group controlId="eventEndDate">
-								<Form.Label>Quand se termine-t-il&nbsp;?</Form.Label>
-								<Form.Control type="date" name="endDate" onChange={props.handleChange}
-												value={props.values.endDate} required/>
-							</Form.Group>
+							<div className="form-row">
+								<div className="col">
+									<Form.Group controlId="eventBeginDate">
+										<Form.Label>Quand commence-t-il&nbsp;?</Form.Label>
+										<Form.Control type="date" name="beginDate" onChange={props.handleChange}
+														value={props.values.beginDate} required/>
+									</Form.Group>
+								</div>
+								<div className="col">
+									<Form.Group controlId="eventEndDate">
+										<Form.Label>Quand se termine-t-il&nbsp;?</Form.Label>
+										<Form.Control type="date" name="endDate" onChange={props.handleChange}
+														value={props.values.endDate} required/>
+									</Form.Group>
+								</div>
+							</div>
 							<Form.Group controlId="eventDescription">
 								<Form.Label>Une petite description&nbsp;?</Form.Label>
 								<Form.Control name="description" type="text"

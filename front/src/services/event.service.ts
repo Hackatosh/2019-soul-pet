@@ -4,7 +4,9 @@ import {httpClient} from "../helpers";
 export class EventService {
     private static revive(e: PetEvent): PetEvent {
         e.beginDate = new Date(e.beginDate);
-        e.endDate = new Date(e.endDate);
+		e.endDate = new Date(e.endDate);
+		if (e.authorizedSpecies !== undefined && e.specieIds === undefined)
+			e.specieIds = e.authorizedSpecies.map(s => s.id);
         return e;
     }
 

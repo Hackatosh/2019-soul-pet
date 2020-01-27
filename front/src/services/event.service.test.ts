@@ -54,9 +54,10 @@ test('Get single event', async () => {
 test('Add event', async () => {
 	post.mockResolvedValue(events[0]);
 	await EventService.add(events[0]).then(e => {
-		expect(e).toStrictEqual(events[0]);
+		expect(e.specieIds).toBeDefined();
+		expect(e.authorizedSpecies).toStrictEqual(events[0].authorizedSpecies);
 	});
-	expect.assertions(1);
+	expect.assertions(2);
 });
 
 test('Update event', async () => {
