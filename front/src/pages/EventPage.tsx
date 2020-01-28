@@ -6,7 +6,7 @@ import { history } from '../helpers';
 import {EventService} from "../services/event.service";
 import {Button, Spinner} from "react-bootstrap";
 import { AuthenticationService} from "../services";
-import { DeleteConfirmation} from "../components";
+import { DeleteConfirmation, Comment } from "../components";
 import {EventForm} from "../components/EventForm";
 
 export interface EventCardProps extends RouteComponentProps<{ id: string }> {
@@ -69,6 +69,14 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 									<p className="card-text">{event.description}</p>
 								</div>
 							</div>
+						</div>
+						<div className="col-10 offset-1 offset-md-0 col-md-7">
+							<h2>Discussion</h2>
+							{event.eventsComments === undefined || event.eventsComments.length === 0 ? (
+							<div className="alert alert-primary">Il n’y a aucun commentaire pour le moment…</div>
+							) :
+							event.eventsComments?.map(c => <Comment comment={c} key={c.id} />)
+							}
 						</div>
 					</div>
 					<EventForm show={this.state.showEventForm} event={this.state.event} onHide={() => this.showEventForm(false)} onSuccess={e => this.setState({ event: e })} />
