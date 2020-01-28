@@ -20,6 +20,7 @@ export class EventCard extends Component<EventCardProps, {}> {
                         <h6 className="card-title">Organisé par {event.user ? event.user.username : "Inconnu·e"}</h6>
                         <h6 className="card-title">Début : {event.beginDate.toLocaleDateString(undefined, {year: "numeric", month: "long", day: "numeric"})}</h6>
                         <h6 className="card-title">Fin : {event.endDate.toLocaleDateString(undefined, {year: "numeric", month: "long", day: "numeric"})}</h6>
+                        <h6 className="card-title">Lieu : {event.location ? event.location : "Lieu inconnu"}</h6>
                         <p className="card-text">{event.description}</p>
                         <Link to={`/events/${event.id}`} className="btn btn-primary">Détails</Link>
                     </div>
