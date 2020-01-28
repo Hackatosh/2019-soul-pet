@@ -16,7 +16,7 @@ services:
       - "3001:3000"
     environment:
       SERVER_PORT: 3000
-      CORS_HOST : http://localhost
+      CORS_HOST : http://soulpet.cs-campus.fr
       LOG_IN_FILE: "true"
       TOKEN_LIFETIME_SEC: 600
       DB_HOST: soul-pet-prod-db
@@ -46,7 +46,7 @@ services:
     restart: always
     environment:
       PORT: 3000
-      REACT_APP_BACK_URL: "http://localhost:3001/api"
+      REACT_APP_BACK_URL: "http://soulpet.cs-campus.fr:3001/api"
     ports:
       - "80:3000"
     volumes:
