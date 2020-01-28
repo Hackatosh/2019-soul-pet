@@ -32,12 +32,6 @@ services:
     volumes:
       - ./back:/usr/app/
       - /usr/app/node_modules
-    deploy:
-      resources:
-        limits:
-          memory: 150M
-        reservations:
-          memory: 100M
   front:
     container_name: "soul-pet-front"
     build:
