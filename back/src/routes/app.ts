@@ -45,7 +45,7 @@ apiRouter.use('*', loginRequiredMW);
 apiRouter.use('/places', placesRouter);
 apiRouter.use('/events', eventsRouter);
 apiRouter.use('/comments', eventCommentsRouter);
-apiRouter.use('/account', accountRouter);
+apiRouter.use('/accounts', accountRouter);
 apiRouter.use('/animals', animalsRouter);
 apiRouter.use('/pictures/animals', animalPicturesRouter);
 apiRouter.use('/pictures/events', eventPicturesRouter);
