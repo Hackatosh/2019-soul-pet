@@ -50,6 +50,7 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                     event.beginDate = new Date(values.beginDate);
                     event.endDate = new Date(values.endDate);
                     event.description = values.description;
+                    event.location = values.location;
                     event.authorizedSpecies = values.authorizedSpecies;
                     // If we are adding a new event
                     if (this.props.event === undefined) {
@@ -68,12 +69,13 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                     }
                 }}
                         initialValues={this.props.event === undefined ?
-                            {name: '', beginDate: '', endDate: '', description: '', authorizedSpecies: []} :
+                            {name: '', beginDate: '', endDate: '', description: '', location:'', authorizedSpecies: []} :
                             {
                                 name: this.props.event.name,
                                 beginDate: this.props.event.beginDate.toISOString().substr(0, 10),
                                 endDate: this.props.event.endDate.toISOString().substr(0, 10),
                                 description: this.props.event.description,
+                                location: this.props.event.location,
                                 authorizedSpecies: this.props.event.authorizedSpecies !== undefined ? this.props.event.authorizedSpecies : [],
                             }}
                     render = {props => (
@@ -103,6 +105,12 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                                                   placeholder="Entrez la description de l’événement"
                                                   onChange={props.handleChange} value={props.values.description}
                                                   required/>
+                                </Form.Group>
+                                <Form.Group controlId="eventDescription">
+                                    <Form.Label>Lieu de l'événement&nbsp;?</Form.Label>
+                                    <Form.Control name="location" type="text"
+                                                  placeholder="Entrez l'adresse de l’événement"
+                                                  onChange={props.handleChange} value={props.values.location}/>
                                 </Form.Group>
                             </Modal.Body>
                             <FieldArray
