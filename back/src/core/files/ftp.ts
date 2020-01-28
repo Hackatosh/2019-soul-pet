@@ -10,6 +10,7 @@ import {join} from 'path';
 import {Response} from "express";
 import {HttpHeader, isEmptyString, objectifyHeadersArray} from "../utils";
 import {v4} from "uuid";
+import {logger} from "../logger";
 
 /***
  * CONFIGURATION DEFINITION
@@ -165,7 +166,7 @@ const uploadToSFTP = async function (src: Buffer, destFolder: Folder): Promise<s
         await sftp.connect(config);
         await sftp.put(src, sftpPath, putOptions);
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         throw new Error("Unable to upload file")
     } finally {
         await sftp.end();

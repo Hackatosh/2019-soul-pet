@@ -4,6 +4,7 @@ import {check} from 'express-validator'
 import {inputValidationMW} from "../middlewares/inputValidation";
 import {PetEvent} from "../../database/models/event";
 import {EventComment} from "../../database/models/eventComment";
+import {logger} from "../../core/logger";
 
 const eventCommentsRouter = Router();
 
@@ -72,7 +73,7 @@ eventCommentsRouter.post('/', postCommentChecks, inputValidationMW, async (req: 
         const comment = await EventComment.create({userId, eventId, text});
         res.status(200).json(comment)
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Unable to create the comment"})
     }
 });

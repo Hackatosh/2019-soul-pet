@@ -1,6 +1,8 @@
 /**
  * Configurations of logger.
  */
+import {env} from "../config/env";
+
 const winston = require('winston');
 
 const consoleConfig = [
@@ -33,14 +35,20 @@ errorLogger.add({
     'prepend': true,
 });
 
-const logInfo = function (info: string) {
-    infoLogger.info(info);
-};
+const logInfo = env.LOG_IN_FILE ?
+    function (info: string) {
+        infoLogger.info(info);
+    }
+    :
+    console.log;
 
-const logError = function (err: string) {
-    errorLogger.error(err);
-};
+const logError = env.LOG_IN_FILE ?
+    function (err: string) {
+        errorLogger.error(err);
+    }
+    :
+    console.log;
 
-const logger = {info:logInfo,error:logError};
+const logger = {info: logInfo, error: logError};
 
 export {logger};

@@ -8,6 +8,7 @@ if (process.env.SERVER_PORT === undefined)
 
 const SERVER_PORT = process.env.SERVER_PORT;
 const CORS_HOST = process.env.CORS_HOST;
+const LOG_IN_FILE = process.env.LOG_IN_FILE;
 const TOKEN_LIFETIME_SEC = process.env.TOKEN_LIFETIME_SEC;
 const DB_HOST = process.env.DB_HOST;
 const DB_PORT = process.env.DB_PORT;
@@ -30,6 +31,10 @@ if (SERVER_PORT == undefined || isNaN(parseInt(SERVER_PORT))) {
 
 if (CORS_HOST == undefined) {
     throw new Error('CORS_HOST is not a valid env variable');
+}
+
+if (LOG_IN_FILE == undefined) {
+    throw new Error('LOG_IN_FILE is not a valid env variable');
 }
 
 if (TOKEN_LIFETIME_SEC == undefined || isNaN(parseInt(TOKEN_LIFETIME_SEC))) {
@@ -95,6 +100,7 @@ if (PLACES_API_SECRET == undefined) {
 const env = {
     SERVER_PORT,
     CORS_HOST,
+    LOG_IN_FILE: !!LOG_IN_FILE,
     TOKEN_LIFETIME_SEC: parseInt(TOKEN_LIFETIME_SEC),
     DB_HOST,
     DB_PORT: parseInt(DB_PORT),
