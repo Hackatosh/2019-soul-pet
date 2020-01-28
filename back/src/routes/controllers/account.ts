@@ -5,6 +5,7 @@ import {AuthenticatedRequest} from "../../core/authentication/authenticationInte
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
 import {revocateAllTokensForUser} from "../../core/authentication/tokens";
+import {logger} from "../../core/logger";
 
 const accountRouter = Router();
 
@@ -49,7 +50,7 @@ accountRouter.put('/:userId', putAccountChecks, inputValidationMW, async (req: A
                 }
                 res.status(200).json(update);
             } catch (e) {
-                console.log(e);
+                logger.error(e);
                 res.status(400).json({message: "Unable to update the account"});
             }
         } else {

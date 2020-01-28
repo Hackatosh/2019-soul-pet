@@ -15,6 +15,7 @@ import {User} from "../../database/models/user";
 import {EventComment} from "../../database/models/eventComment";
 import Sequelize from "sequelize";
 import {EventPicture} from "../../database/models/eventPicture";
+import {logger} from "../../core/logger";
 
 const eventsRouter = Router();
 
@@ -86,7 +87,7 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: Aut
         }
         res.status(200).json(eventFound)
     } catch (e) {
-        console.log(e)
+        logger.error(e)
     }
 });
 
@@ -134,7 +135,7 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req: Authentic
         await event.save();
         res.status(200).json(event)
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Unable to create this event"})
     }
 });
@@ -211,7 +212,7 @@ eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, 
         await eventFound.save();
         res.status(200).json(update);
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Unable to update the event"});
     }
 });

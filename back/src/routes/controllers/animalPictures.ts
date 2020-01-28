@@ -6,6 +6,7 @@ import {AuthenticatedRequest} from "../../core/authentication/authenticationInte
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
 import {createPictureStorage, resolvePictureContentType} from "../../core/files/pictureStorage";
+import {logger} from "../../core/logger";
 
 const animalPicturesRouter = Router();
 
@@ -61,7 +62,7 @@ animalPicturesRouter.get('/', getAnimalPictureChecks, inputValidationMW, async (
     try {
         await pipeSFTPIntoResponse(res, Folder.AnimalPictures, filename, file.contentType);
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Problem when downloading the file"})
     }
 });
@@ -92,12 +93,12 @@ animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAni
                 const animalPicture = await AnimalPicture.create({animalId, filename, contentType});
                 res.status(200).json(animalPicture);
             } catch (e) {
-                console.log(e);
+                logger.error(e);
                 res.status(400).json({message: "Unable to save the picture"})
             }
         }
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Couldn't upload the file"})
     }
 

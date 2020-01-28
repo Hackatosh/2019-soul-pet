@@ -7,6 +7,7 @@ import {inputValidationMW} from "../middlewares/inputValidation";
 import {createPictureStorage, resolvePictureContentType} from "../../core/files/pictureStorage";
 import {PetEvent} from "../../database/models/event";
 import {EventPicture} from "../../database/models/eventPicture";
+import {logger} from "../../core/logger";
 
 const eventPicturesRouter = Router();
 
@@ -81,12 +82,12 @@ eventPicturesRouter.post('/:eventId', createPictureStorage("picture"), postEvent
                 const eventPicture = await EventPicture.create({eventId,userId, filename, contentType});
                 res.status(200).json(eventPicture);
             } catch (e) {
-                console.log(e);
+                logger.error(e);
                 res.status(400).json({message: "Unable to save the picture"})
             }
         }
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Couldn't upload the file"})
     }
 
