@@ -33,7 +33,7 @@ export class Comment extends React.Component<CommentProps, CommentState> {
 					) : (
 					<span>Utilisateur inconnu</span>
 					)}
-					&nbsp;— {this.props.comment.createdAt.toLocaleDateString()}
+					&nbsp;— {this.props.comment.createdAt.toLocaleDateString()} à {this.props.comment.createdAt.getHours()}&nbsp;h&nbsp;{this.props.comment.createdAt.getMinutes()}
 				</p>
 			</div>)
 	}
