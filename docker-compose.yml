@@ -17,14 +17,15 @@ services:
     environment:
       SERVER_PORT: 3000
       CORS_HOST : http://localhost
+      LOG_IN_FILE: "false"
       TOKEN_LIFETIME_SEC: 600
-      DB_HOST: soul-pet-db
+      DB_HOST: soul-pet-dev-db
       DB_PORT: 3306
       DB_USER: 'user'
       DB_PASSWORD: 'password'
       DB_NAME: 'soul_pet'
       SECRET_KEY: '7CMl4AhyElECTWaUqRjxbl7FsmtYunqf'
-      FTP_HOST: soul-pet-sftp
+      FTP_HOST: soul-pet-dev-sftp
       FTP_PORT: 22
       FTP_USER: nodejs
       FTP_PASSWORD: password
