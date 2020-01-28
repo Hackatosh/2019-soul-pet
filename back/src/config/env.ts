@@ -7,6 +7,7 @@ if (process.env.SERVER_PORT === undefined)
     require('dotenv').config();
 
 const SERVER_PORT = process.env.SERVER_PORT;
+const CORS_HOST = process.env.CORS_HOST;
 const TOKEN_LIFETIME_SEC = process.env.TOKEN_LIFETIME_SEC;
 const DB_HOST = process.env.DB_HOST;
 const DB_PORT = process.env.DB_PORT;
@@ -25,6 +26,10 @@ const PLACES_API_SECRET = process.env.PLACES_API_SECRET;
 
 if (SERVER_PORT == undefined || isNaN(parseInt(SERVER_PORT))) {
     throw new Error('SERVER_PORT is not a valid env variable');
+}
+
+if (CORS_HOST == undefined) {
+    throw new Error('CORS_HOST is not a valid env variable');
 }
 
 if (TOKEN_LIFETIME_SEC == undefined || isNaN(parseInt(TOKEN_LIFETIME_SEC))) {
@@ -89,6 +94,7 @@ if (PLACES_API_SECRET == undefined) {
 
 const env = {
     SERVER_PORT,
+    CORS_HOST,
     TOKEN_LIFETIME_SEC: parseInt(TOKEN_LIFETIME_SEC),
     DB_HOST,
     DB_PORT: parseInt(DB_PORT),

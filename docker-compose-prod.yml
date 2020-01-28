@@ -1,10 +1,10 @@
 version: "3.3"
 services:
   back:
-    container_name: "soul-pet-dev-back"
+    container_name: "soul-pet-prod-back"
     build:
       context: ./back
-      dockerfile: Dockerfile-Dev
+      dockerfile: Dockerfile-Prod
     networks:
       - inner
     restart: always
@@ -36,10 +36,10 @@ services:
       - ./back:/usr/app/
       - /usr/app/node_modules
   front:
-    container_name: "soul-pet-dev-front"
+    container_name: "soul-pet-prod-front"
     build:
       context: ./front
-      dockerfile: Dockerfile-Dev
+      dockerfile: Dockerfile-Prod
     networks:
       - inner
     restart: always
@@ -53,7 +53,7 @@ services:
       - /usr/app/node_modules
   db:
     image: mariadb:10.4
-    container_name: "soul-pet-dev-db"
+    container_name: "soul-pet-prod-db"
     networks:
       - inner
     restart: always
@@ -66,28 +66,13 @@ services:
       - db-data:/var/lib/mariadb/data
   sftp:
     image: atmoz/sftp
-    container_name: 'soul-pet-dev-sftp'
+    container_name: 'soul-pet-prod-sftp'
     volumes:
       - ./ftp/sftp.d:/etc/sftp.d/
       - sftp-data:/home/nodejs/pictures/
     networks:
       - inner
     command: nodejs:password:::pictures
-  admin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: "soul-pet-dev-phpmyadmin"
-    restart: always
-    environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOST=db
-    links:
-      - db
-    depends_on:
-      - db
-    networks:
-      - inner
-    ports:
-      - "8080:80"
 volumes:
   db-data:
   sftp-data:
