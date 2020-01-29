@@ -9,6 +9,8 @@ export class EventService {
 			e.createdAt = new Date(e.createdAt);
 			return e;
 		});
+		if (e.authorizedSpecies !== undefined && e.specieIds === undefined)
+			e.specieIds = e.authorizedSpecies.map(s => s.id);
         return e;
     }
 
@@ -35,7 +37,6 @@ export class EventService {
      * @returns the event saved into the database
      */
     static async add(event:PetEvent): Promise<PetEvent> {
-        event.specieIds = event.authorizedSpecies !== undefined ? event.authorizedSpecies.map(specie => specie.id) : [];
         return httpClient.post<PetEvent>('/events/', event, true).then(EventService.revive).catch(() => Promise.reject(`Erreur lors de la création de l'évènement : ${event.name}`));
     }
 
@@ -45,7 +46,6 @@ export class EventService {
      * @returns the event saved into the database
      */
     static async update(event:PetEvent): Promise<PetEvent> {
-        event.specieIds = event.authorizedSpecies !== undefined ? event.authorizedSpecies.map(specie => specie.id) : [];
         return httpClient.put<PetEvent>(`/events/${event.id}`, event, true).then(EventService.revive).catch(() => Promise.reject(`Erreur lors de la mise à jour de l'évènement d'identifiant ${event.id}`));
     }
 

@@ -76,7 +76,7 @@ const convertStringToDate = function (date: string): Date {
 const isDateTimeAfter = function (date: string, dateBefore: string) {
     const end = moment(date);
     const start = moment(dateBefore);
-    return end.isAfter(start);
+    return end.isSameOrAfter(start);
 };
 
 export {objectifyHeadersArray, isEmptyString, isDateValid, isNumericArray, isDateTimeAfter, convertStringToDate}

@@ -3,6 +3,7 @@ import { Animal, Specie } from '../models';
 import { Modal, Form, Alert, Button } from 'react-bootstrap';
 import { Formik } from 'formik';
 import { AnimalService, AuthenticationService } from '../services';
+import { titleCase } from '../helpers';
 
 export interface AnimalFormProps {
 	/** If in edition mode, the current values of the animal */
@@ -79,11 +80,8 @@ export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState
                             </Form.Group>
                             <Form.Group controlId="animalSpecies">
                                 <Form.Label>Quelle espèce est-ce&nbsp;?</Form.Label>
-                                <Form.Control as="select" name="specieId" onChange={props.handleChange} noValidate value={props.values.specieId}>
-                                    {this.state.species.map(specie => {
-                                        specie.name = specie.name[0].toUpperCase() + specie.name.substr(1);
-                                        return <option value={specie.id.toString()} key={specie.id}>{specie.name}</option>;
-                                    })}
+                                <Form.Control as="select" name="specieId" className="custom-select" onChange={props.handleChange} noValidate value={props.values.specieId}>
+                                    {this.state.species.map(specie => <option value={specie.id.toString()} key={specie.id}>{titleCase(specie.name)}</option>)}
                                 </Form.Control>
                             </Form.Group>
                         </Modal.Body>

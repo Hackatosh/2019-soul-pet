@@ -19,8 +19,8 @@ class App extends React.Component {
 					<Route path="/login" component={LoginPage} />
 					<Route path="/register" component={RegisterPage} />
 
-					<PrivateRoute path="/events/list" component={EventsSearchPage} />
-					<PrivateRoute path="/events/:id" component={EventPage} />
+					<PrivateRoute exact path="/events/list" component={EventsSearchPage} />
+					<PrivateRoute exact path="/events/:id" component={EventPage} />
 					<PrivateRoute path="/services" component={ServicesPage} />
 					<PrivateRoute exact path="/" component={HomePage} />
 					<PrivateRoute exact path="/animal/:id" component={AnimalPage} />

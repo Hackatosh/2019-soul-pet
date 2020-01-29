@@ -8,6 +8,7 @@ import {isDateValid} from "../../core/utils";
 import {convertStringToDate} from "../../core/utils";
 import {PetEvent} from "../../database/models/event";
 import {AnimalPicture} from "../../database/models/animalPicture";
+import {logger} from "../../core/logger";
 
 const animalsRouter = Router();
 
@@ -91,7 +92,7 @@ animalsRouter.post('/', postAnimalChecks, inputValidationMW, async (req: Authent
         const animal = await Animal.create({userId, specieId, name, birthdate});
         res.status(200).json(animal)
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Unable to register the animal"})
     }
 });
