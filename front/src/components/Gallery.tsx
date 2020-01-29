@@ -14,6 +14,10 @@ export interface GalleryProps {
 
 export class Gallery extends React.Component<GalleryProps> {
 	render() {
+		if (this.props.pictures.length === 0 && this.props.add === undefined)
+			return (
+				<div className="mt-3 alert alert-info">Il n’y a aucune photo pour le moment…</div>
+			);
 		return (
 			<div className="row row-cols-1 row-cols-md-3">
 				{this.props.add !== undefined &&
