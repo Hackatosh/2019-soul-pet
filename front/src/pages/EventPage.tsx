@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import peche from '../resources/events/peche.jpg';
 import {RouteComponentProps} from 'react-router-dom';
-import {PetEvent} from '../models';
+import {PetEvent, EventComment} from '../models';
 import { history } from '../helpers';
 import {EventService} from "../services/event.service";
-import {Button, Spinner} from "react-bootstrap";
+import {Button, Spinner, Form} from "react-bootstrap";
 import { AuthenticationService} from "../services";
 import { DeleteConfirmation, Comment } from "../components";
 import {EventForm} from "../components/EventForm";
+import { Formik } from 'formik';
+import { CommentsService } from '../services/comments.service';
 
 export interface EventCardProps extends RouteComponentProps<{ id: string }> {
 }
@@ -72,10 +74,33 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 						</div>
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							<h2>Discussion</h2>
-							{event.eventsComments === undefined || event.eventsComments.length === 0 ? (
+							<Formik onSubmit={(values, {setSubmitting, resetForm}) => {
+								const comment: EventComment = {
+									userId: AuthenticationService.User.id,
+									eventId: event.id,
+									text: values.text,
+									createdAt: new Date()
+								};
+                        		CommentsService.post(comment).then(c => {
+									event.eventComments?.push(c);
+									this.forceUpdate();
+									resetForm();
+                            	}).catch(() => this.setState({ error: 'Erreur lors de l’envoi du commentaire' })).finally(() => setSubmitting(false));
+							}}
+							initialValues={{ text: ''}}>
+								{props => (
+								<Form onSubmit={props.handleSubmit}>
+									<Form.Group controlId="text">
+										<Form.Control name="text" as="textarea" placeholder="Quelque chose à ajouter ?" onChange={props.handleChange} value={props.values.text} />
+									</Form.Group>
+									<div className="text-right mb-3"><Button type="submit" variant="success">Envoyer</Button></div>
+								</Form>
+								)}
+							</Formik>
+							{event.eventComments === undefined || event.eventComments.length === 0 ? (
 							<div className="alert alert-primary">Il n’y a aucun commentaire pour le moment…</div>
 							) :
-							event.eventsComments?.map(c => <Comment comment={c} key={c.id} />)
+							event.eventComments?.map(c => <Comment comment={c} key={c.id} />)
 							}
 						</div>
 					</div>

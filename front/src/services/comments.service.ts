@@ -1,6 +1,5 @@
 import { EventComment } from "../models";
 import { httpClient } from "../helpers";
-import { AuthenticationService } from "./authentication.service";
 
 export class CommentsService {
 	/**
@@ -9,7 +8,11 @@ export class CommentsService {
 	 * @returns the saved comment
 	 */
 	static async post(comment: EventComment): Promise<EventComment> {
-		comment.userId = AuthenticationService.User.id;
-		return httpClient.post(`/comments/`, comment, true).catch(() => Promise.reject('Erreur lors de l’envoi du commentaire'));
+		if (comment.text.trim().length === 0)
+			return Promise.reject('Votre commentaire est vide.');
+		return httpClient.post(`/comments/`, comment, true).then(c => {
+			c.createdAt = new Date(c.createdAt);
+			return c;
+		}).catch(() => Promise.reject('Erreur lors de l’envoi du commentaire'));
 	}
 }

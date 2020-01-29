@@ -14,6 +14,6 @@ export interface PetEvent {
 	location?: string;
 	authorizedSpecies?: Array<Specie>;
 	specieIds?: Array<number>;
-	eventsComments?: EventComment[];
+	eventComments?: EventComment[];
 	eventsPictures?: Picture[];
 }
