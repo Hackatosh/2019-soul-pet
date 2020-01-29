@@ -46,8 +46,8 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
         if (this.state.event === undefined) {
             return <div className="rounder spinner-fluid"><Spinner animation="border" variant="success"/></div>;
         } else {
-            const event = this.state.event;
-            const canModify = event.userId === AuthenticationService.User.id;
+			const event = this.state.event;
+			const canModify = event.userId === AuthenticationService.User.id;
             return (
 				<div className="container">
 					<div className="row">
