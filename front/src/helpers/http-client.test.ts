@@ -95,16 +95,19 @@ test('HTTP POST Success', async () => {
 });
 
 test('HTTP PUT Success', async () => {
+	const modifiedUser = user;
+	modifiedUser.id = 250;
 	fetch.mockResolvedValueOnce<Response>({
 		ok: true,
 		status: 200,
 		headers: new Headers(),
-		json: () => Promise.resolve(user)
+		json: () => Promise.resolve(modifiedUser)
 	});
 	await httpClient.put<User>('account/', user).then(u => {
 		expect((fetch.mock.calls[0][1] as RequestInit).body).toBe(JSON.stringify(user));
 		expect(((fetch.mock.calls[0][1] as RequestInit).headers as Headers).get('Content-Type')).toBe('application/json');
-		expect(u).toBe(user);
+		expect(u.id).toBe(250);
+		expect(u).toStrictEqual(modifiedUser);
 	});
 });
 

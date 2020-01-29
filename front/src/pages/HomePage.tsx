@@ -44,7 +44,7 @@ export class HomePage extends React.Component<RouteComponentProps, HomePageState
 				<div className="row mb-5">
 					<div className="col-sm-6 offset-sm-3"><div className="alert alert-primary">Vous n’avez pas encore d’animaux…</div></div>
 				</div>}
-				<div className="row row-cols-1 row-cols-md-3 justify-content-center">
+				<div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-center">
 					{this.state.animals.map(a => <div className="col mb-4" key={a.id}><AnimalCard animal={a} /></div>)}
 				</div>
                 <AnimalForm show={this.state.showAnimalForm} onHide={() => this.showAnimalForm(false)} onSuccess={(animal: Animal) => history.push(`animal/${animal.id}`) } />
