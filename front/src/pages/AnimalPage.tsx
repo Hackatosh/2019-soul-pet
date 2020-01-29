@@ -6,7 +6,7 @@ import { AnimalForm, DeleteConfirmation, SquareImage, Gallery } from '../compone
 import { Animal, NoImage, Directory, User } from '../models';
 import { Card, Button } from 'react-bootstrap';
 import { history, titleCase, ageFromDate } from '../helpers';
-import { Link } from 'react-router-dom';
+import { UserBadge } from '../components/UserBadge';
 
 export interface AnimalPageProps extends RouteComponentProps<{id: string}> {}
 
@@ -95,7 +95,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 										<Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button>
 									</React.Fragment>
 								) : (
-									<React.Fragment>Appartient à <Link to={`/profile/${this.state.user.id}`} className="badge badge-primary" style={{ fontSize: '100%' }}>{this.state.user.username}</Link></React.Fragment>
+									<React.Fragment>Appartient à <UserBadge user={this.state.user} /></React.Fragment>
 								)}
 							</p>
 							<h2>Événements</h2>
