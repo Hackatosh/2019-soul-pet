@@ -14,7 +14,7 @@ services:
       - db
     environment:
       SERVER_PORT: 3000
-      CORS_HOST : http://soulpet.cs-campus.fr
+      CORS_HOST : https://soulpet.cs-campus.fr
       LOG_IN_FILE: "true"
       TOKEN_LIFETIME_SEC: 600
       DB_HOST: soul-pet-prod-db
