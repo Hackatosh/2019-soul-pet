@@ -82,7 +82,7 @@ services:
       - ./letsencrypt/config:/config
     environment:
       EMAIL: edouard.benauw@student.ecp.fr
-      URL: soulpet.cs-campus.fr
+      URL: cs-campus.fr
       VALIDATION: http
       TZ: Europe/Paris
       #PUID=0
