@@ -85,7 +85,6 @@ services:
       URL: soulpet.cs-campus.fr
       VALIDATION: http
       TZ: Europe/Paris
-      STAGING: "true"
       #PUID=0
       #PGID=0
 volumes:
