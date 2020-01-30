@@ -79,7 +79,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./letsencrypt/config/nginx/site-confs:/config/nginx/site-confs
+      - ./letsencrypt/config:/config
     environment:
       EMAIL: edouard.benauw@student.ecp.fr
       URL: soulpet.cs-campus.fr
