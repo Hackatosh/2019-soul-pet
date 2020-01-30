@@ -14,7 +14,7 @@ services:
       - db
     environment:
       SERVER_PORT: 3000
-      CORS_HOST : https://soulpet.cs-campus.fr
+      CORS_HOST : https://soul-pet.cs-campus.fr
       LOG_IN_FILE: "true"
       TOKEN_LIFETIME_SEC: 600
       DB_HOST: soul-pet-prod-db
@@ -44,7 +44,7 @@ services:
     restart: always
     environment:
       PORT: 3000
-      REACT_APP_BACK_URL: "https://soulpet.cs-campus.fr:3001/api"
+      REACT_APP_BACK_URL: "https://soul-pet.cs-campus.fr:3001/api"
     volumes:
       - ./front:/usr/app/
       - /usr/app/node_modules
@@ -82,7 +82,7 @@ services:
       - ./letsencrypt/config:/config
     environment:
       EMAIL: edouard.benauw@student.ecp.fr
-      URL: cs-campus.fr
+      URL: soul-pet.cs-campus.fr
       VALIDATION: http
       TZ: Europe/Paris
       #PUID=0
