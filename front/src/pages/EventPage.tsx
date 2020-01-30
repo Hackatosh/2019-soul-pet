@@ -67,7 +67,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 								<Button variant="danger"onClick={() => this.showEventDelete(true)}>Supprimer</Button>
 							</div>}
 							<p className="text-muted mb-3">
-								Organisé par {event.user !== undefined ? <UserBadge user={event.user} /> : "Inconnu·e"}>
+								Organisé par {event.user !== undefined ? <UserBadge user={event.user} /> : "Inconnu·e"}
 							</p>
 							<ul className="list-group list-group-horizontal w-100 mb-4">
 								<li className="list-group-item">{event.location ? `Localisation de l'évènement : ${event.location}` : 'Pas de localisation indiquée'}</li>
