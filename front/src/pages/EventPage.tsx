@@ -3,7 +3,7 @@ import {RouteComponentProps} from 'react-router-dom';
 import {PetEvent, NoImage, Animal} from '../models';
 import { history } from '../helpers';
 import {EventService} from "../services/event.service";
-import {Button, Spinner, Form} from "react-bootstrap";
+import {Button, Spinner, Form, OverlayTrigger, Popover} from "react-bootstrap";
 import { AuthenticationService, AnimalService} from "../services";
 import { DeleteConfirmation, SquareImage} from "../components";
 import {EventForm} from "../components/EventForm";
@@ -99,6 +99,16 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 			const event = this.state.event;
 			const canModify = event.userId === AuthenticationService.User.id;
 			const isSameDay = event.beginDate.getTime() === event.endDate.getTime();
+			const speciesPopover = (
+				<Popover id="authorized-species">
+					<Popover.Title as="h3">Espèces bievenues</Popover.Title>
+					<Popover.Content>
+						<ul className="m-0 pl-3">
+							{event.authorizedSpecies?.map(s => <li key={s.id}>{s.name}</li>)}
+						</ul>
+					</Popover.Content>
+				</Popover>
+			);
             return (
 				<div className="container">
 					<div className="row">
@@ -140,7 +150,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 							<p className="text-muted mb-3">
 								Organisé par {event.user !== undefined ? event.user.username : "Inconnu·e"}
 							</p>
-							<ul className="list-group list-group-horizontal w-100 mb-4">
+							<ul className="list-group list-group-horizontal mb-4 w-100">
 								<li className="list-group-item">{event.location ? `Localisation de l'évènement : ${event.location}` : 'Pas de localisation indiquée'}</li>
 								{isSameDay ? (
 									<li className="list-group-item">Le {event.beginDate.toLocaleDateString(undefined, {year: "numeric", month: "long", day: "numeric"})}</li>
@@ -150,12 +160,16 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 										<li className="list-group-item">Fin le {event.endDate.toLocaleDateString(undefined, {year: "numeric", month: "long", day: "numeric"})}</li>
 									</React.Fragment>
 								)}
+								<OverlayTrigger trigger="click" placement="top" overlay={speciesPopover}>
+									<button className="list-group-item list-group-item-action list-group-item-primary w-auto text-primary">Voir les espèces bienvenues</button>
+								</OverlayTrigger>
 							</ul>
 							<p className="lead">{event.description}</p>
 						</div>
 					</div>
 					<EventForm show={this.state.showEventForm} event={this.state.event} onHide={() => this.showEventForm(false)} onSuccess={e => {
 						this.setState({ event: e });
+						console.log(e.authorizedSpecies);
 						this.updateAvailablePets(e);
 					}} />
 					<DeleteConfirmation prompt='Écrivez le nom de l’évènement pour confirmer la suppression' expected={this.state.event?.name} show={this.state.showEventDelete} onHide={() => this.showEventDelete(false)} onSuccess={() => {
