@@ -53,6 +53,7 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                     event.endDate = new Date(values.endDate);
                     event.description = values.description;
                     event.specieIds = values.specieIds.map(id => parseInt(id));
+                    event.location = values.location;
                     // If we are adding a new event
                     if (this.props.event === undefined) {
                         event.userId = AuthenticationService.User.id;
@@ -70,13 +71,14 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
 						}).catch(() => this.setState({error: 'Erreur lors de la mise à jour de l’événement'}));
                 }}
 				initialValues={this.props.event === undefined ?
-					{name: '', beginDate: '', endDate: '', description: '', specieIds: []} :
+					{name: '', beginDate: '', endDate: '', description: '', location:'', specieIds: []} :
 					{
 						name: this.props.event.name,
 						beginDate: this.props.event.beginDate.toISOString().substr(0, 10),
 						endDate: this.props.event.endDate.toISOString().substr(0, 10),
 						description: this.props.event.description,
-						specieIds: this.props.event.specieIds !== undefined ? 
+            location: this.props.event.location,
+						specieIds: this.props.event.specieIds !== undefined ?
 						this.props.event.specieIds.map(s => s.toString()) : [],
 				}}>
 					{props => (
@@ -107,15 +109,15 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
 								</div>
 							</div>
 							<div className="form-row">
-								<div className="col-md">
-									<Form.Group controlId="eventDescription">
-										<Form.Label>Une petite description&nbsp;?</Form.Label>
-										<Form.Control name="description" as="textarea"
-														placeholder="Entrez la description de l’événement"
-														onChange={props.handleChange} value={props.values.description}
-														required/>
-									</Form.Group>
-								</div>
+                <div className="col-md">
+                  <Form.Group controlId="eventLocation">
+                    <Form.Label>Où a lieu votre événement&nbsp;?</Form.Label>
+                    <Form.Control name="location" as="textarea"
+                            placeholder="Entrez l'adresse de l’événement"
+                            onChange={props.handleChange} value={props.values.location}
+                            required/>
+                  </Form.Group>
+                </div>
 								<div className="col-md">
 									<Form.Group controlId="eventSpecies">
 										<Form.Label>Quelles espèces sont les bienvenues&nbsp;?</Form.Label>
@@ -129,6 +131,17 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
 									</Form.Group>
 								</div>
 							</div>
+              <div className="form-row">
+                <div className="col-md">
+                  <Form.Group controlId="eventDescription">
+                    <Form.Label>Une petite description&nbsp;?</Form.Label>
+                    <Form.Control name="description" as="textarea"
+                            placeholder="Entrez la description de l’événement"
+                            onChange={props.handleChange} value={props.values.description}
+                            required/>
+                  </Form.Group>
+                </div>
+              </div>
 						</Modal.Body>
 						<Modal.Footer>
 							<Button variant="primary"
