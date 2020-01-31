@@ -34,6 +34,7 @@ services:
     volumes:
       - ./back:/usr/app/
       - /usr/app/node_modules
+      - /usr/app/dist
   front:
     container_name: "soul-pet-prod-front"
     build:
