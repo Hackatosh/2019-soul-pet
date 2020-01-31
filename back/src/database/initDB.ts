@@ -13,6 +13,7 @@ import {initPetEventModel} from "./models/event";
 import {initAnimalPicturesModel} from "./models/animalPicture";
 import {initEventCommentModel} from "./models/eventComment";
 import {initEventPicturesModel} from "./models/eventPicture";
+import {logger} from "../core/logger";
 
 /***
  * Loop used to wait until the DB is ready, unless the number of maxTry is reached
@@ -22,16 +23,16 @@ const waitForDB = async function (maxTry:number):Promise<void> {
     let tryNumber = 1;
     while(isNotReady){
         try{
-            console.log(`Checking if DB is ready. Try n°${tryNumber}`);
+            logger.info(`Checking if DB is ready. Try n°${tryNumber}`);
             await db.authenticate();
             isNotReady = false;
-            console.log('DB ready !')
+            logger.info('DB ready !')
         }catch(e){
-            console.log('DB not available. Trying again in 15 seconds.');
+            logger.info('DB not available. Trying again in 15 seconds.');
             tryNumber++;
             if(tryNumber>maxTry){
-                console.log("Max number of try to connect to DB exceded while waiting");
-                console.log(e);
+                logger.error("Max number of try to connect to DB exceded while waiting");
+                logger.error(e);
                 throw new Error("Max number of try to connect to DB exceded while waiting")
             }
             await new Promise(resolve => setTimeout(resolve, 15000));
@@ -43,7 +44,7 @@ const waitForDB = async function (maxTry:number):Promise<void> {
 /*** Wait until DB is ready and initialized all the models ***/
 const initDB = async function () {
     try {
-        console.log("Initializing DB...");
+        logger.info("Initializing DB...");
         await waitForDB(100);
         await initUserModel();
         await initTokenModel();
@@ -56,9 +57,9 @@ const initDB = async function () {
         await initAssociations();
         await db.sync();
         await specieModelFill();
-        console.log("DB initialized successfully");
+        logger.info("DB initialized successfully");
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         throw new Error("Problem when initializing the DB.")
     }
 };

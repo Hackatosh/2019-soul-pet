@@ -8,6 +8,7 @@ import {compareUserPassword, hashPassword} from "../../core/authentication/passw
 import {inputValidationMW} from "../middlewares/inputValidation";
 import {check} from 'express-validator'
 import {generateTokenForUser} from "../../core/authentication/tokens";
+import {logger} from "../../core/logger";
 
 const authenticationRouter = Router();
 
@@ -30,7 +31,7 @@ authenticationRouter.post('/register', registerChecks, inputValidationMW, async 
         user.hashedPassword = null;
         res.status(200).json(user)
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Unable to register"})
     }
 

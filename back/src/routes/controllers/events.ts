@@ -15,6 +15,7 @@ import {User} from "../../database/models/user";
 import {EventComment} from "../../database/models/eventComment";
 import Sequelize from "sequelize";
 import {EventPicture} from "../../database/models/eventPicture";
+import {logger} from "../../core/logger";
 
 const eventsRouter = Router();
 
@@ -54,7 +55,10 @@ eventsRouter.get('/search', searchEvents, inputValidationMW, async (req: Authent
 
     let searchRequest = {[Sequelize.Op.and]: andConditions};
 
-    let searchResult = await PetEvent.findAll({where: searchRequest, include:[{model:User,attributes:["username"]}]});
+    let searchResult = await PetEvent.findAll({
+        where: searchRequest,
+        include: [{model: User, attributes: ["id","username"]}]
+    });
     res.status(200).json(searchResult);
 });
 
@@ -72,13 +76,17 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: Aut
     try {
         let eventFound = await PetEvent.findOne({
             where: {id: eventId},
-            include: [{model: Animal, as: "attendees"}, {model: Specie, as: "authorizedSpecies"}, {
-                model: EventComment,
-                as: "eventComments"
-            }, {
-                model: EventPicture,
-                as: "eventPictures",
-            }]
+            include: [
+                {model: User, attributes: ["id","username"]},
+                {model: Animal, as: "attendees"},
+                {model: Specie, as: "authorizedSpecies"}, {
+                    model: EventComment,
+                    as: "eventComments"
+                }, {
+                    model: EventPicture,
+                    as: "eventPictures",
+                }
+            ]
         });
         if (!eventFound) {
             res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
@@ -86,7 +94,7 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: Aut
         }
         res.status(200).json(eventFound)
     } catch (e) {
-        console.log(e)
+        logger.error(e)
     }
 });
 
@@ -134,7 +142,7 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req: Authentic
         await event.save();
         res.status(200).json(event)
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Unable to create this event"})
     }
 });
@@ -211,7 +219,7 @@ eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, 
         await eventFound.save();
         res.status(200).json(update);
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Unable to update the event"});
     }
 });
@@ -285,7 +293,7 @@ eventsRouter.delete('/:eventId/animals/:animalId', deleteAnimalFromEventChecks, 
     const authenticatedId = req.authInfos.userId;
     const eventId = parseInt(req.params.eventId);
     const animalId = parseInt(req.params.animalId);
-    let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[{model:Animal, as: "attendees"}]});
+    let eventFound = await PetEvent.findOne({where: {id: eventId}, include: [{model: Animal, as: "attendees"}]});
     if (!eventFound) {
         res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
         return;
@@ -299,7 +307,7 @@ eventsRouter.delete('/:eventId/animals/:animalId', deleteAnimalFromEventChecks, 
         res.status(403).json({message: "Forbidden. You don't have access to this animal."});
         return;
     }
-    if(!eventFound.attendees.find(animal => animalId === animal.id)){
+    if (!eventFound.attendees.find(animal => animalId === animal.id)) {
         res.status(400).json({message: "Bad Request: This animal is not associated to the event."});
         return;
     }

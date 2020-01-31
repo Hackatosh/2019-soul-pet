@@ -6,6 +6,7 @@ import {AuthenticatedRequest} from "../../core/authentication/authenticationInte
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
 import {createPictureStorage, resolvePictureContentType} from "../../core/files/pictureStorage";
+import {logger} from "../../core/logger";
 
 const animalPicturesRouter = Router();
 
@@ -19,14 +20,9 @@ const getAnimalPicturesChecks = [
 
 animalPicturesRouter.get('/:animalId', getAnimalPicturesChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const animalId = req.params.animalId;
-    const userId = req.authInfos.userId;
     const pet = await Animal.findOne({where: {id: animalId}});
     if (!pet) {
         res.status(404).json({message: "This animal does not exist"});
-        return;
-    }
-    if (pet.userId !== userId) {
-        res.status(403).json({message: "You don't have access to this animal"});
         return;
     }
     const pictures = await AnimalPicture.findAll({where: {animalId: animalId}});
@@ -43,7 +39,6 @@ const getAnimalPictureChecks = [
 
 animalPicturesRouter.get('/', getAnimalPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const filename = req.query.filename;
-    const userId = req.authInfos.userId;
     const file = await AnimalPicture.findOne({where: {filename: filename}});
     if (!file) {
         res.status(404).json({message: "This file does not exist."})
@@ -54,14 +49,10 @@ animalPicturesRouter.get('/', getAnimalPictureChecks, inputValidationMW, async (
         res.status(404).json({message: "This animal does not exist"});
         return;
     }
-    if (pet.userId !== userId) {
-        res.status(403).json({message: "You don't have access to this animal"});
-        return;
-    }
     try {
         await pipeSFTPIntoResponse(res, Folder.AnimalPictures, filename, file.contentType);
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Problem when downloading the file"})
     }
 });
@@ -92,12 +83,12 @@ animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAni
                 const animalPicture = await AnimalPicture.create({animalId, filename, contentType});
                 res.status(200).json(animalPicture);
             } catch (e) {
-                console.log(e);
+                logger.error(e);
                 res.status(400).json({message: "Unable to save the picture"})
             }
         }
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Couldn't upload the file"})
     }
 

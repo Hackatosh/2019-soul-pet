@@ -5,9 +5,10 @@
 
 import {CorsOptions} from "cors";
 import cors from "cors";
+import {env} from "../../config/env";
 
 const corsOptions:CorsOptions = {
-    origin: 'http://localhost:3001',
+    origin: env.CORS_HOST,
     methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
     allowedHeaders:  ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
     credentials: true,

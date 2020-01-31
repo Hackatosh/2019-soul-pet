@@ -8,6 +8,7 @@ import {isDateValid} from "../../core/utils";
 import {convertStringToDate} from "../../core/utils";
 import {PetEvent} from "../../database/models/event";
 import {AnimalPicture} from "../../database/models/animalPicture";
+import {logger} from "../../core/logger";
 
 const animalsRouter = Router();
 
@@ -30,10 +31,6 @@ const getUserAnimalsChecks = [
 
 animalsRouter.get('/', getUserAnimalsChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const userId = parseInt(req.query.userId);
-    if (userId !== req.authInfos.userId) {
-        res.status(403).json({message: "Forbidden. You don't have access to this user."});
-        return;
-    }
     const animals = await Animal.findAll({where: {userId: userId}, include: [{model: Specie}]});
     res.status(200).json(animals)
 });
@@ -55,8 +52,6 @@ animalsRouter.get('/:animalId', getUserAnimalChecks, inputValidationMW, async (r
     });
     if (!animal) {
         res.sendStatus(404);
-    } else if (animal.userId != req.authInfos.userId) {
-        res.sendStatus(403);
     } else {
         res.status(200).json(animal);
     }
@@ -91,7 +86,7 @@ animalsRouter.post('/', postAnimalChecks, inputValidationMW, async (req: Authent
         const animal = await Animal.create({userId, specieId, name, birthdate});
         res.status(200).json(animal)
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         res.status(400).json({message: "Unable to register the animal"})
     }
 });

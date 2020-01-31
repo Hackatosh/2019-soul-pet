@@ -5,8 +5,50 @@ import {AuthenticatedRequest} from "../../core/authentication/authenticationInte
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
 import {revocateAllTokensForUser} from "../../core/authentication/tokens";
+import {logger} from "../../core/logger";
+import {PetEvent} from "../../database/models/event";
+import {Animal} from "../../database/models/animal";
+import {Specie} from "../../database/models/specie";
+import {EventComment} from "../../database/models/eventComment";
+import {EventPicture} from "../../database/models/eventPicture";
+import {eventsRouter} from "./events";
 
 const accountRouter = Router();
+
+/***
+ * This route is used to get all public informations about a specific user, identified by the provided userId.
+ * The information includes the list of the animals belonging to the user, the events he is organizing, the comments he has posted and the pictures he has uploaded for events.
+ ***/
+
+const getEventChecks = [
+    check('userId').notEmpty().isNumeric().withMessage("userId must be a number"),
+];
+
+accountRouter.get('/:userId', getEventChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
+    const userId = parseInt(req.params.userId);
+    try {
+        let userFound = await User.findOne({
+            where: {id: userId},
+            include: [{model: Animal}, {
+                model: EventComment,
+                as: "eventComments"
+            },{
+                model: PetEvent,
+                as: "events"
+            },{
+                model: EventPicture,
+                as: "eventPictures",
+            }]
+        });
+        if (!userFound) {
+            res.status(404).json({message: "Not found. The user you are trying to access does not exist."});
+            return;
+        }
+        res.status(200).json(userFound)
+    } catch (e) {
+        console.log(e)
+    }
+});
 
 /***
  * This route allows to modify a specific user account, using the provided userId.
@@ -49,7 +91,7 @@ accountRouter.put('/:userId', putAccountChecks, inputValidationMW, async (req: A
                 }
                 res.status(200).json(update);
             } catch (e) {
-                console.log(e);
+                logger.error(e);
                 res.status(400).json({message: "Unable to update the account"});
             }
         } else {
