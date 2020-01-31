@@ -48,6 +48,7 @@ services:
     volumes:
       - ./front:/usr/app/
       - /usr/app/node_modules
+      - /usr/app/build
   db:
     image: mariadb:10.4
     container_name: "soul-pet-prod-db"
@@ -70,7 +71,7 @@ services:
     networks:
       - inner
     command: nodejs:password:::pictures
-  your_app-letsencrypt:
+  letsencrypt:
     image: linuxserver/letsencrypt
     container_name: "soul-pet-prod-letsencrypt"
     networks:
