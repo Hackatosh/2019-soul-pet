@@ -94,6 +94,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 									createdAt: new Date()
 								};
                         		CommentsService.post(comment).then(c => {
+                  c.user = AuthenticationService.User;
 									event.eventComments?.push(c);
 									this.forceUpdate();
 									resetForm();
