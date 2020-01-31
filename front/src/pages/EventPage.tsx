@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, {Component, FormEvent} from 'react';
 import {RouteComponentProps} from 'react-router-dom';
 import {PetEvent, NoImage, Animal} from '../models';
 import { history } from '../helpers';
 import {EventService} from "../services/event.service";
 import {Button, Spinner, Form, OverlayTrigger, Popover} from "react-bootstrap";
 import { AuthenticationService, AnimalService} from "../services";
-import { DeleteConfirmation, SquareImage} from "../components";
+import { DeleteConfirmation, SquareImage, AnimalCard} from "../components";
 import {EventForm} from "../components/EventForm";
 
 export interface EventCardProps extends RouteComponentProps<{ id: string }> {
@@ -21,7 +21,7 @@ export interface EventPageState {
 }
 
 export class EventPage extends Component<EventCardProps, EventPageState> {
-    constructor(props: EventCardProps) {
+	constructor(props: EventCardProps) {
         super(props);
         if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
             history.push('/404');
@@ -41,11 +41,9 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 	private updateAvailablePets(event: PetEvent) {
 		AnimalService.getAll(AuthenticationService.User.id).then(animals => {
 			this.setState({ availablePets: animals.filter(a => {
-				if (event.specieIds === undefined || event.attendees === undefined)
+				if (event.specieIds === undefined)
 					return true;
-				// Note that we cannot use `attendees.includes(a)` because the objects may differ,
-				// because of the way the back returns objects in different routes.
-				return event.specieIds.includes(a.specieId) && event.attendees.find(attendee => attendee.id === a.id) === undefined;
+				return event.specieIds.includes(a.specieId);
 			}) });
 		});
 	}
@@ -58,19 +56,18 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
         this.setState({showEventDelete: state});
 	}
 	
-	private addAnimal() {
+	private addAnimal(id: number) {
 		if (this.state.event === undefined)
 			return;
 		const event = this.state.event;
-		const index = this.state.availablePets.findIndex(a => a.id === 1);
+		const index = this.state.availablePets.findIndex(a => a.id === id);
 		if (index === -1)
 			return;
-		EventService.addAnimal(this.state.id, 1).then(() => {
+		EventService.addAnimal(this.state.id, id).then(() => {
 			if (event.attendees === undefined)
 				event.attendees = [this.state.availablePets[index]];
 			else	
 				event.attendees.push(this.state.availablePets[index]);
-			this.state.availablePets.splice(index, 1);
 			this.setState({ event: event, availablePets: this.state.availablePets });
 		}).catch(e => this.setState({ error: e }));
 	}
@@ -87,7 +84,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 		EventService.removeAnimal(this.state.id, id).then(() => {
 			if (event.attendees === undefined)
 				return;
-			this.state.availablePets.push(...event.attendees.splice(index, 1));
+			event.attendees.splice(index, 1);
 			this.setState({ event: event });
 		}).catch(e => this.setState({ error: e }));
 	}
@@ -122,23 +119,21 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 							<div className="alert alert-info mt-3">Aucun de vos animaux ne peut être inscrit à cet événement…</div>
 							) : (
 							<React.Fragment>
-								<p className="mt-3 mb-1">Inscrire un animal :</p>
-								<Form.Control as="select" size="lg" className="custom-select">
-									{this.state.availablePets.map(a => <option value={a.id} key={a.id}>{a.name}</option>)}
-								</Form.Control>
-								<button className="btn btn-success btn-block mt-1" onClick={this.addAnimal}>Inscrire</button>
+								<h3 className="mt-3 mb-1">Mes animaux</h3>
+								<ul className="list-group w-100 mt-3">
+									{this.state.availablePets.map(pet => {
+										if (pet.id === undefined)
+											return null;
+										const id = pet.id;
+										return (<li className="list-group-item d-flex justify-content-between align-items-center" key={id}>
+											<Form.Check type="switch" id={id.toString()} label={pet.name}
+											onChange={(e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).checked ? this.addAnimal(id) : this.removeAnimal(id)} value={id}
+											checked={event.attendees?.find(p => p.id === id) !== undefined} />
+										</li>);
+									})}
+								</ul>
 							</React.Fragment>
 							)}
-							<ul className="list-group w-100">
-								{this.state.event.attendees?.map(a => {
-									if (a.id === undefined)
-										return;
-									const id = a.id;
-									return (<li key={id} className="list-group-item">
-										{a.name} <button type="button" className="close" aria-label="Close" onClick={() => this.removeAnimal(id)}><span aria-hidden="true">&times;</span></button>
-									</li>);
-								})}
-							</ul>
 						</div>
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							<h1 className="display-3 mb-3">{event.name}</h1>
@@ -169,7 +164,6 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 					</div>
 					<EventForm show={this.state.showEventForm} event={this.state.event} onHide={() => this.showEventForm(false)} onSuccess={e => {
 						this.setState({ event: e });
-						console.log(e.authorizedSpecies);
 						this.updateAvailablePets(e);
 					}} />
 					<DeleteConfirmation prompt='Écrivez le nom de l’évènement pour confirmer la suppression' expected={this.state.event?.name} show={this.state.showEventDelete} onHide={() => this.showEventDelete(false)} onSuccess={() => {

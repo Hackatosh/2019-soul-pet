@@ -4,7 +4,12 @@ import { httpClient } from "../helpers";
 export class AnimalService {
 	private static species: Specie[] | undefined = undefined;
 	
-	private static revive(a: Animal): Animal {
+	/**
+	 * Restores properties of an animal to **instances** rather than mere types.
+	 * @param a the animal to ‘revive’
+	 * @returns the ‘revived’ animal
+	 */
+	public static revive(a: Animal): Animal {
 		a.birthdate = new Date(a.birthdate);
 		return a;
 	}

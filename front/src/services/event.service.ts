@@ -10,6 +10,8 @@ export class EventService {
 			e.specieIds = e.authorizedSpecies.map(s => s.id);
 		if (e.authorizedSpecies === undefined && e.specieIds !== undefined)
 			e.authorizedSpecies = (await AnimalService.getSpecies()).filter(s => e.specieIds?.includes(s.id));
+		if (e.attendees !== undefined)
+			e.attendees = e.attendees.map(AnimalService.revive);
         return e;
     }
 
