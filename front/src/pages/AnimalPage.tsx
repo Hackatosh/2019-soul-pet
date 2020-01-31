@@ -1,11 +1,12 @@
 import React from 'react';
-import { AnimalService } from '../services';
+import { AnimalService, AuthenticationService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './AnimalPage.css';
 import { AnimalForm, DeleteConfirmation, SquareImage, Gallery } from '../components';
-import { Animal, NoImage, Directory } from '../models';
+import { Animal, NoImage, Directory, User } from '../models';
 import { Card, Button } from 'react-bootstrap';
 import { history, titleCase, ageFromDate } from '../helpers';
+import { UserBadge } from '../components/UserBadge';
 
 export interface AnimalPageProps extends RouteComponentProps<{id: string}> {}
 
@@ -15,6 +16,8 @@ export interface AnimalPageState {
 	animal: Animal | undefined;
 	showAnimalForm: boolean;
 	showAnimalDelete: boolean;
+	canModify: boolean;
+	user: User;
 }
 
 export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState> {
@@ -23,7 +26,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 		if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
 			history.push('/404')
 		else
-			this.state = { error: '', id: parseInt(this.props.match.params.id), animal: undefined, showAnimalForm: false, showAnimalDelete: false };
+			this.state = { error: '', id: parseInt(this.props.match.params.id), animal: undefined, showAnimalForm: false, showAnimalDelete: false, canModify: false, user: {} as User };
 		this.loadPicture = this.loadPicture.bind(this);
 		this.deletePicture = this.deletePicture.bind(this);
 	}
@@ -31,7 +34,9 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 	componentDidMount() {
 		AnimalService.getSingle(this.state.id).then(a => {
 			a.animalPictures?.reverse();
-			this.setState({ animal: a });
+			this.setState({ animal: a, canModify: a.userId === AuthenticationService.User.id });
+			if (a.userId !== AuthenticationService.User.id)
+				AuthenticationService.getProfile(a.userId).then(u => this.setState({ user: u }));
 			AnimalService.getPictures(this.state.id).then(pictures => {
 				a.animalPictures = pictures.reverse()
 				this.setState({ animal: a });
@@ -82,7 +87,17 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							{this.state.error !== '' && <div className="alert alert-danger">{this.state.error}</div>}
 							<h1 className="display-3">{this.state.animal.name}</h1>
-							<p className="lead text-muted">{this.state.animal.specie !== undefined ? titleCase(this.state.animal.specie?.name) : ''} né le {this.state.animal.birthdate.toLocaleDateString()} ({ageFromDate(this.state.animal.birthdate)}) &middot; <Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button> &middot; <Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button></p>
+							<p className="lead text-muted">
+								{this.state.animal.specie !== undefined ? titleCase(this.state.animal.specie?.name) : ''} né le {this.state.animal.birthdate.toLocaleDateString()} ({ageFromDate(this.state.animal.birthdate)}) &middot;&nbsp;
+								{this.state.canModify ? (
+									<React.Fragment>
+										<Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button> &middot;&nbsp;
+										<Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button>
+									</React.Fragment>
+								) : (
+									<React.Fragment>Appartient à <UserBadge user={this.state.user} /></React.Fragment>
+								)}
+							</p>
 							<h2>Événements</h2>
 							<div className="row row-cols-1 row-cols-md-3">
 								<div className="col mb-4">
@@ -119,7 +134,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 							<h2>Galerie</h2>
 							{this.state.animal.animalPictures !== undefined &&
 							<Gallery pictures={this.state.animal.animalPictures} directory={Directory.Animals}
-							delete={this.deletePicture} add={this.loadPicture} />}
+							delete={this.deletePicture} add={this.state.canModify ? this.loadPicture : undefined} />}
 						</div>
 					</div>
 					<AnimalForm show={this.state.showAnimalForm} animal={this.state.animal} onHide={() => this.showAnimalForm(false)} onSuccess={a => this.setState({ animal: a })} />

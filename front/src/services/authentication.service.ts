@@ -69,4 +69,13 @@ export class AuthenticationService {
 		else
 			AuthenticationService.user.next(JSON.parse(user) as User);
 	}
+
+	/**
+	 * Retrieves the profile of a user.
+	 * @param id the ID of the user to retrieve
+	 * @returns the user
+	 */
+	static async getProfile(id: number): Promise<User> {
+		return httpClient.get<User>(`/accounts/${id}`, true).catch(() => Promise.reject('Erreur lors de la récupération du profil'));
+	}
 }

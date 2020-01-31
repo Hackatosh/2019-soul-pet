@@ -5,7 +5,7 @@ import { history } from '../helpers';
 import {EventService} from "../services/event.service";
 import {Button, Spinner, Form} from "react-bootstrap";
 import { AuthenticationService} from "../services";
-import { DeleteConfirmation, SquareImage, Comment } from "../components";
+import { DeleteConfirmation, SquareImage, Comment, UserBadge} from "../components";
 import {EventForm} from "../components/EventForm";
 import { Formik } from 'formik';
 import { CommentsService } from '../services/comments.service';
@@ -69,7 +69,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 								<Button variant="danger"onClick={() => this.showEventDelete(true)}>Supprimer</Button>
 							</div>}
 							<p className="text-muted mb-3">
-								Organisé par {event.user !== undefined ? event.user.username : "Inconnu·e"}
+								Organisé par {event.user !== undefined ? <UserBadge user={event.user} /> : "Inconnu·e"}
 							</p>
 							<ul className="list-group list-group-horizontal w-100 mb-4">
 								<li className="list-group-item">{event.location ? `Localisation de l'évènement : ${event.location}` : 'Pas de localisation indiquée'}</li>

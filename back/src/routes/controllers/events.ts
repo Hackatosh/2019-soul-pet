@@ -57,7 +57,7 @@ eventsRouter.get('/search', searchEvents, inputValidationMW, async (req: Authent
 
     let searchResult = await PetEvent.findAll({
         where: searchRequest,
-        include: [{model: User, attributes: ["username"]}]
+        include: [{model: User, attributes: ["id","username"]}]
     });
     res.status(200).json(searchResult);
 });
@@ -77,10 +77,9 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: Aut
         let eventFound = await PetEvent.findOne({
             where: {id: eventId},
             include: [
-                {model: User, attributes: ["username"]},
+                {model: User, attributes: ["id","username"]},
                 {model: Animal, as: "attendees"},
-                {model: Specie, as: "authorizedSpecies"},
-                {
+                {model: Specie, as: "authorizedSpecies"}, {
                     model: EventComment,
                     as: "eventComments",
                     include: [{model: User, attributes: ["username"]}]
