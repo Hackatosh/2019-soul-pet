@@ -31,10 +31,6 @@ const getUserAnimalsChecks = [
 
 animalsRouter.get('/', getUserAnimalsChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const userId = parseInt(req.query.userId);
-    if (userId !== req.authInfos.userId) {
-        res.status(403).json({message: "Forbidden. You don't have access to this user."});
-        return;
-    }
     const animals = await Animal.findAll({where: {userId: userId}, include: [{model: Specie}]});
     res.status(200).json(animals)
 });
@@ -56,8 +52,6 @@ animalsRouter.get('/:animalId', getUserAnimalChecks, inputValidationMW, async (r
     });
     if (!animal) {
         res.sendStatus(404);
-    } else if (animal.userId != req.authInfos.userId) {
-        res.sendStatus(403);
     } else {
         res.status(200).json(animal);
     }

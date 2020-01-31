@@ -55,7 +55,10 @@ eventsRouter.get('/search', searchEvents, inputValidationMW, async (req: Authent
 
     let searchRequest = {[Sequelize.Op.and]: andConditions};
 
-    let searchResult = await PetEvent.findAll({where: searchRequest, include:[{model:User,attributes:["username"]}]});
+    let searchResult = await PetEvent.findAll({
+        where: searchRequest,
+        include: [{model: User, attributes: ["id","username"]}]
+    });
     res.status(200).json(searchResult);
 });
 
@@ -73,13 +76,18 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: Aut
     try {
         let eventFound = await PetEvent.findOne({
             where: {id: eventId},
-            include: [{model: Animal, as: "attendees"}, {model: Specie, as: "authorizedSpecies"}, {
-                model: EventComment,
-                as: "eventComments"
-            }, {
-                model: EventPicture,
-                as: "eventPictures",
-            }]
+            include: [
+                {model: User, attributes: ["id","username"]},
+                {model: Animal, as: "attendees"},
+                {model: Specie, as: "authorizedSpecies"}, {
+                    model: EventComment,
+                    as: "eventComments",
+                    include: [{model: User, attributes: ["username"]}]
+                }, {
+                    model: EventPicture,
+                    as: "eventPictures",
+                }
+            ]
         });
         if (!eventFound) {
             res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
@@ -286,7 +294,7 @@ eventsRouter.delete('/:eventId/animals/:animalId', deleteAnimalFromEventChecks, 
     const authenticatedId = req.authInfos.userId;
     const eventId = parseInt(req.params.eventId);
     const animalId = parseInt(req.params.animalId);
-    let eventFound = await PetEvent.findOne({where: {id: eventId}, include:[{model:Animal, as: "attendees"}]});
+    let eventFound = await PetEvent.findOne({where: {id: eventId}, include: [{model: Animal, as: "attendees"}]});
     if (!eventFound) {
         res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
         return;
@@ -300,7 +308,7 @@ eventsRouter.delete('/:eventId/animals/:animalId', deleteAnimalFromEventChecks, 
         res.status(403).json({message: "Forbidden. You don't have access to this animal."});
         return;
     }
-    if(!eventFound.attendees.find(animal => animalId === animal.id)){
+    if (!eventFound.attendees.find(animal => animalId === animal.id)) {
         res.status(400).json({message: "Bad Request: This animal is not associated to the event."});
         return;
     }

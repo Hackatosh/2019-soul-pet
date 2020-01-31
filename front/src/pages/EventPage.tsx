@@ -1,12 +1,14 @@
 import React, {Component, FormEvent} from 'react';
 import {RouteComponentProps} from 'react-router-dom';
-import {PetEvent, NoImage, Animal} from '../models';
+import {PetEvent, NoImage, EventComment, Animal} from '../models';
 import { history } from '../helpers';
 import {EventService} from "../services/event.service";
 import {Button, Spinner, Form, OverlayTrigger, Popover} from "react-bootstrap";
 import { AuthenticationService, AnimalService} from "../services";
-import { DeleteConfirmation, SquareImage, AnimalCard} from "../components";
+import { DeleteConfirmation, SquareImage, Comment, UserBadge, AnimalCard} from "../components";
 import {EventForm} from "../components/EventForm";
+import { Formik } from 'formik';
+import { CommentsService } from '../services/comments.service';
 
 export interface EventCardProps extends RouteComponentProps<{ id: string }> {
 }
@@ -125,7 +127,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 							</div>}
 							<h2 className="mt-2">Détails</h2>
 							<p className="text-muted mb-3">
-								Organisé par {event.user !== undefined ? event.user.username : "Inconnu·e"}
+								Organisé par {event.user !== undefined ? <UserBadge user={event.user} /> : "Inconnu·e"}
 							</p>
 							<ul className="list-group list-group-horizontal-sm mb-4 w-100">
 								<li className="list-group-item">{event.location ? `Localisation de l'évènement : ${event.location}` : 'Pas de localisation indiquée'}</li>
@@ -172,6 +174,38 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 									</div>)}
 								</div>
 							</div>
+						</div>
+						<div className="col-10 offset-1 offset-md-0 col-md-7">
+							<h2>Discussion</h2>
+							<Formik onSubmit={(values, {setSubmitting, resetForm}) => {
+								const comment: EventComment = {
+									userId: AuthenticationService.User.id,
+									eventId: event.id,
+									text: values.text,
+									createdAt: new Date()
+								};
+                        		CommentsService.post(comment).then(c => {
+                  c.user = AuthenticationService.User;
+									event.eventComments?.push(c);
+									this.forceUpdate();
+									resetForm();
+                            	}).catch(() => this.setState({ error: 'Erreur lors de l’envoi du commentaire' })).finally(() => setSubmitting(false));
+							}}
+							initialValues={{ text: ''}}>
+								{props => (
+								<Form onSubmit={props.handleSubmit}>
+									<Form.Group controlId="text">
+										<Form.Control name="text" as="textarea" placeholder="Quelque chose à ajouter ?" onChange={props.handleChange} value={props.values.text} />
+									</Form.Group>
+									<div className="text-right mb-3"><Button type="submit" variant="success">Envoyer</Button></div>
+								</Form>
+								)}
+							</Formik>
+							{event.eventComments === undefined || event.eventComments.length === 0 ? (
+							<div className="alert alert-primary">Il n’y a aucun commentaire pour le moment…</div>
+							) :
+							event.eventComments?.map(c => <Comment comment={c} key={c.id} />)
+							}
 						</div>
 					</div>
 					<EventForm show={this.state.showEventForm} event={this.state.event} onHide={() => this.showEventForm(false)} onSuccess={e => {
