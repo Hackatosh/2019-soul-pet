@@ -6,6 +6,7 @@ import { SquareImage } from './SquareImage';
 
 export interface AnimalCardProps {
 	animal: Animal;
+	small?: boolean;
 }
 
 export interface AnimalCardState {
@@ -36,9 +37,10 @@ export class AnimalCard extends React.Component<AnimalCardProps, AnimalCardState
 				<SquareImage image={this.state.picture} directory={Directory.Animals} key={this.state.picture.filename} />
 				<div className="card-body">
 					<h5 className="card-title">{this.props.animal.name}</h5>
+					{this.props.small === true && 
 					<p className="card-text">Né le {this.props.animal.birthdate.toLocaleDateString()} 
 					&nbsp;&middot; {this.state.pictureCount} photo{this.state.pictureCount > 1 && 's'} 
-					&nbsp;&middot; {this.props.animal.events ? this.props.animal.events.length : 0} événement{this.props.animal.events && this.props.animal.events.length > 1 && "s"}</p>
+					&nbsp;&middot; {this.props.animal.events ? this.props.animal.events.length : 0} événement{this.props.animal.events && this.props.animal.events.length > 1 && "s"}</p>}
 					<Link to={"/animal/" + this.props.animal.id} className="btn btn-primary">Détails</Link>
 				</div>
 			</div>

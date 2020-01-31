@@ -142,10 +142,11 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 								<Button variant="primary" onClick={() => this.showEventForm(true)}>Éditer</Button>
 								<Button variant="danger"onClick={() => this.showEventDelete(true)}>Supprimer</Button>
 							</div>}
+							<h2 className="mt-2">Détails</h2>
 							<p className="text-muted mb-3">
 								Organisé par {event.user !== undefined ? event.user.username : "Inconnu·e"}
 							</p>
-							<ul className="list-group list-group-horizontal mb-4 w-100">
+							<ul className="list-group list-group-horizontal-sm mb-4 w-100">
 								<li className="list-group-item">{event.location ? `Localisation de l'évènement : ${event.location}` : 'Pas de localisation indiquée'}</li>
 								{isSameDay ? (
 									<li className="list-group-item">Le {event.beginDate.toLocaleDateString(undefined, {year: "numeric", month: "long", day: "numeric"})}</li>
@@ -159,7 +160,15 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 									<button className="list-group-item list-group-item-action list-group-item-primary w-auto text-primary">Voir les espèces bienvenues</button>
 								</OverlayTrigger>
 							</ul>
+							<h2>Description</h2>
 							<p className="lead">{event.description}</p>
+							<h2 className="mt-4">Animaux inscrits</h2>
+							{event.attendees === undefined || event.attendees.length === 0 ? (
+							<div className="alert alert-info">Il n’y a aucun animal d’inscrit pour le moment…</div>
+							) : (
+							<div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+								{event.attendees.map(a => <div className="col mb-4" key={a.id}><AnimalCard animal={a} /></div>)}
+							</div>)}
 						</div>
 					</div>
 					<EventForm show={this.state.showEventForm} event={this.state.event} onHide={() => this.showEventForm(false)} onSuccess={e => {
