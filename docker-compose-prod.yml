@@ -45,7 +45,7 @@ services:
     restart: always
     environment:
       PORT: 3000
-      REACT_APP_BACK_URL: "https://soul-pet.cs-campus.fr:3001/api"
+      REACT_APP_BACK_URL: "https://soul-pet.cs-campus.fr/api"
     volumes:
       - ./front:/usr/app/
       - /usr/app/node_modules
