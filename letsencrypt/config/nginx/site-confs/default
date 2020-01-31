@@ -49,9 +49,6 @@ server {
 
 	server_name _;
 
-	access_log /var/log/nginx/back.access_log main;
-    error_log /var/log/nginx/back.error_log info;
-
 	# enable subfolder method reverse proxy confs
 	include /config/nginx/proxy-confs/*.subfolder.conf;
 
