@@ -3,7 +3,12 @@ import {httpClient} from "../helpers";
 import { AnimalService } from "./animal.service";
 
 export class EventService {
-    private static async revive(e: PetEvent): Promise<PetEvent> {
+	/**
+	 * Restores properties of an event to **instances** rather than mere types.
+	 * @param e the event to ‘revive’
+	 * @returns the ‘revived’ event
+	 */
+    public static async revive(e: PetEvent): Promise<PetEvent> {
         e.beginDate = new Date(e.beginDate);
 		e.endDate = new Date(e.endDate);
 		if (e.authorizedSpecies !== undefined && e.specieIds === undefined)
@@ -11,7 +16,7 @@ export class EventService {
 		if (e.authorizedSpecies === undefined && e.specieIds !== undefined)
 			e.authorizedSpecies = (await AnimalService.getSpecies()).filter(s => e.specieIds?.includes(s.id));
 		if (e.attendees !== undefined)
-			e.attendees = e.attendees.map(AnimalService.revive);
+			e.attendees = await Promise.all(e.attendees.map(AnimalService.revive));
         return e;
     }
 
@@ -29,7 +34,7 @@ export class EventService {
      * @returns the event requested
      */
     static async get(id: number): Promise<PetEvent> {
-        return httpClient.get<PetEvent>(`/events/${id}`, true).then(async e => await this.revive(e)).catch(() => Promise.reject('Erreur lors de la récupération de l\'évènement'));
+        return httpClient.get<PetEvent>(`/events/${id}`, true).then(EventService.revive).catch(() => Promise.reject('Erreur lors de la récupération de l\'évènement'));
     }
 
     /**
@@ -38,7 +43,7 @@ export class EventService {
      * @returns the event saved into the database
      */
     static async add(event:PetEvent): Promise<PetEvent> {
-        return httpClient.post<PetEvent>('/events/', event, true).then(async e => await this.revive(e)).catch(() => Promise.reject(`Erreur lors de la création de l'évènement : ${event.name}`));
+        return httpClient.post<PetEvent>('/events/', event, true).then(EventService.revive).catch(() => Promise.reject(`Erreur lors de la création de l'évènement : ${event.name}`));
     }
 
     /**
@@ -48,7 +53,7 @@ export class EventService {
      */
     static async update(event:PetEvent): Promise<PetEvent> {
 		event.authorizedSpecies = undefined;
-        return httpClient.put<PetEvent>(`/events/${event.id}`, event, true).then(async e => await this.revive(e)).catch(() => Promise.reject(`Erreur lors de la mise à jour de l'évènement d'identifiant ${event.id}`));
+        return httpClient.put<PetEvent>(`/events/${event.id}`, event, true).then(EventService.revive).catch(() => Promise.reject(`Erreur lors de la mise à jour de l'évènement d'identifiant ${event.id}`));
     }
 
     /**

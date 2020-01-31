@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import peche from '../resources/events/peche.jpg';
 import {Link} from 'react-router-dom';
 import {PetEvent} from '../models';
+import { SquareImage } from '.';
 
 interface EventCardProps {
-    event: PetEvent;
+	event: PetEvent;
+	small?: boolean;
 }
 
 export class EventCard extends Component<EventCardProps> {
@@ -12,6 +14,17 @@ export class EventCard extends Component<EventCardProps> {
 		const {event} = this.props;
 		const isSameDay = event.beginDate.getTime() === event.endDate.getTime();
 
+		if (this.props.small)
+			return (
+				<div className="card">
+					<Link to={`/events/${event.id}`} className="stretched-link text-decoration-none text-reset">
+						<img src={peche} className="card-img-top" alt="Peche"/>
+						<div className="card-body">
+							<p className="card-text">{event.name}</p>
+						</div>
+					</Link>
+				</div>
+			);
         return (
             <div className="card">
 				<img src={peche} className="card-img-top" alt="Peche"/>

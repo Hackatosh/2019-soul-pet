@@ -2,9 +2,9 @@ import React from 'react';
 import { AnimalService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './AnimalPage.css';
-import { AnimalForm, DeleteConfirmation, SquareImage, Gallery } from '../components';
+import { AnimalForm, DeleteConfirmation, SquareImage, Gallery, EventCard } from '../components';
 import { Animal, NoImage, Directory } from '../models';
-import { Card, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { history, titleCase, ageFromDate } from '../helpers';
 
 export interface AnimalPageProps extends RouteComponentProps<{id: string}> {}
@@ -84,39 +84,14 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 							<h1 className="display-3">{this.state.animal.name}</h1>
 							<p className="lead text-muted">{this.state.animal.specie !== undefined ? titleCase(this.state.animal.specie?.name) : ''} né le {this.state.animal.birthdate.toLocaleDateString()} ({ageFromDate(this.state.animal.birthdate)}) &middot; <Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button> &middot; <Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button></p>
 							<h2>Événements</h2>
+							{this.state.animal.events === undefined || this.state.animal.events.length === 0 ? (
+							<div className="alert alert-info">Cet animal n’est inscrit à aucun événement.</div>
+							) : (
 							<div className="row row-cols-1 row-cols-md-3">
-								<div className="col mb-4">
-									<Card>
-										<Card.Body>
-											<Card.Title>Dark Vador</Card.Title>
-											<Card.Subtitle className="mb-2 text-muted">Vétérinaire</Card.Subtitle>
-											<Card.Text>Spécialisé pour nos amis canins.<br/>Fermé le lundi</Card.Text>
-											<Card.Link href="#">Voir la fiche</Card.Link>
-										</Card.Body>
-									</Card>
-								</div>
-								<div className="col mb-4">
-									<Card>
-										<Card.Body>
-											<Card.Title>Kristoff</Card.Title>
-											<Card.Subtitle className="mb-2 text-muted">Vétérinaire</Card.Subtitle>
-											<Card.Text>J’aime les rennes.<br/>Fermé l’hiver</Card.Text>
-											<Card.Link href="#">Voir la fiche</Card.Link>
-										</Card.Body>
-									</Card>
-								</div>
-								<div className="col mb-4">
-									<Card>
-										<Card.Body>
-											<Card.Title>Yennefer</Card.Title>
-											<Card.Subtitle className="mb-2 text-muted">Toiletteuse</Card.Subtitle>
-											<Card.Text>J’ai pas encore regardé mais ça ne saurait tarder.</Card.Text>
-											<Card.Link href="#">Voir la fiche</Card.Link>
-										</Card.Body>
-									</Card>
-								</div>
+								{this.state.animal.events?.filter(e => e.endDate.getTime() >= Date.now()).map(e => <div className="col mb-4" key={e.id}><EventCard event={e} small /></div>)}
 							</div>
-							<h2>Galerie</h2>
+							)}
+							<h2 className="mt-4">Galerie</h2>
 							{this.state.animal.animalPictures !== undefined &&
 							<Gallery pictures={this.state.animal.animalPictures} directory={Directory.Animals}
 							delete={this.deletePicture} add={this.loadPicture} />}
