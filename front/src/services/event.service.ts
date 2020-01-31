@@ -5,10 +5,6 @@ export class EventService {
     private static revive(e: PetEvent): PetEvent {
         e.beginDate = new Date(e.beginDate);
 		e.endDate = new Date(e.endDate);
-		e.eventComments = e.eventComments === undefined ? undefined : e.eventComments.map(e => {
-			e.createdAt = new Date(e.createdAt);
-			return e;
-		});
 		if (e.authorizedSpecies !== undefined && e.specieIds === undefined)
 			e.specieIds = e.authorizedSpecies.map(s => s.id);
         return e;
