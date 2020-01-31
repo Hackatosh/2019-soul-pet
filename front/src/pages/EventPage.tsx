@@ -17,7 +17,7 @@ export interface EventPageState {
     event: PetEvent | undefined;
     showEventForm: boolean;
 	showEventDelete: boolean;
-	userPets: Animal[];
+	availablePets: Animal[];
 }
 
 export class EventPage extends Component<EventCardProps, EventPageState> {
@@ -25,7 +25,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
         super(props);
         if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
             history.push('/404');
-		this.state = {error: '', event: undefined, id: parseInt(this.props.match.params.id), showEventForm: false, showEventDelete: false, userPets: []};
+		this.state = {error: '', event: undefined, id: parseInt(this.props.match.params.id), showEventForm: false, showEventDelete: false, availablePets: []};
 		
 		this.addAnimal = this.addAnimal.bind(this);
     }
@@ -33,16 +33,22 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
     componentDidMount() {
         EventService.get(parseInt(this.props.match.params.id)).then(event => {
 			this.setState({event: event});	
-			AnimalService.getAll(AuthenticationService.User.id).then(animals => {
-				this.setState({ userPets: animals.filter(a => {
-					if (event.specieIds === undefined)
-						return true;
-					return event.specieIds.includes(a.specieId);
-				}) });
-			})
+			this.updateAvailablePets(event);
 			// TODO: Retrieve the user of the event to display it
 		}).catch(() => history.push('/404'));
-    }
+	}
+	
+	private updateAvailablePets(event: PetEvent) {
+		AnimalService.getAll(AuthenticationService.User.id).then(animals => {
+			this.setState({ availablePets: animals.filter(a => {
+				if (event.specieIds === undefined || event.attendees === undefined)
+					return true;
+				// Note that we cannot use `attendees.includes(a)` because the objects may differ,
+				// because of the way the back returns objects in different routes.
+				return event.specieIds.includes(a.specieId) && event.attendees.find(attendee => attendee.id === a.id) === undefined;
+			}) });
+		});
+	}
 
     private showEventForm(state: boolean) {
         this.setState({showEventForm: state});
@@ -56,15 +62,16 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 		if (this.state.event === undefined)
 			return;
 		const event = this.state.event;
-		const animal = this.state.userPets.find(a => a.id === 1);
-		if (animal === undefined)
+		const index = this.state.availablePets.findIndex(a => a.id === 1);
+		if (index === -1)
 			return;
 		EventService.addAnimal(this.state.id, 1).then(() => {
 			if (event.attendees === undefined)
-				event.attendees = [animal];
+				event.attendees = [this.state.availablePets[index]];
 			else	
-				event.attendees.push(animal);
-			this.setState({ event: event });
+				event.attendees.push(this.state.availablePets[index]);
+			this.state.availablePets.splice(index, 1);
+			this.setState({ event: event, availablePets: this.state.availablePets });
 		}).catch(e => this.setState({ error: e }));
 	}
 
@@ -73,12 +80,14 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 			return;
 		const event = this.state.event;
 		if (event.attendees === undefined)
-			return;
-		const index = event.attendees?.findIndex(a => a.id === id);
+			event.attendees = [];
+		const index = event.attendees.findIndex(a => a.id === id);
 		if (index === -1)
 			return;
 		EventService.removeAnimal(this.state.id, id).then(() => {
-			event.attendees?.splice(index, 1);
+			if (event.attendees === undefined)
+				return;
+			this.state.availablePets.push(...event.attendees.splice(index, 1));
 			this.setState({ event: event });
 		}).catch(e => this.setState({ error: e }));
 	}
@@ -99,11 +108,17 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 							) : (*/
 							<SquareImage image={NoImage} />
 							/*)*/}
-							<p className="mt-3 mb-1">Inscrire un animal :</p>
-							<Form.Control as="select" size="lg" className="custom-select">
-								{this.state.userPets.map(a => <option value={a.id} key={a.id}>{a.name}</option>)}
-							</Form.Control>
-							<button className="btn btn-success btn-block mt-1" onClick={this.addAnimal}>Inscrire</button>
+							{this.state.availablePets.length === 0 ? (
+							<div className="alert alert-info mt-3">Aucun de vos animaux ne peut être inscrit à cet événement…</div>
+							) : (
+							<React.Fragment>
+								<p className="mt-3 mb-1">Inscrire un animal :</p>
+								<Form.Control as="select" size="lg" className="custom-select">
+									{this.state.availablePets.map(a => <option value={a.id} key={a.id}>{a.name}</option>)}
+								</Form.Control>
+								<button className="btn btn-success btn-block mt-1" onClick={this.addAnimal}>Inscrire</button>
+							</React.Fragment>
+							)}
 							<ul className="list-group w-100">
 								{this.state.event.attendees?.map(a => {
 									if (a.id === undefined)
@@ -139,7 +154,10 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 							<p className="lead">{event.description}</p>
 						</div>
 					</div>
-					<EventForm show={this.state.showEventForm} event={this.state.event} onHide={() => this.showEventForm(false)} onSuccess={e => this.setState({ event: e })} />
+					<EventForm show={this.state.showEventForm} event={this.state.event} onHide={() => this.showEventForm(false)} onSuccess={e => {
+						this.setState({ event: e });
+						this.updateAvailablePets(e);
+					}} />
 					<DeleteConfirmation prompt='Écrivez le nom de l’évènement pour confirmer la suppression' expected={this.state.event?.name} show={this.state.showEventDelete} onHide={() => this.showEventDelete(false)} onSuccess={() => {
 						EventService.delete(this.state.id).then(() => history.push('/events/list')).catch(() => this.setState({ error: 'Erreur lors de la suppression' }))
 					}} />
