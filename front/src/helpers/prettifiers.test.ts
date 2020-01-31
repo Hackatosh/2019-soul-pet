@@ -6,7 +6,7 @@ test('ageFromDate', () => {
 	d.setFullYear(d.getFullYear() - 1);
 	expect(ageFromDate(d)).toBe('1 an');
 	d.setFullYear(d.getFullYear() + 2);
-	expect(() => ageFromDate(d)).toThrow();
+	expect(() => ageFromDate(d)).not.toThrow();
 });
 
 test('titleCase', () => {

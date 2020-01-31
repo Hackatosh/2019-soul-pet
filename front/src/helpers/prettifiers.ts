@@ -5,7 +5,7 @@
 export function ageFromDate(date: Date): string {
 	const now = new Date();
 	if (date > now)
-		throw new Error('La date ne peut pas être dans le futur !');
+		return 'à naître';
 	const age = Math.floor((now.getTime() - date.getTime()) / 31536000000);
 	if (age === 0)
 		return 'moins d’un an';

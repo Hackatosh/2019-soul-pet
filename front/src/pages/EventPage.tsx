@@ -109,34 +109,15 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
             return (
 				<div className="container">
 					<div className="row">
-						<div className="col-10 offset-1 col-md-3">
+						<div className="col-10 offset-1 col-md-3 mb-3">
 							{/*this.state.animal.animalPictures !== undefined && this.state.animal.animalPictures.length > 0 ? (
 							<SquareImage image={this.state.animal.animalPictures[0]} directory={Directory.Animals} key={this.state.animal.animalPictures[0].id} />
 							) : (*/
 							<SquareImage image={NoImage} />
 							/*)*/}
-							{this.state.availablePets.length === 0 ? (
-							<div className="alert alert-info mt-3">Aucun de vos animaux ne peut être inscrit à cet événement…</div>
-							) : (
-							<React.Fragment>
-								<h3 className="mt-3 mb-1">Mes animaux</h3>
-								<ul className="list-group w-100 mt-3">
-									{this.state.availablePets.map(pet => {
-										if (pet.id === undefined)
-											return null;
-										const id = pet.id;
-										return (<li className="list-group-item d-flex justify-content-between align-items-center" key={id}>
-											<Form.Check type="switch" id={id.toString()} label={pet.name}
-											onChange={(e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).checked ? this.addAnimal(id) : this.removeAnimal(id)} value={id}
-											checked={event.attendees?.find(p => p.id === id) !== undefined} />
-										</li>);
-									})}
-								</ul>
-							</React.Fragment>
-							)}
 						</div>
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
-							<h1 className="display-3 mb-3">{event.name}</h1>
+							<h1 className="mb-3">{event.name}</h1>
 							{canModify &&
 							<div className="btn-group btn-group-lg mb-3">
 								<Button variant="primary" onClick={() => this.showEventForm(true)}>Éditer</Button>
@@ -162,13 +143,35 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 							</ul>
 							<h2>Description</h2>
 							<p className="lead">{event.description}</p>
-							<h2 className="mt-4">Animaux inscrits</h2>
-							{event.attendees === undefined || event.attendees.length === 0 ? (
-							<div className="alert alert-info">Il n’y a aucun animal d’inscrit pour le moment…</div>
-							) : (
-							<div className="row row-cols-1 row-cols-md-2 row-cols-lg-3">
-								{event.attendees.map(a => <div className="col mb-4" key={a.id}><AnimalCard animal={a} /></div>)}
-							</div>)}
+							<h2 className="mt-4 mb-3">Animaux inscrits</h2>
+							<div className="row">
+								<div className="col-lg-4 mb-4">
+									{this.state.availablePets.length === 0 ? (
+									<div className="alert alert-info">Aucun de vos animaux ne peut être inscrit à cet événement…</div>
+									) : (
+									<ul className="list-group w-100">
+										{this.state.availablePets.map(pet => {
+											if (pet.id === undefined)
+												return null;
+											const id = pet.id;
+											return (<li className="list-group-item d-flex justify-content-between align-items-center" key={id}>
+												<Form.Check type="switch" id={id.toString()} label={pet.name}
+												onChange={(e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).checked ? this.addAnimal(id) : this.removeAnimal(id)} value={id}
+												checked={event.attendees?.find(p => p.id === id) !== undefined} />
+											</li>);
+										})}
+									</ul>
+									)}
+								</div>
+								<div className="col-lg-8">
+									{event.attendees === undefined || event.attendees.length === 0 ? (
+									<div className="alert alert-info">Il n’y a aucun animal d’inscrit pour le moment…</div>
+									) : (
+									<div className="row row-cols-1 row-cols-sm-2">
+										{event.attendees.map(a => <div className="col mb-4" key={a.id}><AnimalCard animal={a} small /></div>)}
+									</div>)}
+								</div>
+							</div>
 						</div>
 					</div>
 					<EventForm show={this.state.showEventForm} event={this.state.event} onHide={() => this.showEventForm(false)} onSuccess={e => {
