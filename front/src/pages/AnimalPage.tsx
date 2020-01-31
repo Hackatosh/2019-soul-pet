@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnimalService } from '../services';
+import { AnimalService, AuthenticationService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './AnimalPage.css';
 import { AnimalForm, DeleteConfirmation, SquareImage, Gallery, EventCard } from '../components';
@@ -67,6 +67,8 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 	}
 
 	render() {
+		const canModify = this.state.animal?.userId === AuthenticationService.User.id;
+
 		return (
 			<div className="container">
 				{this.state.animal !== undefined && 
@@ -82,7 +84,12 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							{this.state.error !== '' && <div className="alert alert-danger">{this.state.error}</div>}
 							<h1 className="display-3">{this.state.animal.name}</h1>
-							<p className="lead text-muted">{this.state.animal.specie !== undefined ? titleCase(this.state.animal.specie?.name) : ''} né le {this.state.animal.birthdate.toLocaleDateString()} ({ageFromDate(this.state.animal.birthdate)}) &middot; <Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button> &middot; <Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button></p>
+							<p className="lead text-muted">{this.state.animal.specie !== undefined ? titleCase(this.state.animal.specie?.name) : ''} né le {this.state.animal.birthdate.toLocaleDateString()} ({ageFromDate(this.state.animal.birthdate)})</p>
+							{canModify &&
+							<div className="btn-group btn-group-lg mb-3">
+								<Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button>
+								<Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button>
+							</div>}
 							<h2>Événements</h2>
 							{this.state.animal.events === undefined || this.state.animal.events.length === 0 ? (
 							<div className="alert alert-info">Cet animal n’est inscrit à aucun événement.</div>

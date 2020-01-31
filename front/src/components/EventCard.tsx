@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import peche from '../resources/events/peche.jpg';
 import {Link} from 'react-router-dom';
 import {PetEvent} from '../models';
-import { SquareImage } from '.';
 
 interface EventCardProps {
 	event: PetEvent;
