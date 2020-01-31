@@ -76,3 +76,19 @@ test('Delete event', async () => {
 	});
 	expect.assertions(2);
 });
+
+test('Add animal to event', async () => {
+	post.mockResolvedValue({ animalId: 1 });
+	await EventService.addAnimal(1, 1).then(o => {
+		expect(post).toHaveBeenCalledWith('/events/1/animals', { animalId: 1 }, true);
+		expect(o).toBeNull();
+	});
+});
+
+test('Remove animal from event', async () => {
+	del.mockResolvedValue(null);
+	await EventService.removeAnimal(1, 1).then(o => {
+		expect(del).toHaveBeenCalledWith('/events/1/animals/1', true);
+		expect(o).toBeNull();
+	});
+});
