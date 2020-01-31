@@ -47,10 +47,30 @@ export class EventService {
 
     /**
      * Deletes an event from the database.
-     * @param id the id of the event to delete
+     * @param id the ID of the event to delete
      * @returns null
      */
     static async delete(id: number): Promise<null> {
         return httpClient.delete(`/events/${id}`, true).then(() => null).catch(() => Promise.reject(`Erreur lors de la suppression de l'évènement d'identifiant ${id}`));
-    }
+	}
+	
+	/**
+	 * Adds an animal as an attendee to an event.
+	 * @param eventId the ID of the event
+	 * @param animalId the ID of the animal
+	 * @returns null
+	 */
+	static async addAnimal(eventId: number, animalId: number): Promise<null> {
+		return httpClient.post<{animalId: number}>(`/events/${eventId}/animals`, { animalId: animalId }, true).then(() => null).catch(() => Promise.reject('Erreur lors de l’inscription de l’animal'));
+	}
+
+	/**
+	 * Removes an animal from an event.
+	 * @param eventId the ID of the event
+	 * @param animalId the ID of the animal
+	 * @returns null
+	 */
+	static async removeAnimal(eventId: number, animalId: number): Promise<null> {
+		return httpClient.delete(`/events/${eventId}/animals/${animalId}`, true).catch(() => Promise.reject('Erreur lors de la désinscription de l’animal'));
+	}
 }

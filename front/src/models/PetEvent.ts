@@ -1,5 +1,6 @@
 import {User} from "./User";
 import {Specie} from "./Specie";
+import { Animal } from "./Animal";
 
 export interface PetEvent {
 	id: number;
@@ -12,5 +13,5 @@ export interface PetEvent {
 	location?: string;
 	authorizedSpecies?: Array<Specie>;
 	specieIds?: Array<number>;
-
+	attendees?: Animal[];
 }

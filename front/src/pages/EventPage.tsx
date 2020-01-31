@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {RouteComponentProps} from 'react-router-dom';
-import {PetEvent, NoImage} from '../models';
+import {PetEvent, NoImage, Animal} from '../models';
 import { history } from '../helpers';
 import {EventService} from "../services/event.service";
-import {Button, Spinner} from "react-bootstrap";
-import { AuthenticationService} from "../services";
+import {Button, Spinner, Form} from "react-bootstrap";
+import { AuthenticationService, AnimalService} from "../services";
 import { DeleteConfirmation, SquareImage} from "../components";
 import {EventForm} from "../components/EventForm";
 
@@ -16,7 +16,8 @@ export interface EventPageState {
     error: string;
     event: PetEvent | undefined;
     showEventForm: boolean;
-    showEventDelete: boolean;
+	showEventDelete: boolean;
+	userPets: Animal[];
 }
 
 export class EventPage extends Component<EventCardProps, EventPageState> {
@@ -24,12 +25,21 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
         super(props);
         if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
             history.push('/404');
-        this.state = {error: '', event: undefined, id: parseInt(this.props.match.params.id), showEventForm: false, showEventDelete: false};
+		this.state = {error: '', event: undefined, id: parseInt(this.props.match.params.id), showEventForm: false, showEventDelete: false, userPets: []};
+		
+		this.addAnimal = this.addAnimal.bind(this);
     }
 
     componentDidMount() {
         EventService.get(parseInt(this.props.match.params.id)).then(event => {
-			this.setState({event: event});
+			this.setState({event: event});	
+			AnimalService.getAll(AuthenticationService.User.id).then(animals => {
+				this.setState({ userPets: animals.filter(a => {
+					if (event.specieIds === undefined)
+						return true;
+					return event.specieIds.includes(a.specieId);
+				}) });
+			})
 			// TODO: Retrieve the user of the event to display it
 		}).catch(() => history.push('/404'));
     }
@@ -40,14 +50,44 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 
     private showEventDelete(state: boolean) {
         this.setState({showEventDelete: state});
-    }
+	}
+	
+	private addAnimal() {
+		if (this.state.event === undefined)
+			return;
+		const event = this.state.event;
+		const animal = this.state.userPets.find(a => a.id === 1);
+		if (animal === undefined)
+			return;
+		EventService.addAnimal(this.state.id, 1).then(() => {
+			if (event.attendees === undefined)
+				event.attendees = [animal];
+			else	
+				event.attendees.push(animal);
+			this.setState({ event: event });
+		}).catch(e => this.setState({ error: e }));
+	}
+
+	private removeAnimal(id: number) {
+		if (this.state.event === undefined)
+			return;
+		const event = this.state.event;
+		if (event.attendees === undefined)
+			return;
+		const index = event.attendees?.findIndex(a => a.id === id);
+		if (index === -1)
+			return;
+		EventService.removeAnimal(this.state.id, id).then(() => {
+			event.attendees?.splice(index, 1);
+			this.setState({ event: event });
+		}).catch(e => this.setState({ error: e }));
+	}
 
     render() {
         if (this.state.event === undefined) {
             return <div className="rounder spinner-fluid"><Spinner animation="border" variant="success"/></div>;
         } else {
 			const event = this.state.event;
-			console.log(event.user);
 			const canModify = event.userId === AuthenticationService.User.id;
 			const isSameDay = event.beginDate.getTime() === event.endDate.getTime();
             return (
@@ -59,6 +99,21 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 							) : (*/
 							<SquareImage image={NoImage} />
 							/*)*/}
+							<p className="mt-3 mb-1">Inscrire un animal :</p>
+							<Form.Control as="select" size="lg" className="custom-select">
+								{this.state.userPets.map(a => <option value={a.id} key={a.id}>{a.name}</option>)}
+							</Form.Control>
+							<button className="btn btn-success btn-block mt-1" onClick={this.addAnimal}>Inscrire</button>
+							<ul className="list-group w-100">
+								{this.state.event.attendees?.map(a => {
+									if (a.id === undefined)
+										return;
+									const id = a.id;
+									return (<li key={id} className="list-group-item">
+										{a.name} <button type="button" className="close" aria-label="Close" onClick={() => this.removeAnimal(id)}><span aria-hidden="true">&times;</span></button>
+									</li>);
+								})}
+							</ul>
 						</div>
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							<h1 className="display-3 mb-3">{event.name}</h1>
