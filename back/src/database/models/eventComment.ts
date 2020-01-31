@@ -3,6 +3,7 @@ import {
     DataTypes,
 } from 'sequelize';
 import {db} from '../connection'
+import {User} from "./user";
 
 /***
  * Model used to represent an comment made by a user about an event in the DB.
@@ -13,6 +14,9 @@ export class EventComment extends Model {
     public userId!: number;
     public eventId!: number;
     public text!: string;
+
+    // These will only be populated if you actively include a relation.
+    public readonly user?: User;
 
     // timestamps!
     public readonly createdAt!: Date;

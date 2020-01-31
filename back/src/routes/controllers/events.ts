@@ -81,7 +81,8 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: Aut
                 {model: Animal, as: "attendees"},
                 {model: Specie, as: "authorizedSpecies"}, {
                     model: EventComment,
-                    as: "eventComments"
+                    as: "eventComments",
+                    include: [{model: User, attributes: ["username"]}]
                 }, {
                     model: EventPicture,
                     as: "eventPictures",

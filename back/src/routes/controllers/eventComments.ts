@@ -4,6 +4,7 @@ import {check} from 'express-validator'
 import {inputValidationMW} from "../middlewares/inputValidation";
 import {PetEvent} from "../../database/models/event";
 import {EventComment} from "../../database/models/eventComment";
+import {User} from "../../database/models/user";
 import {logger} from "../../core/logger";
 
 const eventCommentsRouter = Router();
@@ -36,7 +37,7 @@ const getCommentChecks = [
 
 eventCommentsRouter.get('/:commentId', getCommentChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const commentId = parseInt(req.params.commentId);
-    const comment = await EventComment.findOne({where: {id: commentId}});
+    const comment = await EventComment.findOne({where: {id: commentId},include:[{model:User,attributes:["username"]}]});
     if (!comment) {
         res.sendStatus(404).json({message:"Comment not found."});
     } else if (comment.userId != req.authInfos.userId) {
