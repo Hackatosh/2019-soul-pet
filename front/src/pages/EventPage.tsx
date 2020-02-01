@@ -28,6 +28,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
             history.push('/404');
 		this.state = {error: '', event: undefined, id: parseInt(this.props.match.params.id), showEventForm: false, showEventDelete: false};
 		this.loadPicture = this.loadPicture.bind(this);
+		this.deletePicture = this.deletePicture.bind(this);
     }
 
     componentDidMount() {
