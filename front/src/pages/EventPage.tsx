@@ -72,7 +72,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 								Organisé par {event.user !== undefined ? <UserBadge user={event.user} /> : "Inconnu·e"}
 							</p>
 							<ul className="list-group list-group-horizontal w-100 mb-4">
-								<li className="list-group-item">{event.location ? `Localisation de l'évènement : ${event.location}` : 'Pas de localisation indiquée'}</li>
+								<li className="list-group-item line-breaks">{event.location ? `Localisation : ${event.location}` : 'Pas de localisation indiquée'}</li>
 								{isSameDay ? (
 									<li className="list-group-item">Le {event.beginDate.toLocaleDateString(undefined, {year: "numeric", month: "long", day: "numeric"})}</li>
 								) : (
@@ -82,7 +82,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 									</React.Fragment>
 								)}
 							</ul>
-							<p className="lead">{event.description}</p>
+							<p className="lead line-breaks">{event.description}</p>
 						</div>
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							<h2>Discussion</h2>

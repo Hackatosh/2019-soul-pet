@@ -10,8 +10,8 @@ export interface CommentProps {
 export class Comment extends React.Component<CommentProps> {
 	render() {
 		return (
-			<div className="px-3">
-				<p>{this.props.comment.text}</p>
+			<div className="px-3 border-left border-primary">
+				<p className="line-breaks">{this.props.comment.text}</p>
 				<p className="text-right text-muted">
 					{this.props.comment.user !== undefined ? (
 					<Link to={`/profile/${this.props.comment.user.id}`} className="badge badge-primary" style={{ fontSize: '100%' }}>

@@ -24,3 +24,6 @@ button.btn-block {margin: 1rem auto;}
 
 /* Fix margins with rows */
 .row {margin-right: 0; margin-left: 0;}
+
+/* Display line breaks (`\n`) */
+.line-breaks {white-space: pre-line;}
