@@ -1,6 +1,6 @@
 import { httpClient } from "../helpers";
 import { PetEvent } from "../models";
-import { EventService } from "./event.service";
+import { EventService } from ".";
 
 const get = jest.spyOn(httpClient, "get");
 const post = jest.spyOn(httpClient, "post");

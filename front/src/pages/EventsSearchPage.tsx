@@ -2,9 +2,9 @@ import React from 'react';
 import {RouteComponentProps} from 'react-router';
 import {PetEvent} from '../models';
 import {Button} from "react-bootstrap";
-import {EventService} from "../services/event.service";
 import {history} from '../helpers';
 import { EventForm, EventCard } from '../components';
+import { EventService } from '../services';
 
 interface EventsSearchPageState {
     showEventForm: boolean;

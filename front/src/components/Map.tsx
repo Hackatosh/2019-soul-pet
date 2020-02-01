@@ -1,9 +1,8 @@
 import React from 'react';
 import { PServicesMap, SServicesMap, ListMarkerData } from '../models';
-import { GetServicesServices } from '../services';
+import { GetServicesServices, GeolocationService } from '../services';
 import { iconVet, iconPark, iconGroom, imageVet, imagePark, imageGroom } from '../models';
 import { Form } from 'react-bootstrap';
-import { GeolocationService } from '../services/geolocation.service';
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 const serviceTypeList = [

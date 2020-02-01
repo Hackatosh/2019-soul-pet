@@ -1,6 +1,6 @@
 import { Animal, Specie, Picture } from "../models";
 import { httpClient } from "../helpers";
-import { EventService } from "./event.service";
+import { EventService } from ".";
 
 export class AnimalService {
 	private static species: Specie[] | undefined = undefined;

@@ -2,8 +2,7 @@ import React from 'react';
 import {PetEvent, Specie} from '../models';
 import {Modal, Form, Alert, Button} from 'react-bootstrap';
 import {Formik, Field} from 'formik';
-import {AnimalService, AuthenticationService} from '../services';
-import {EventService} from "../services/event.service";
+import {AnimalService, AuthenticationService, EventService} from '../services';
 import { titleCase } from '../helpers';
 import './EventForm.css';
 

@@ -2,13 +2,11 @@ import React, {Component, FormEvent} from 'react';
 import {RouteComponentProps} from 'react-router-dom';
 import {PetEvent, NoImage, EventComment, Animal} from '../models';
 import { history } from '../helpers';
-import {EventService} from "../services/event.service";
 import {Button, Spinner, Form, OverlayTrigger, Popover} from "react-bootstrap";
-import { AuthenticationService, AnimalService} from "../services";
+import { AuthenticationService, AnimalService, CommentsService, EventService} from "../services";
 import { DeleteConfirmation, SquareImage, Comment, UserBadge, AnimalCard} from "../components";
 import {EventForm} from "../components/EventForm";
 import { Formik } from 'formik';
-import { CommentsService } from '../services/comments.service';
 
 export interface EventCardProps extends RouteComponentProps<{ id: string }> {
 }
