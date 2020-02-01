@@ -34,7 +34,7 @@ animalPicturesRouter.get('/:animalId', getAnimalPicturesChecks, inputValidationM
  ***/
 
 const getAnimalPictureChecks = [
-    check('filename').notEmpty().isString().withMessage("filename must be a string"),
+    check('filename').notEmpty().isString().isLength({max:128}).withMessage("filename must be a string shorter than 128 characters"),
 ];
 
 animalPicturesRouter.get('/', getAnimalPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -99,7 +99,7 @@ animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAni
  ***/
 
 const deleteAnimalPictureChecks = [
-    check('filename').notEmpty().isString().withMessage("filename must be a string"),
+    check('filename').notEmpty().isString().isLength({max:128}).withMessage("filename must be a string shorter than 128 characters"),
 ];
 
 animalPicturesRouter.delete('/', deleteAnimalPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {

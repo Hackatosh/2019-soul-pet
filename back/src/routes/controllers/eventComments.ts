@@ -55,7 +55,7 @@ eventCommentsRouter.get('/:commentId', getCommentChecks, inputValidationMW, asyn
 const postCommentChecks = [
     check('userId').notEmpty().isNumeric().withMessage("userId must be a number"),
     check('eventId').notEmpty().isNumeric().withMessage("eventId must be a number"),
-    check('text').notEmpty().isString().withMessage("text must be a valid string"),
+    check('text').notEmpty().isString().isLength({max:128}).withMessage("text must be a valid string shorter than 128 characters"),
 ];
 
 eventCommentsRouter.post('/', postCommentChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -85,7 +85,7 @@ eventCommentsRouter.post('/', postCommentChecks, inputValidationMW, async (req: 
 
 const putCommentChecks = [
     check('commentId').notEmpty().isNumeric().withMessage("eventId must be a number"),
-    check('text').notEmpty().isString().withMessage("text must be a valid string"),
+    check('text').notEmpty().isString().isLength({max:128}).withMessage("text must be a valid string shorter than 128 characters"),
 ];
 
 eventCommentsRouter.put('/:commentId', putCommentChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {

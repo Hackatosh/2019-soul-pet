@@ -35,7 +35,7 @@ eventPicturesRouter.get('/:eventId', getEventPicturesChecks, inputValidationMW, 
  ***/
 
 const getEventPictureChecks = [
-    check('filename').notEmpty().isString().withMessage("filename must be a string"),
+    check('filename').notEmpty().isString().isLength({max:128}).withMessage("filename must be a string shorter than 128 characters"),
 ];
 
 eventPicturesRouter.get('/', getEventPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -98,7 +98,7 @@ eventPicturesRouter.post('/:eventId', createPictureStorage("picture"), postEvent
  ***/
 
 const deleteEventPictureChecks = [
-    check('filename').notEmpty().isString().withMessage("filename must be a string"),
+    check('filename').notEmpty().isString().isLength({max:128}).withMessage("filename must be a string shorter than 128 characters"),
 ];
 
 eventPicturesRouter.delete('/', deleteEventPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
