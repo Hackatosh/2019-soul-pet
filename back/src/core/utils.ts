@@ -73,7 +73,7 @@ const convertStringToDate = function (date: string): Date {
  * Compare two strings representing dates using moment.js module to check if the first is after the second.
  ***/
 
-const isDateTimeAfter = function (date: string, dateBefore: string) {
+const isDateTimeAfter = function (date: string, dateBefore: string): boolean {
     const end = moment(date);
     const start = moment(dateBefore);
     return end.isSameOrAfter(start);

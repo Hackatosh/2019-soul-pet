@@ -75,7 +75,7 @@ eventCommentsRouter.post('/', postCommentChecks, inputValidationMW, async (req: 
         res.status(200).json(comment)
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Unable to create the comment"})
+        res.status(500).json({message: "Unable to create the comment"})
     }
 });
 

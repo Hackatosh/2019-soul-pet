@@ -32,7 +32,7 @@ authenticationRouter.post('/register', registerChecks, inputValidationMW, async 
         res.status(200).json(user)
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Unable to register"})
+        res.status(400).json({message: "Unable to register."})
     }
 
 });
@@ -53,9 +53,9 @@ authenticationRouter.post('/login', loginChecks, inputValidationMW, async (req: 
     const password = req.body.password;
     const user = await User.findOne(({where: {email: email}}));
     if (!user) {
-        res.status(401).json({message: "Authentication failed: user not found"})
+        res.status(401).json({message: "Authentication failed: user not found."})
     } else if (!(await compareUserPassword(user, password))) {
-        res.status(401).json({message: "Authentication failed: invalid password"})
+        res.status(401).json({message: "Authentication failed: invalid password."})
     } else {
         res.status(200).json({
             id: user.id,

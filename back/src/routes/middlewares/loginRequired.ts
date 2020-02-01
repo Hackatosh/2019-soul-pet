@@ -3,7 +3,7 @@ import {AuthenticatedRequest} from "../../core/authentication/authenticationInte
 import {getAuthInfosFromToken} from "../../core/authentication/tokens";
 
 /***
- * Middleware to require an authentication through an Authorization header with a JWT Token.
+ * Middleware used to require an authentication through an Authorization header with a JWT Token.
  * If the authentication fails, the middleware sends a 401 Unauthorized error.
  ***/
 

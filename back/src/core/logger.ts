@@ -14,7 +14,7 @@ const winstonLogger = winston.createLogger({
     transports: [
         new (winston.transports.Console)({
             colorize: true,
-            json:false,
+            json: false,
         }),
         new (winston.transports.File)({
             name: 'info-file',
@@ -22,7 +22,8 @@ const winstonLogger = winston.createLogger({
             filename: './logs/info.log',
             json: false,
             datePattern: 'yyyy-MM-dd-',
-            prepend: true, }),
+            prepend: true,
+        }),
         new (winston.transports.File)({
             name: 'error-file',
             level: 'error',
@@ -35,14 +36,14 @@ const winstonLogger = winston.createLogger({
 });
 
 const logInfo = env.LOG_IN_FILE ?
-    function (info: string) {
+    function (info: string): void {
         winstonLogger.info(info);
     }
     :
     console.log;
 
 const logError = env.LOG_IN_FILE ?
-    function (err: string) {
+    function (err: string): void {
         winstonLogger.error(err);
     }
     :

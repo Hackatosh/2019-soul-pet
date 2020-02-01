@@ -87,7 +87,7 @@ animalsRouter.post('/', postAnimalChecks, inputValidationMW, async (req: Authent
         res.status(200).json(animal)
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Unable to register the animal"})
+        res.status(500).json({message: "Unable to register the animal"})
     }
 });
 

@@ -66,8 +66,8 @@ export class SFTPPipe {
  ***/
 
 export enum Folder {
-    AnimalPictures,
-    EventPictures,
+    AnimalPictures = 0,
+    EventPictures = 1,
 }
 
 /***
@@ -75,9 +75,9 @@ export enum Folder {
  ***/
 
 export enum ContentType {
-    PNG,
-    JPEG,
-    GIF,
+    PNG = 0,
+    JPEG = 1,
+    GIF = 2,
 }
 
 /***
@@ -88,7 +88,7 @@ export enum ContentType {
  * Check if a given filename is valid.
  ***/
 
-const checkFilenameForSFTP = function (filename: string) {
+const checkFilenameForSFTP = function (filename: string): boolean {
     if (isEmptyString(filename)) {
         throw new Error("Invalid filename : empty.")
     }
@@ -193,7 +193,7 @@ const createSFTPPipe = async function (remoteFolder: Folder, remoteFilename: str
  * Create an SFTP Pipe and pipe it into a Response object from Express. Used to fully abstract the SFTP Layer from controllers.
  ***/
 
-const pipeSFTPIntoResponse = async function (res: Response, remoteFolder: Folder, remoteFilename: string, contentType: ContentType) {
+const pipeSFTPIntoResponse = async function (res: Response, remoteFolder: Folder, remoteFilename: string, contentType: ContentType): Promise<void> {
     const sftpPipe = await createSFTPPipe(remoteFolder, remoteFilename);
     try {
         const headers: Array<HttpHeader> = [generateContentTypeHeader(contentType), generateContentLengthHeader(sftpPipe)];
@@ -202,9 +202,9 @@ const pipeSFTPIntoResponse = async function (res: Response, remoteFolder: Folder
     } catch (e) {
         throw new Error("Problem when piping into response object")
     } finally {
-        try{
+        try {
             await sftpPipe.end();
-        } catch(e){
+        } catch (e) {
             //Swallow exception thrown by clean up
         }
     }

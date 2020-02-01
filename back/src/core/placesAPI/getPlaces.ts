@@ -53,7 +53,7 @@ async function searchPlaces(lat: number, long: number, radius: number, placeType
 }
 
 /***
- * This function enriches the results from the Search API results using the Details API.
+ * This function add more details to the results from the Search API results using the Details API.
  ***/
 
 async function addDetailsToEachVenue(venues: any): Promise<Array<any>> {

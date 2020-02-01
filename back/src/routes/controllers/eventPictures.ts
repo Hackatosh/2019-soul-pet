@@ -54,7 +54,7 @@ eventPicturesRouter.get('/', getEventPictureChecks, inputValidationMW, async (re
     try {
         await pipeSFTPIntoResponse(res, Folder.EventPictures, filename, file.contentType)
     } catch (e) {
-        res.status(400).json({message: "Problem when downloading the file"})
+        res.status(500).json({message: "Problem when downloading the file."})
     }
 });
 
@@ -75,7 +75,7 @@ eventPicturesRouter.post('/:eventId', createPictureStorage("picture"), postEvent
         const eventId = req.params.eventId;
         const event = await PetEvent.findOne({where: {id: eventId}});
         if (!event) {
-            res.status(404).json({message: "This event does not exist"})
+            res.status(404).json({message: "This event does not exist."})
         } else {
             try {
                 const filename = await uploadToSFTP(buffer, Folder.EventPictures);
@@ -83,12 +83,12 @@ eventPicturesRouter.post('/:eventId', createPictureStorage("picture"), postEvent
                 res.status(200).json(eventPicture);
             } catch (e) {
                 logger.error(e);
-                res.status(400).json({message: "Unable to save the picture"})
+                res.status(500).json({message: "Unable to save the picture."})
             }
         }
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Couldn't upload the file"})
+        res.status(500).json({message: "Couldn't upload the file."})
     }
 
 });
@@ -111,16 +111,17 @@ eventPicturesRouter.delete('/', deleteEventPictureChecks, inputValidationMW, asy
     }
     const event = await PetEvent.findOne({where:{id: file.eventId}});
     if (!event) {
-        res.status(404).json({message: "This event does not exist"});
+        res.status(404).json({message: "This event does not exist."});
     } else if (file.userId !== userId && event.userId !== userId ) {
-        res.status(403).json({message: "You don't have access to this picture "});
+        res.status(403).json({message: "You don't have access to this picture."});
     } else {
         await file.destroy();
         try {
             await deleteFromSFTP(Folder.EventPictures, filename);
             res.status(200).json(file);
         } catch (e) {
-            res.status(400).json({message: "Problem when deleting the file : file record has been deleted from the DB but the file still exists."})
+            logger.error(e);
+            res.status(500).json({message: "Problem when deleting the file : file record has been deleted from the DB but the file still exists."})
         }
     }
 });

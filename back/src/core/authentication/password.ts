@@ -24,7 +24,7 @@ const compareUserPassword = async function (user: User, password: string): Promi
  * The function is asynchronous for performance reasons.
  ***/
 
-const hashPassword = async function (password: string):Promise<string> {
+const hashPassword = async function (password: string): Promise<string> {
     if (isEmptyString(password)) {
         throw new Error("Cannot hash empty password")
     }

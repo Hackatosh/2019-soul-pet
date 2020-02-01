@@ -49,7 +49,7 @@ export class User extends Model {
     public static associations: {
         animals: Association<User, Animal>;
         eventComments: Association<User, EventComment>;
-        eventPictures:Association<User, EventPicture>;
+        eventPictures: Association<User, EventPicture>;
     };
 }
 
@@ -57,8 +57,7 @@ export class User extends Model {
  * Function used to initialize the User Model.
  ***/
 
-const initUserModel = async function():Promise<void> {
-
+const initUserModel = async function (): Promise<void> {
     User.init({
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -86,7 +85,6 @@ const initUserModel = async function():Promise<void> {
         timestamps: false,
         sequelize: db,
     });
-
 };
 
 export {initUserModel}

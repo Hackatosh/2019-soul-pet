@@ -4,14 +4,12 @@ import {hashPassword} from "../../core/authentication/password";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
-import {revocateAllTokensForUser} from "../../core/authentication/tokens";
+import {revokeAllTokensForUser} from "../../core/authentication/tokens";
 import {logger} from "../../core/logger";
 import {PetEvent} from "../../database/models/event";
 import {Animal} from "../../database/models/animal";
-import {Specie} from "../../database/models/specie";
 import {EventComment} from "../../database/models/eventComment";
 import {EventPicture} from "../../database/models/eventPicture";
-import {eventsRouter} from "./events";
 
 const accountRouter = Router();
 
@@ -32,10 +30,10 @@ accountRouter.get('/:userId', getEventChecks, inputValidationMW, async (req: Aut
             include: [{model: Animal}, {
                 model: EventComment,
                 as: "eventComments"
-            },{
+            }, {
                 model: PetEvent,
                 as: "events"
-            },{
+            }, {
                 model: EventPicture,
                 as: "eventPictures",
             }]
@@ -46,7 +44,8 @@ accountRouter.get('/:userId', getEventChecks, inputValidationMW, async (req: Aut
         }
         res.status(200).json(userFound)
     } catch (e) {
-        console.log(e)
+        console.log(e);
+        res.status(500).json({message: "Error when retrieving the user."});
     }
 });
 
@@ -87,15 +86,15 @@ accountRouter.put('/:userId', putAccountChecks, inputValidationMW, async (req: A
                 await User.update(update, {where: {id: userId}});
                 update["hashedPassword"] = null;
                 if (Object.keys(update).length != 0) {
-                    await revocateAllTokensForUser(userId);
+                    await revokeAllTokensForUser(userId);
                 }
                 res.status(200).json(update);
             } catch (e) {
                 logger.error(e);
-                res.status(400).json({message: "Unable to update the account"});
+                res.status(500).json({message: "Unable to update the account."});
             }
         } else {
-            res.status(403).json({message: "You don't have access to this user id"})
+            res.status(403).json({message: "You don't have access to this user id."})
         }
     }
 );
@@ -114,13 +113,10 @@ accountRouter.delete('/:userId', deleteAccountChecks, inputValidationMW, async (
     if (userId === authenticatedId) {
         User.destroy({where: {id: userId}});
         res.status(200).json({id: userId});
-        await revocateAllTokensForUser(userId);
-
+        await revokeAllTokensForUser(userId);
     } else {
-        res.status(403).json({message: "You don't have access to this user id"})
-
+        res.status(403).json({message: "You don't have access to this user id."});
     }
-
 });
 
 export {accountRouter};

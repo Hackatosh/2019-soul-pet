@@ -18,8 +18,7 @@ export class Token extends Model {
  * Function used to initialize the Token Model.
  ***/
 
-const initTokenModel = async function():Promise<void> {
-
+const initTokenModel = async function (): Promise<void> {
     Token.init({
         token: {
             type: DataTypes.STRING(128),
@@ -34,7 +33,6 @@ const initTokenModel = async function():Promise<void> {
         modelName: 'token',
         sequelize: db,
     });
-
 };
 
-export { initTokenModel }
+export {initTokenModel}

@@ -23,7 +23,6 @@ export class AnimalPicture extends Model {
  ***/
 
 const initAnimalPicturesModel = async function (): Promise<void> {
-
     AnimalPicture.init({
         id: {
             type: DataTypes.INTEGER.UNSIGNED,

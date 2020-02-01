@@ -57,7 +57,7 @@ eventsRouter.get('/search', searchEvents, inputValidationMW, async (req: Authent
 
     let searchResult = await PetEvent.findAll({
         where: searchRequest,
-        include: [{model: User, attributes: ["id","username"]}]
+        include: [{model: User, attributes: ["id", "username"]}]
     });
     res.status(200).json(searchResult);
 });
@@ -73,30 +73,26 @@ const getEventChecks = [
 
 eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const eventId = parseInt(req.params.eventId);
-    try {
-        let eventFound = await PetEvent.findOne({
-            where: {id: eventId},
-            include: [
-                {model: User, attributes: ["id","username"]},
-                {model: Animal, as: "attendees"},
-                {model: Specie, as: "authorizedSpecies"}, {
-                    model: EventComment,
-                    as: "eventComments",
-                    include: [{model: User, attributes: ["username"]}]
-                }, {
-                    model: EventPicture,
-                    as: "eventPictures",
-                }
-            ]
-        });
-        if (!eventFound) {
-            res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
-            return;
-        }
-        res.status(200).json(eventFound)
-    } catch (e) {
-        logger.error(e)
+    let eventFound = await PetEvent.findOne({
+        where: {id: eventId},
+        include: [
+            {model: User, attributes: ["id", "username"]},
+            {model: Animal, as: "attendees"},
+            {model: Specie, as: "authorizedSpecies"}, {
+                model: EventComment,
+                as: "eventComments",
+                include: [{model: User, attributes: ["username"]}]
+            }, {
+                model: EventPicture,
+                as: "eventPictures",
+            }
+        ]
+    });
+    if (!eventFound) {
+        res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
+        return;
     }
+    res.status(200).json(eventFound)
 });
 
 /***
@@ -144,7 +140,7 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req: Authentic
         res.status(200).json(event)
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Unable to create this event"})
+        res.status(500).json({message: "Unable to create this event"})
     }
 });
 
@@ -221,7 +217,7 @@ eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, 
         res.status(200).json(update);
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Unable to update the event"});
+        res.status(500).json({message: "Unable to update the event."});
     }
 });
 

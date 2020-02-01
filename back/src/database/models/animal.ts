@@ -12,7 +12,6 @@ import {
     HasManyAddAssociationMixin, HasManyHasAssociationMixin, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin
 } from 'sequelize';
 import {db} from '../connection'
-import {Specie} from "./specie";
 import {PetEvent} from "./event";
 import {AnimalPicture} from "./animalPicture";
 
@@ -31,8 +30,8 @@ export class Animal extends Model {
     public addEvent!: BelongsToManyAddAssociationMixin<PetEvent, number>;
     public addEvents!: BelongsToManyAddAssociationsMixin<PetEvent, number>;
     public setEvents!: BelongsToManySetAssociationsMixin<PetEvent, number>;
-    public removeEvent!:BelongsToManyRemoveAssociationMixin<PetEvent,number>;
-    public removeEvents!:BelongsToManyRemoveAssociationsMixin<PetEvent,number>;
+    public removeEvent!: BelongsToManyRemoveAssociationMixin<PetEvent, number>;
+    public removeEvents!: BelongsToManyRemoveAssociationsMixin<PetEvent, number>;
 
     public getAnimalPictures!: HasManyGetAssociationsMixin<AnimalPicture>;
     public addAnimalPicture!: HasManyAddAssociationMixin<AnimalPicture, number>;
@@ -48,15 +47,15 @@ export class Animal extends Model {
 
     public static associations: {
         events: Association<Animal, PetEvent>;
-        pictures: Association<AnimalPicture,Animal>;
+        pictures: Association<AnimalPicture, Animal>;
     }
 }
 
 /***
- * Function used to initialize the User Model.
+ * Function used to initialize the Animal Model.
  ***/
 
-const initAnimalModel = async function():Promise<void> {
+const initAnimalModel = async function (): Promise<void> {
     Animal.init({
         id: {
             type: DataTypes.INTEGER.UNSIGNED,

@@ -1,4 +1,4 @@
-import {Request, Response, Router} from "express";
+import {Response, Router} from "express";
 import {searchPlaces} from "../../core/placesAPI/getPlaces";
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
@@ -28,7 +28,7 @@ placesRouter.get('/search', getSearchPlacesCheck, inputValidationMW, async (req:
         res.send(results);
     } catch (e) {
         logger.error(e);
-        res.status(503).json({message: "Unable to get Places API results"});
+        res.status(503).json({message: "Unable to get Places API results."});
     }
 });
 
