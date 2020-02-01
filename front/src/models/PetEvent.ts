@@ -17,5 +17,5 @@ export interface PetEvent {
 	specieIds?: Array<number>;
 	attendees?: Animal[];
 	eventComments?: EventComment[];
-	eventsPictures?: Picture[];
+	eventPictures?: Picture[];
 }

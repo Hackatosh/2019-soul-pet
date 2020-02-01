@@ -1,10 +1,10 @@
 import React, {Component, FormEvent} from 'react';
 import {RouteComponentProps} from 'react-router-dom';
-import {PetEvent, NoImage, EventComment, Animal} from '../models';
+import {PetEvent, NoImage, EventComment, Directory, Animal} from '../models';
 import { history } from '../helpers';
 import {Button, Spinner, Form, OverlayTrigger, Popover, Tabs, Tab} from "react-bootstrap";
-import { AuthenticationService, AnimalService, CommentsService, EventService} from "../services";
-import { DeleteConfirmation, SquareImage, Comment, UserBadge, AnimalCard} from "../components";
+import { AuthenticationService, AnimalService, CommentsService, EventService, PictureService} from "../services";
+import { DeleteConfirmation, SquareImage, Comment, UserBadge, AnimalCard, Gallery} from "../components";
 import {EventForm} from "../components/EventForm";
 import { Formik } from 'formik';
 import './EventPage.css';
@@ -27,15 +27,17 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
         if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
             history.push('/404');
 		this.state = {error: '', event: undefined, id: parseInt(this.props.match.params.id), showEventForm: false, showEventDelete: false, availablePets: []};
-		
+		this.loadPicture = this.loadPicture.bind(this);
+		this.deletePicture = this.deletePicture.bind(this);
 		this.addAnimal = this.addAnimal.bind(this);
     }
 
     componentDidMount() {
         EventService.get(parseInt(this.props.match.params.id)).then(event => {
 			this.setState({event: event});	
+			event.eventPictures?.reverse();
+			this.setState({event: event});
 			this.updateAvailablePets(event);
-			// TODO: Retrieve the user of the event to display it
 		}).catch(() => history.push('/404'));
 	}
 	
@@ -43,7 +45,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 		AnimalService.getAll(AuthenticationService.User.id).then(animals => {
 			this.setState({ availablePets: animals.filter(a => {
 				if (event.specieIds === undefined)
-					return true;
+					return false;
 				return event.specieIds.includes(a.specieId);
 			}) });
 		});
@@ -69,7 +71,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 				event.attendees = [this.state.availablePets[index]];
 			else	
 				event.attendees.push(this.state.availablePets[index]);
-			this.setState({ event: event, availablePets: this.state.availablePets });
+			this.setState({ event: event });
 		}).catch(e => this.setState({ error: e }));
 	}
 
@@ -87,6 +89,25 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 				return;
 			event.attendees.splice(index, 1);
 			this.setState({ event: event });
+		}).catch(e => this.setState({ error: e }));
+	}
+
+	private loadPicture(f: File) {
+		PictureService.postPicture(this.state.id, Directory.Events, f).then(p => {
+			p.content = URL.createObjectURL(f);
+			this.state.event?.eventPictures?.unshift(p);
+			this.setState({ event: this.state.event });
+		}).catch(e => this.setState({ error: e }));
+	}
+
+	private deletePicture(index: number) {
+		if (this.state.event?.eventPictures === undefined) {
+			this.setState({ error: 'Erreur lors de la suppression de l’image' });
+			return;
+		}
+		PictureService.deletePicture(this.state.event?.eventPictures[index], Directory.Events).then(() => {
+			this.state.event?.eventPictures?.splice(index, 1);
+			this.setState({ event: this.state.event });
 		}).catch(e => this.setState({ error: e }));
 	}
 
@@ -111,11 +132,11 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 				<div className="container">
 					<div className="row">
 						<div className="col-10 offset-1 col-md-3 mb-3">
-							{/*this.state.animal.animalPictures !== undefined && this.state.animal.animalPictures.length > 0 ? (
-							<SquareImage image={this.state.animal.animalPictures[0]} directory={Directory.Animals} key={this.state.animal.animalPictures[0].id} />
-							) : (*/
+							{event.eventPictures !== undefined && event.eventPictures.length > 0 ? (
+							<SquareImage image={event.eventPictures[0]} directory={Directory.Events} key={event.eventPictures[0].id} />
+							) : (
 							<SquareImage image={NoImage} />
-							/*)*/}
+							)}
 						</div>
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							<h1 className="mb-3">{event.name}</h1>
@@ -205,6 +226,13 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 									) :
 									event.eventComments?.map(c => <Comment comment={c} key={c.id} />)
 									}
+								</Tab>
+								<Tab eventKey="pictures" title="Galerie">
+									{event.eventPictures !== undefined &&
+									<Gallery pictures={event.eventPictures} directory={Directory.Events}
+										add={this.loadPicture} delete={this.deletePicture} 
+										deletable={event.userId === AuthenticationService.User.id ? true : 
+										event.eventPictures.filter(p => p.userId === AuthenticationService.User.id).map(p => p.id)}/>}
 								</Tab>
 							</Tabs>
 						</div>

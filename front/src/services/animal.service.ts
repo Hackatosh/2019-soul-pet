@@ -1,4 +1,4 @@
-import { Animal, Specie, Picture } from "../models";
+import { Animal, Specie } from "../models";
 import { httpClient } from "../helpers";
 import { EventService } from ".";
 
@@ -45,35 +45,6 @@ export class AnimalService {
 	 */
 	static async getSingle(id: number): Promise<Animal> {
 		return httpClient.get<Animal>(`/animals/${id}`, true).then(AnimalService.revive).catch(() => Promise.reject('Erreur lors de la récupération de l’animal'));
-	}
-	
-	/**
-	 * Retrieves the pictures of an animal.
-	 * @param id the ID of the animal
-	 * @returns an array of Picture
-	 */
-	static async getPictures(id: number): Promise<Picture[]> {
-		return httpClient.get<Picture[]>(`/pictures/animals/${id}`, true).catch(() => Promise.reject('Erreur lors de la récupération des images'));
-	}
-
-	/**
-	 * Posts a picture associated with an animal.
-	 * @param id the ID of the animal
-	 * @param picture the picture to post, as a blob
-	 * @returns the Picture object
-	 */
-	static async postPicture(id: number, picture: Blob): Promise<Picture> {
-		const form = new FormData();
-		form.append('picture', picture);
-		return httpClient.post<Picture>(`/pictures/animals/${id}`, form, true).catch(() => Promise.reject('Erreur lors de l’envoi de l’image'));
-	}
-
-	/**
-	 * Deletes a picture.
-	 * @param picture the picture to delete
-	 */
-	static async deletePicture(picture: Picture) {
-		return httpClient.delete(`/pictures/animals/?filename=${picture.filename}`, true).catch(() => Promise.reject('Erreur lors de la suppression de l’image'));
 	}
 
 	/**

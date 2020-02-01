@@ -15,4 +15,36 @@ export class PictureService {
 			return picture;
 		}, () => Promise.reject('Erreur lors de la récupération de l’image'));
 	}
+
+	/**
+	 * Retrieves the pictures of an object.
+	 * @param id the ID of the object
+	 * @param directory the directory associated with the object
+	 * @returns an array of Picture
+	 */
+	static async getPictures(id: number, directory: Directory): Promise<Picture[]> {
+		return httpClient.get<Picture[]>(`/pictures/${directory}/${id}`, true).catch(() => Promise.reject('Erreur lors de la récupération des images'));
+	}
+
+	/**
+	 * Posts a picture associated with an object.
+	 * @param id the ID of the object
+	 * @param directory the directory associated with the object
+	 * @param picture the picture to post, as a blob
+	 * @returns the Picture object
+	 */
+	static async postPicture(id: number, directory: Directory, picture: Blob): Promise<Picture> {
+		const form = new FormData();
+		form.append('picture', picture);
+		return httpClient.post<Picture>(`/pictures/${directory}/${id}`, form, true).catch(() => Promise.reject('Erreur lors de l’envoi de l’image'));
+	}
+
+	/**
+	 * Deletes a picture.
+	 * @param picture the picture to delete
+	 * @param directory the directory of the picture
+	 */
+	static async deletePicture(picture: Picture, directory: Directory) {
+		return httpClient.delete(`/pictures/${directory}/?filename=${picture.filename}`, true).catch(() => Promise.reject('Erreur lors de la suppression de l’image'));
+	}
 }

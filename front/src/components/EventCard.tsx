@@ -1,15 +1,33 @@
 import React, {Component} from 'react';
-import peche from '../resources/events/peche.jpg';
 import {Link} from 'react-router-dom';
-import {PetEvent} from '../models';
-import { UserBadge } from '.';
+import {PetEvent, Directory, Picture, NoImage} from '../models';
+import { UserBadge, SquareImage } from '.';
+import { PictureService } from '../services';
 
 interface EventCardProps {
 	event: PetEvent;
 	small?: boolean;
 }
 
-export class EventCard extends Component<EventCardProps> {
+interface EventCardState {
+	picture: Picture;
+}
+
+export class EventCard extends Component<EventCardProps, EventCardState> {
+	constructor(props: EventCardProps) {
+		super(props);
+		this.state = { picture: {} as Picture }
+	}
+
+	componentDidMount() {
+		PictureService.getPictures(this.props.event.id, Directory.Events).then(pictures => {
+			if (pictures.length >= 1)
+				this.setState({ picture: pictures[pictures.length - 1] });
+			else
+				this.setState({ picture: NoImage });
+		});
+	}
+
     render() {
 		const {event} = this.props;
 		const isSameDay = event.beginDate.getTime() === event.endDate.getTime();
@@ -27,7 +45,7 @@ export class EventCard extends Component<EventCardProps> {
 			);
         return (
             <div className="card">
-				<img src={peche} className="card-img-top" alt="Peche"/>
+				<SquareImage image={this.state.picture} directory={Directory.Events} key={this.state.picture.filename} />
 				<div className="card-body">
 					<h5 className="card-title">{event.name}</h5>
 					<p className="card-text">
