@@ -18,7 +18,7 @@ export interface EventPageState {
     event: PetEvent | undefined;
     showEventForm: boolean;
 	showEventDelete: boolean;
-	availablePets: Animal[];
+	possiblePets: Animal[];
 }
 
 export class EventPage extends Component<EventCardProps, EventPageState> {
@@ -26,7 +26,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
         super(props);
         if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
             history.push('/404');
-		this.state = {error: '', event: undefined, id: parseInt(this.props.match.params.id), showEventForm: false, showEventDelete: false, availablePets: []};
+		this.state = {error: '', event: undefined, id: parseInt(this.props.match.params.id), showEventForm: false, showEventDelete: false, possiblePets: []};
 		this.loadPicture = this.loadPicture.bind(this);
 		this.deletePicture = this.deletePicture.bind(this);
 		this.addAnimal = this.addAnimal.bind(this);
@@ -37,13 +37,13 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 			this.setState({event: event});	
 			event.eventPictures?.reverse();
 			this.setState({event: event});
-			this.updateAvailablePets(event);
+			this.updatePossiblePets(event);
 		}).catch(() => history.push('/404'));
 	}
 	
-	private updateAvailablePets(event: PetEvent) {
+	private updatePossiblePets(event: PetEvent) {
 		AnimalService.getAll(AuthenticationService.User.id).then(animals => {
-			this.setState({ availablePets: animals.filter(a => {
+			this.setState({ possiblePets: animals.filter(a => {
 				if (event.specieIds === undefined)
 					return false;
 				return event.specieIds.includes(a.specieId);
@@ -63,14 +63,14 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 		if (this.state.event === undefined)
 			return;
 		const event = this.state.event;
-		const index = this.state.availablePets.findIndex(a => a.id === id);
+		const index = this.state.possiblePets.findIndex(a => a.id === id);
 		if (index === -1)
 			return;
 		EventService.addAnimal(this.state.id, id).then(() => {
 			if (event.attendees === undefined)
-				event.attendees = [this.state.availablePets[index]];
+				event.attendees = [this.state.possiblePets[index]];
 			else	
-				event.attendees.push(this.state.availablePets[index]);
+				event.attendees.push(this.state.possiblePets[index]);
 			this.setState({ event: event });
 		}).catch(e => this.setState({ error: e }));
 	}
@@ -169,11 +169,11 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 								<Tab eventKey="pets" title="Animaux inscrits">
 									<div className="row">
 										<div className="col-lg-4 mb-4">
-											{this.state.availablePets.length === 0 ? (
+											{this.state.possiblePets.length === 0 ? (
 											<div className="alert alert-info">Aucun de vos animaux ne peut être inscrit à cet événement…</div>
 											) : (
 											<ul className="list-group w-100">
-												{this.state.availablePets.map(pet => {
+												{this.state.possiblePets.map(pet => {
 													if (pet.id === undefined)
 														return null;
 													const id = pet.id;
@@ -239,7 +239,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 					</div>
 					<EventForm show={this.state.showEventForm} event={this.state.event} onHide={() => this.showEventForm(false)} onSuccess={e => {
 						this.setState({ event: e });
-						this.updateAvailablePets(e);
+						this.updatePossiblePets(e);
 					}} />
 					<DeleteConfirmation prompt='Écrivez le nom de l’évènement pour confirmer la suppression' expected={this.state.event?.name} show={this.state.showEventDelete} onHide={() => this.showEventDelete(false)} onSuccess={() => {
 						EventService.delete(this.state.id).then(() => history.push('/events/list')).catch(() => this.setState({ error: 'Erreur lors de la suppression' }))
