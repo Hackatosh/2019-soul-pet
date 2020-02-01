@@ -36,7 +36,7 @@ export class EventCard extends Component<EventCardProps, EventCardState> {
 			return (
 				<div className="card">
 					<Link to={`/events/${event.id}`} className="stretched-link text-decoration-none text-reset">
-						<img src={peche} className="card-img-top" alt="Peche"/>
+						<SquareImage image={this.state.picture} directory={Directory.Events} key={this.state.picture.filename} />
 						<div className="card-body">
 							<p className="card-text">{event.name}</p>
 						</div>
