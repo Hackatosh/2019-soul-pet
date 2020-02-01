@@ -5,6 +5,8 @@ Welcome to Soul Pet repository !
 Soul Pet is a social network for all your animals ! 
 The project was initiated as an academic project at [CentraleSupélec](https://www.centralesupelec.fr/).
 
+A running version of the project is available [here](https://soul-pet.cs-campus.fr/).
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
