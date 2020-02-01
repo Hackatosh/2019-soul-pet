@@ -1,6 +1,5 @@
 import {Response, Router} from "express";
-import {ContentType, deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
-import {Animal} from "../../database/models/animal";
+import {deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
@@ -12,7 +11,7 @@ import {logger} from "../../core/logger";
 const eventPicturesRouter = Router();
 
 /***
- * This route allows to list all the pictures for a given event.
+ * This route allows to list all the pictures for a given event, identified by the provided eventId.
  ***/
 
 const getEventPicturesChecks = [
@@ -60,7 +59,7 @@ eventPicturesRouter.get('/', getEventPictureChecks, inputValidationMW, async (re
 
 /***
  * This route allows to upload a picture for a given animal into the EventPictures folder.
- * The event picture is associated to the event profile identified by the provided eventId.
+ * The event picture is associated to the event identified by the provided eventId.
  ***/
 
 const postEventPicturesChecks = [

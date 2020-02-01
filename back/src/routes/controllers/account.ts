@@ -14,7 +14,7 @@ import {EventPicture} from "../../database/models/eventPicture";
 const accountRouter = Router();
 
 /***
- * This route is used to get all public information about a specific user, identified by the provided userId.
+ * This route is used to get all the public information about a specific user, identified by the provided userId.
  * The information includes the list of the animals belonging to the user, the events he is organizing, the comments he has posted and the pictures he has uploaded for events.
  ***/
 

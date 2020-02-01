@@ -1,5 +1,5 @@
 import {Response, Router} from "express";
-import {ContentType, deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
+import {deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
 import {Animal} from "../../database/models/animal";
 import {AnimalPicture} from "../../database/models/animalPicture";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
@@ -11,7 +11,7 @@ import {logger} from "../../core/logger";
 const animalPicturesRouter = Router();
 
 /***
- * This route allows to list all the pictures for a given animal.
+ * This route allows to list all the pictures for a given animal, identified by the provided animalId.
  ***/
 
 const getAnimalPicturesChecks = [

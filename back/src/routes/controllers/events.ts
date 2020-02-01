@@ -96,7 +96,7 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: Aut
 });
 
 /***
- * This route is used to create a new event in the DB, using the provided informations.
+ * This route is used to create a new event in the DB, using the provided information.
  ***/
 
 const postEventChecks = [

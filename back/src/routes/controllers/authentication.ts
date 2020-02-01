@@ -13,7 +13,7 @@ import {logger} from "../../core/logger";
 const authenticationRouter = Router();
 
 /***
- * This route allows the creation of a user in the DB, using basic information provided in the request (username, password and email).
+ * This route allows the creation of a user in the DB, using the basic information provided in the request (username, password and email).
  ***/
 
 const registerChecks = [
