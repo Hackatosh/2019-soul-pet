@@ -92,7 +92,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 								<Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button>
 								<Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button>
 							</div>) : (
-									<React.Fragment>Appartient à <UserBadge user={this.state.user} /></React.Fragment>
+								<p>Appartient à <UserBadge user={this.state.user} /></p>
 							)}
 							<h2>Événements</h2>
 							{this.state.animal.events === undefined || this.state.animal.events.length === 0 ? (
