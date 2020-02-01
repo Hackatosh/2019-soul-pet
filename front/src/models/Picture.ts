@@ -11,5 +11,6 @@ export const NoImage: Picture = {
 }
 
 export enum Directory {
-	Animals = 'animals'
+	Animals = 'animals',
+	Events = 'events'
 }

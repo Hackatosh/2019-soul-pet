@@ -56,5 +56,5 @@ export class EventService {
      */
     static async delete(id: number): Promise<null> {
         return httpClient.delete(`/events/${id}`, true).then(() => null).catch(() => Promise.reject(`Erreur lors de la suppression de l'évènement d'identifiant ${id}`));
-    }
+	}
 }
