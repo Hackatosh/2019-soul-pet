@@ -34,7 +34,6 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
         EventService.get(parseInt(this.props.match.params.id)).then(event => {
 			event.eventPictures?.reverse();
 			this.setState({event: event});
-			// TODO: Retrieve the user of the event to display it
 		}).catch(() => history.push('/404'));
     }
 
