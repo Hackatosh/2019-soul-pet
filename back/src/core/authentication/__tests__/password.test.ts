@@ -1,3 +1,7 @@
+/***
+ * Example of tests that could be used on the backend part.
+ ***/
+
 import {compareUserPassword} from '../password';
 import { User } from '../../../database/models/user';
 
@@ -10,7 +14,7 @@ test('Correct passowrd', () => {
     });
 });
 
-test('Empty passowrd', () => {
+test('Empty password', () => {
     compareUserPassword(user, '').then(result => {
         expect(result).toBe(false);
     });

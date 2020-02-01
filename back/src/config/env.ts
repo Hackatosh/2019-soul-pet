@@ -94,8 +94,29 @@ if (PLACES_API_SECRET == undefined) {
     throw new Error('PLACES_API_SECRET is not a valid env variable');
 }
 
-const env = {
-    SERVER_PORT,
+interface CustomEnvironment {
+    SERVER_PORT: number;
+    CORS_HOST: string;
+    LOG_IN_FILE: boolean;
+    TOKEN_LIFETIME_SEC: number;
+    DB_HOST: string;
+    DB_PORT: number;
+    DB_USER: string;
+    DB_PASSWORD: string;
+    DB_NAME: string;
+    SECRET_KEY: string;
+    FTP_HOST: string;
+    FTP_PORT: number;
+    FTP_USER: string;
+    FTP_PASSWORD: string;
+    FTP_PATH_ANIMAL_PICTURES: string;
+    FTP_PATH_EVENT_PICTURES: string;
+    PLACES_API_ID: string;
+    PLACES_API_SECRET: string;
+}
+
+const env: CustomEnvironment = {
+    SERVER_PORT: parseInt(SERVER_PORT),
     CORS_HOST,
     LOG_IN_FILE: !!LOG_IN_FILE,
     TOKEN_LIFETIME_SEC: parseInt(TOKEN_LIFETIME_SEC),
@@ -106,7 +127,7 @@ const env = {
     DB_NAME,
     SECRET_KEY,
     FTP_HOST,
-    FTP_PORT,
+    FTP_PORT: parseInt(FTP_PORT),
     FTP_USER,
     FTP_PASSWORD,
     FTP_PATH_ANIMAL_PICTURES,

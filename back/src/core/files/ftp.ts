@@ -22,7 +22,7 @@ import {logger} from "../logger";
 
 const config: ConnectConfig = {
     host: env.FTP_HOST,
-    port: parseInt(env.FTP_PORT),
+    port: env.FTP_PORT,
     username: env.FTP_USER,
     password: env.FTP_PASSWORD,
 };

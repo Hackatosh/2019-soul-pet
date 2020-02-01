@@ -1,3 +1,7 @@
+/***
+ * This files defines functions used to interact with the Four Square API to obtain information about places.
+ ***/
+
 import {env} from "../../config/env";
 
 const request = require('request-promise-native');
