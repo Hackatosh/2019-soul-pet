@@ -13,7 +13,8 @@ const events: PetEvent[] = [{
 	beginDate: new Date(),
 	endDate: new Date(),
 	description: '',
-	authorizedSpecies: [{ id: 0, name: '' }]
+	authorizedSpecies: [{ id: 0, name: '' }],
+	eventComments: [{ userId: 0, eventId: 1, text: '', createdAt: new Date() }]
 },
 {
 	id: 2,
