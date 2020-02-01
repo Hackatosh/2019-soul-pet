@@ -1,6 +1,5 @@
 import {Response, Router} from "express";
-import {ContentType, deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
-import {Animal} from "../../database/models/animal";
+import {deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
@@ -12,7 +11,7 @@ import {logger} from "../../core/logger";
 const eventPicturesRouter = Router();
 
 /***
- * This route allows to list all the pictures for a given event.
+ * This route allows to list all the pictures for a given event, identified by the provided eventId.
  ***/
 
 const getEventPicturesChecks = [
@@ -35,7 +34,7 @@ eventPicturesRouter.get('/:eventId', getEventPicturesChecks, inputValidationMW, 
  ***/
 
 const getEventPictureChecks = [
-    check('filename').notEmpty().isString().isLength({max:128}).withMessage("filename must be a string shorter than 128 characters"),
+    check('filename').notEmpty().isString().isLength({max: 128}).withMessage("filename must be a string shorter than 128 characters"),
 ];
 
 eventPicturesRouter.get('/', getEventPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -60,7 +59,7 @@ eventPicturesRouter.get('/', getEventPictureChecks, inputValidationMW, async (re
 
 /***
  * This route allows to upload a picture for a given animal into the EventPictures folder.
- * The event picture is associated to the event profile identified by the provided eventId.
+ * The event picture is associated to the event identified by the provided eventId.
  ***/
 
 const postEventPicturesChecks = [
@@ -79,7 +78,7 @@ eventPicturesRouter.post('/:eventId', createPictureStorage("picture"), postEvent
         } else {
             try {
                 const filename = await uploadToSFTP(buffer, Folder.EventPictures);
-                const eventPicture = await EventPicture.create({eventId,userId, filename, contentType});
+                const eventPicture = await EventPicture.create({eventId, userId, filename, contentType});
                 res.status(200).json(eventPicture);
             } catch (e) {
                 logger.error(e);
@@ -98,7 +97,7 @@ eventPicturesRouter.post('/:eventId', createPictureStorage("picture"), postEvent
  ***/
 
 const deleteEventPictureChecks = [
-    check('filename').notEmpty().isString().isLength({max:128}).withMessage("filename must be a string shorter than 128 characters"),
+    check('filename').notEmpty().isString().isLength({max: 128}).withMessage("filename must be a string shorter than 128 characters"),
 ];
 
 eventPicturesRouter.delete('/', deleteEventPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -109,10 +108,10 @@ eventPicturesRouter.delete('/', deleteEventPictureChecks, inputValidationMW, asy
         res.status(404).json({message: "This file does not exist."});
         return;
     }
-    const event = await PetEvent.findOne({where:{id: file.eventId}});
+    const event = await PetEvent.findOne({where: {id: file.eventId}});
     if (!event) {
         res.status(404).json({message: "This event does not exist."});
-    } else if (file.userId !== userId && event.userId !== userId ) {
+    } else if (file.userId !== userId && event.userId !== userId) {
         res.status(403).json({message: "You don't have access to this picture."});
     } else {
         await file.destroy();

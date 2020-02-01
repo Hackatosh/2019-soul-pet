@@ -1,4 +1,4 @@
-import {Request, Response, Router} from 'express';
+import {Response, Router} from 'express';
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
 import {revokeToken} from "../../core/authentication/tokens";
 

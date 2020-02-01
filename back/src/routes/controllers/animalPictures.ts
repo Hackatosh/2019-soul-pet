@@ -1,5 +1,5 @@
 import {Response, Router} from "express";
-import {ContentType, deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
+import {deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
 import {Animal} from "../../database/models/animal";
 import {AnimalPicture} from "../../database/models/animalPicture";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
@@ -11,7 +11,7 @@ import {logger} from "../../core/logger";
 const animalPicturesRouter = Router();
 
 /***
- * This route allows to list all the pictures for a given animal.
+ * This route allows to list all the pictures for a given animal, identified by the provided animalId.
  ***/
 
 const getAnimalPicturesChecks = [
@@ -34,7 +34,7 @@ animalPicturesRouter.get('/:animalId', getAnimalPicturesChecks, inputValidationM
  ***/
 
 const getAnimalPictureChecks = [
-    check('filename').notEmpty().isString().isLength({max:128}).withMessage("filename must be a string shorter than 128 characters"),
+    check('filename').notEmpty().isString().isLength({max: 128}).withMessage("filename must be a string shorter than 128 characters"),
 ];
 
 animalPicturesRouter.get('/', getAnimalPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -99,7 +99,7 @@ animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAni
  ***/
 
 const deleteAnimalPictureChecks = [
-    check('filename').notEmpty().isString().isLength({max:128}).withMessage("filename must be a string shorter than 128 characters"),
+    check('filename').notEmpty().isString().isLength({max: 128}).withMessage("filename must be a string shorter than 128 characters"),
 ];
 
 animalPicturesRouter.delete('/', deleteAnimalPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -113,11 +113,9 @@ animalPicturesRouter.delete('/', deleteAnimalPictureChecks, inputValidationMW, a
     const pet = await Animal.findOne({where: {id: file.animalId}});
     if (!pet) {
         res.status(404).json({message: "This animal does not exist."});
-    }
-    else if (pet.userId !== userId) {
+    } else if (pet.userId !== userId) {
         res.status(403).json({message: "You don't have access to this animal."});
-    }
-    else {
+    } else {
         await file.destroy();
         try {
             await deleteFromSFTP(Folder.AnimalPictures, filename);

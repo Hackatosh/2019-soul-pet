@@ -65,7 +65,7 @@ animalsRouter.get('/:animalId', getUserAnimalChecks, inputValidationMW, async (r
 const postAnimalChecks = [
     check('userId').notEmpty().isNumeric().withMessage("userId must be a number"),
     check('specieId').notEmpty().isNumeric().withMessage("specieId must be a number"),
-    check('name').notEmpty().isString().isLength({max:128}).withMessage("name must be a valid string shorter than 128 characters"),
+    check('name').notEmpty().isString().isLength({max: 128}).withMessage("name must be a valid string shorter than 128 characters"),
     check('birthdate').notEmpty().custom(date => isDateValid(date)).withMessage("birthdate must be a correct date"),
 ];
 
@@ -98,7 +98,7 @@ animalsRouter.post('/', postAnimalChecks, inputValidationMW, async (req: Authent
 const putAnimalChecks = [
     check('animalId').notEmpty().isNumeric().withMessage("animalId must be a number"),
     check('specieId').notEmpty().isNumeric().withMessage("specieId should be a number").optional(),
-    check('name').notEmpty().isString().isLength({max:128}).withMessage("name should be a valid string shorter than 128 characters").optional(),
+    check('name').notEmpty().isString().isLength({max: 128}).withMessage("name should be a valid string shorter than 128 characters").optional(),
     check('birthdate').notEmpty().custom(date => isDateValid(date)).withMessage("birthdate should be a correct date").optional(),
 ];
 

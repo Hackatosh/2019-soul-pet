@@ -14,7 +14,7 @@ import {EventPicture} from "../../database/models/eventPicture";
 const accountRouter = Router();
 
 /***
- * This route is used to get all public information about a specific user, identified by the provided userId.
+ * This route is used to get all the public information about a specific user, identified by the provided userId.
  * The information includes the list of the animals belonging to the user, the events he is organizing, the comments he has posted and the pictures he has uploaded for events.
  ***/
 
@@ -56,9 +56,15 @@ accountRouter.get('/:userId', getEventChecks, inputValidationMW, async (req: Aut
 
 const putAccountChecks = [
     check('userId').notEmpty().isNumeric().withMessage("userId must be a number"),
-    check('newPassword').isString().isLength({min: 8, max: 128}).withMessage("newPassword should be a valid string longer than 8 characters and shorter than 128 characters").optional(),
-    check('username').isString().isLength({min: 3, max: 128}).withMessage("username should be a valid string longer than 3 characters and shorter than 128 characters").optional(),
-    check('email').notEmpty().isEmail().isLength({max:128}).withMessage("email should be a valid email shorter than 128 characters").optional()
+    check('newPassword').isString().isLength({
+        min: 8,
+        max: 128
+    }).withMessage("newPassword should be a valid string longer than 8 characters and shorter than 128 characters").optional(),
+    check('username').isString().isLength({
+        min: 3,
+        max: 128
+    }).withMessage("username should be a valid string longer than 3 characters and shorter than 128 characters").optional(),
+    check('email').notEmpty().isEmail().isLength({max: 128}).withMessage("email should be a valid email shorter than 128 characters").optional()
 ];
 
 accountRouter.put('/:userId', putAccountChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
