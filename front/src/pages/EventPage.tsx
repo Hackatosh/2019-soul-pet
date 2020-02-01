@@ -129,7 +129,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 								Organisé par {event.user !== undefined ? <UserBadge user={event.user} /> : "Inconnu·e"}
 							</p>
 							<ul className="list-group list-group-horizontal-sm mb-4 w-100">
-								<li className="list-group-item">{event.location ? `Localisation de l'évènement : ${event.location}` : 'Pas de localisation indiquée'}</li>
+								<li className="list-group-item line-breaks">{event.location ? `Localisation : ${event.location}` : 'Pas de localisation indiquée'}</li>
 								{isSameDay ? (
 									<li className="list-group-item">Le {event.beginDate.toLocaleDateString(undefined, {year: "numeric", month: "long", day: "numeric"})}</li>
 								) : (
@@ -143,7 +143,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 								</OverlayTrigger>
 							</ul>
 							<h2>Description</h2>
-							<p className="lead">{event.description}</p>
+							<p className="lead line-breaks">{event.description}</p>
 							<Tabs defaultActiveKey="comments" id="event-content" className="mt-4">
 								<Tab eventKey="pets" title="Animaux inscrits">
 									<div className="row">
