@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnimalService, AuthenticationService } from '../services';
+import { AnimalService, AuthenticationService, PictureService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './AnimalPage.css';
 import { AnimalForm, DeleteConfirmation, SquareImage, Gallery } from '../components';
@@ -37,7 +37,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 			this.setState({ animal: a, canModify: a.userId === AuthenticationService.User.id });
 			if (a.userId !== AuthenticationService.User.id)
 				AuthenticationService.getProfile(a.userId).then(u => this.setState({ user: u }));
-			AnimalService.getPictures(this.state.id).then(pictures => {
+			PictureService.getPictures(this.state.id, Directory.Animals).then(pictures => {
 				a.animalPictures = pictures.reverse()
 				this.setState({ animal: a });
 			});
@@ -53,7 +53,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 	}
 
 	private loadPicture(f: File) {
-		AnimalService.postPicture(this.state.id, f).then(p => {
+		PictureService.postPicture(this.state.id, Directory.Animals, f).then(p => {
 			p.content = URL.createObjectURL(f);
 			this.state.animal?.animalPictures?.unshift(p);
 			this.setState({ animal: this.state.animal });
@@ -65,7 +65,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 			this.setState({ error: 'Erreur lors de la suppression de l’image' });
 			return;
 		}
-		AnimalService.deletePicture(this.state.animal?.animalPictures[index]).then(_ => {
+		PictureService.deletePicture(this.state.animal?.animalPictures[index], Directory.Animals).then(_ => {
 			this.state.animal?.animalPictures?.splice(index, 1);
 			this.setState({ animal: this.state.animal });
 		}).catch(e => this.setState({ error: e }));
@@ -134,7 +134,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 							<h2>Galerie</h2>
 							{this.state.animal.animalPictures !== undefined &&
 							<Gallery pictures={this.state.animal.animalPictures} directory={Directory.Animals}
-							delete={this.deletePicture} add={this.state.canModify ? this.loadPicture : undefined} />}
+							delete={this.state.canModify ? this.deletePicture : undefined} add={this.state.canModify ? this.loadPicture : undefined} deletable={true} />}
 						</div>
 					</div>
 					<AnimalForm show={this.state.showAnimalForm} animal={this.state.animal} onHide={() => this.showAnimalForm(false)} onSuccess={a => this.setState({ animal: a })} />
