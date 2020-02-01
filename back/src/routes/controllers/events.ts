@@ -24,7 +24,7 @@ const eventsRouter = Router();
  ***/
 
 const searchEvents = [
-    check('keywords').notEmpty().isString().isLength({max:128}).withMessage("keywords must be a valid string shorter than 128 characters").optional(),
+    check('keywords').notEmpty().isString().isLength({max: 128}).withMessage("keywords must be a valid string shorter than 128 characters").optional(),
     check('beginDate').notEmpty().custom(date => isDateValid(date)).withMessage("beginDate should be a valid datetime").optional(),
     check('endDate').notEmpty().custom(date => isDateValid(date)).withMessage("endDate should be a valid datetime").optional()
 ];
@@ -100,12 +100,12 @@ eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: Aut
  ***/
 
 const postEventChecks = [
-    check('name').notEmpty().isString().isLength({max:128}).withMessage("name must be a valid string shorter than 128 characters"),
+    check('name').notEmpty().isString().isLength({max: 128}).withMessage("name must be a valid string shorter than 128 characters"),
     check('beginDate').notEmpty().custom(date => isDateValid(date)).withMessage("beginDate must be a valid datetime"),
     check('endDate').notEmpty().custom(date => isDateValid(date)).withMessage("endDate must be a valid datetime").custom((date, {req}) => isDateTimeAfter(date, req.body.beginDate)).withMessage("endDate must be after beginDate"),
     check('userId').notEmpty().isNumeric().withMessage("userId must be a valid number"),
-    check('location').notEmpty().isString().isLength({max:128}).isLength({max:128}).withMessage("location should be a valid string shorter than 128 characters").optional(),
-    check('description').notEmpty().isString().isLength({max:128}).withMessage("description must be a valid string shorter than 128 characters"),
+    check('location').notEmpty().isString().isLength({max: 128}).isLength({max: 128}).withMessage("location should be a valid string shorter than 128 characters").optional(),
+    check('description').notEmpty().isString().isLength({max: 128}).withMessage("description must be a valid string shorter than 128 characters"),
     check('specieIds').isArray().withMessage("specieIds must be an array of number"),
     check('specieIds').custom(array => isNumericArray(array)).withMessage("specieIds must be an array of number"),
 ];
@@ -150,11 +150,11 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req: Authentic
 
 const putEventChecks = [
     check('eventId').notEmpty().isNumeric().withMessage("eventId must be a valid number"),
-    check('name').notEmpty().isString().isLength({max:128}).withMessage("name should be a valid string shorter than 128 characters").optional(),
+    check('name').notEmpty().isString().isLength({max: 128}).withMessage("name should be a valid string shorter than 128 characters").optional(),
     check('beginDate').notEmpty().custom(date => isDateValid(date)).withMessage("beginDate should be a valid datetime").optional(),
     check('endDate').notEmpty().custom(date => isDateValid(date)).withMessage("endDate should be a valid datetime").custom((date, {req}) => isDateTimeAfter(date, req.body.beginDate)).withMessage("endDate must be after beginDate").optional(),
-    check('location').notEmpty().isString().isLength({max:128}).withMessage("location should be a valid string shorter than 128 characters").optional(),
-    check('description').notEmpty().isString().isLength({max:128}).withMessage("description should be a valid string shorter than 128 characters").optional(),
+    check('location').notEmpty().isString().isLength({max: 128}).withMessage("location should be a valid string shorter than 128 characters").optional(),
+    check('description').notEmpty().isString().isLength({max: 128}).withMessage("description should be a valid string shorter than 128 characters").optional(),
     check('specieIds').isArray().withMessage("specieIds should be an array of numbers").optional(),
     check('specieIds').custom(array => isNumericArray(array)).withMessage("specieIds should be an array of numbers").optional(),
 ];

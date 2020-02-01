@@ -17,9 +17,15 @@ const authenticationRouter = Router();
  ***/
 
 const registerChecks = [
-    check('username').isString().isLength({min: 3, max:128}).withMessage("username must be a valid string longer than 3 characters and shorter than 128 characters"),
-    check('password').isString().isLength({min: 8, max:128}).withMessage("password must be a valid string longer than 8 characters and shorter than 128 characters"),
-    check('email').isEmail().isLength({max:128}).withMessage("email must be a valid email shorter than 128 characters"),
+    check('username').isString().isLength({
+        min: 3,
+        max: 128
+    }).withMessage("username must be a valid string longer than 3 characters and shorter than 128 characters"),
+    check('password').isString().isLength({
+        min: 8,
+        max: 128
+    }).withMessage("password must be a valid string longer than 8 characters and shorter than 128 characters"),
+    check('email').isEmail().isLength({max: 128}).withMessage("email must be a valid email shorter than 128 characters"),
 ];
 
 authenticationRouter.post('/register', registerChecks, inputValidationMW, async (req: Request, res: Response) => {
@@ -44,8 +50,11 @@ authenticationRouter.post('/register', registerChecks, inputValidationMW, async 
  ***/
 
 const loginChecks = [
-    check('password').isString().isLength({min: 8, max: 128}).withMessage("password must be a valid string longer than 8 characters and shorter than 128 characters."),
-    check('email').isEmail().isLength({max:128}).withMessage("email must be a valid email shorter than 128 characters."),
+    check('password').isString().isLength({
+        min: 8,
+        max: 128
+    }).withMessage("password must be a valid string longer than 8 characters and shorter than 128 characters."),
+    check('email').isEmail().isLength({max: 128}).withMessage("email must be a valid email shorter than 128 characters."),
 ];
 
 authenticationRouter.post('/login', loginChecks, inputValidationMW, async (req: Request, res: Response) => {

@@ -15,7 +15,7 @@ const getSearchPlacesCheck = [
     check('lat').notEmpty().isNumeric().withMessage("lat must be a number"),
     check('long').notEmpty().isNumeric().withMessage("long must be a number"),
     check('radius').notEmpty().isNumeric().withMessage("radius must be a number"),
-    check('placeType').notEmpty().isString().isLength({max:128}).withMessage("placeType must be string shorter than 128 characters")
+    check('placeType').notEmpty().isString().isLength({max: 128}).withMessage("placeType must be string shorter than 128 characters")
 ];
 
 placesRouter.get('/search', getSearchPlacesCheck, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {

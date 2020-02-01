@@ -56,9 +56,15 @@ accountRouter.get('/:userId', getEventChecks, inputValidationMW, async (req: Aut
 
 const putAccountChecks = [
     check('userId').notEmpty().isNumeric().withMessage("userId must be a number"),
-    check('newPassword').isString().isLength({min: 8, max: 128}).withMessage("newPassword should be a valid string longer than 8 characters and shorter than 128 characters").optional(),
-    check('username').isString().isLength({min: 3, max: 128}).withMessage("username should be a valid string longer than 3 characters and shorter than 128 characters").optional(),
-    check('email').notEmpty().isEmail().isLength({max:128}).withMessage("email should be a valid email shorter than 128 characters").optional()
+    check('newPassword').isString().isLength({
+        min: 8,
+        max: 128
+    }).withMessage("newPassword should be a valid string longer than 8 characters and shorter than 128 characters").optional(),
+    check('username').isString().isLength({
+        min: 3,
+        max: 128
+    }).withMessage("username should be a valid string longer than 3 characters and shorter than 128 characters").optional(),
+    check('email').notEmpty().isEmail().isLength({max: 128}).withMessage("email should be a valid email shorter than 128 characters").optional()
 ];
 
 accountRouter.put('/:userId', putAccountChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
