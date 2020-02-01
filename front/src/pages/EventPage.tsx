@@ -2,11 +2,12 @@ import React, {Component, FormEvent} from 'react';
 import {RouteComponentProps} from 'react-router-dom';
 import {PetEvent, NoImage, EventComment, Animal} from '../models';
 import { history } from '../helpers';
-import {Button, Spinner, Form, OverlayTrigger, Popover} from "react-bootstrap";
+import {Button, Spinner, Form, OverlayTrigger, Popover, Tabs, Tab} from "react-bootstrap";
 import { AuthenticationService, AnimalService, CommentsService, EventService} from "../services";
 import { DeleteConfirmation, SquareImage, Comment, UserBadge, AnimalCard} from "../components";
 import {EventForm} from "../components/EventForm";
 import { Formik } from 'formik';
+import './EventPage.css';
 
 export interface EventCardProps extends RouteComponentProps<{ id: string }> {
 }
@@ -143,67 +144,69 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 							</ul>
 							<h2>Description</h2>
 							<p className="lead">{event.description}</p>
-							<h2 className="mt-4 mb-3">Animaux inscrits</h2>
-							<div className="row">
-								<div className="col-lg-4 mb-4">
-									{this.state.availablePets.length === 0 ? (
-									<div className="alert alert-info">Aucun de vos animaux ne peut être inscrit à cet événement…</div>
-									) : (
-									<ul className="list-group w-100">
-										{this.state.availablePets.map(pet => {
-											if (pet.id === undefined)
-												return null;
-											const id = pet.id;
-											return (<li className="list-group-item d-flex justify-content-between align-items-center" key={id}>
-												<Form.Check type="switch" id={id.toString()} label={pet.name}
-												onChange={(e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).checked ? this.addAnimal(id) : this.removeAnimal(id)} value={id}
-												checked={event.attendees?.find(p => p.id === id) !== undefined} />
-											</li>);
-										})}
-									</ul>
-									)}
-								</div>
-								<div className="col-lg-8">
-									{event.attendees === undefined || event.attendees.length === 0 ? (
-									<div className="alert alert-info">Il n’y a aucun animal d’inscrit pour le moment…</div>
-									) : (
-									<div className="row row-cols-1 row-cols-sm-2">
-										{event.attendees.map(a => <div className="col mb-4" key={a.id}><AnimalCard animal={a} small /></div>)}
-									</div>)}
-								</div>
-							</div>
-						</div>
-						<div className="col-10 offset-1 offset-md-0 col-md-7">
-							<h2>Discussion</h2>
-							<Formik onSubmit={(values, {setSubmitting, resetForm}) => {
-								const comment: EventComment = {
-									userId: AuthenticationService.User.id,
-									eventId: event.id,
-									text: values.text,
-									createdAt: new Date()
-								};
-                        		CommentsService.post(comment).then(c => {
-                  c.user = AuthenticationService.User;
-									event.eventComments?.push(c);
-									this.forceUpdate();
-									resetForm();
-                            	}).catch(() => this.setState({ error: 'Erreur lors de l’envoi du commentaire' })).finally(() => setSubmitting(false));
-							}}
-							initialValues={{ text: ''}}>
-								{props => (
-								<Form onSubmit={props.handleSubmit}>
-									<Form.Group controlId="text">
-										<Form.Control name="text" as="textarea" placeholder="Quelque chose à ajouter ?" onChange={props.handleChange} value={props.values.text} />
-									</Form.Group>
-									<div className="text-right mb-3"><Button type="submit" variant="success">Envoyer</Button></div>
-								</Form>
-								)}
-							</Formik>
-							{event.eventComments === undefined || event.eventComments.length === 0 ? (
-							<div className="alert alert-primary">Il n’y a aucun commentaire pour le moment…</div>
-							) :
-							event.eventComments?.map(c => <Comment comment={c} key={c.id} />)
-							}
+							<Tabs defaultActiveKey="comments" id="event-content" className="mt-4">
+								<Tab eventKey="pets" title="Animaux inscrits">
+									<div className="row">
+										<div className="col-lg-4 mb-4">
+											{this.state.availablePets.length === 0 ? (
+											<div className="alert alert-info">Aucun de vos animaux ne peut être inscrit à cet événement…</div>
+											) : (
+											<ul className="list-group w-100">
+												{this.state.availablePets.map(pet => {
+													if (pet.id === undefined)
+														return null;
+													const id = pet.id;
+													return (<li className="list-group-item d-flex justify-content-between align-items-center" key={id}>
+														<Form.Check type="switch" id={id.toString()} label={pet.name}
+														onChange={(e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).checked ? this.addAnimal(id) : this.removeAnimal(id)} value={id}
+														checked={event.attendees?.find(p => p.id === id) !== undefined} />
+													</li>);
+												})}
+											</ul>
+											)}
+										</div>
+										<div className="col-lg-8">
+											{event.attendees === undefined || event.attendees.length === 0 ? (
+											<div className="alert alert-info">Il n’y a aucun animal d’inscrit pour le moment…</div>
+											) : (
+											<div className="row row-cols-1 row-cols-sm-2">
+												{event.attendees.map(a => <div className="col mb-4" key={a.id}><AnimalCard animal={a} small /></div>)}
+											</div>)}
+										</div>
+									</div>
+								</Tab>
+								<Tab eventKey="comments" title="Commentaires">
+									<Formik onSubmit={(values, {setSubmitting, resetForm}) => {
+										const comment: EventComment = {
+											userId: AuthenticationService.User.id,
+											eventId: event.id,
+											text: values.text,
+											createdAt: new Date()
+										};
+										CommentsService.post(comment).then(c => {
+                  							c.user = AuthenticationService.User;
+											event.eventComments?.push(c);
+											this.forceUpdate();
+											resetForm();
+                            			}).catch(() => this.setState({ error: 'Erreur lors de l’envoi du commentaire' })).finally(() => setSubmitting(false));
+									}}
+									initialValues={{ text: ''}}>
+										{props => (
+										<Form onSubmit={props.handleSubmit}>
+											<Form.Group controlId="text">
+												<Form.Control name="text" as="textarea" placeholder="Quelque chose à ajouter ?" onChange={props.handleChange} value={props.values.text} />
+											</Form.Group>
+											<div className="text-right mb-3"><Button type="submit" variant="success">Envoyer</Button></div>
+										</Form>
+										)}
+									</Formik>
+									{event.eventComments === undefined || event.eventComments.length === 0 ? (
+									<div className="alert alert-primary">Il n’y a aucun commentaire pour le moment…</div>
+									) :
+									event.eventComments?.map(c => <Comment comment={c} key={c.id} />)
+									}
+								</Tab>
+							</Tabs>
 						</div>
 					</div>
 					<EventForm show={this.state.showEventForm} event={this.state.event} onHide={() => this.showEventForm(false)} onSuccess={e => {
