@@ -1,6 +1,6 @@
 import { httpClient } from "../helpers";
 import { PetEvent } from "../models";
-import { EventService } from "./event.service";
+import { EventService } from ".";
 
 const get = jest.spyOn(httpClient, "get");
 const post = jest.spyOn(httpClient, "post");
@@ -13,7 +13,8 @@ const events: PetEvent[] = [{
 	beginDate: new Date(),
 	endDate: new Date(),
 	description: '',
-	authorizedSpecies: [{ id: 0, name: '' }]
+	authorizedSpecies: [{ id: 0, name: '' }],
+	eventComments: [{ userId: 0, eventId: 1, text: '', createdAt: new Date() }]
 },
 {
 	id: 2,
@@ -75,4 +76,20 @@ test('Delete event', async () => {
 		expect(del).toHaveBeenCalledWith('/events/1', true);
 	});
 	expect.assertions(2);
+});
+
+test('Add animal to event', async () => {
+	post.mockResolvedValue({ animalId: 1 });
+	await EventService.addAnimal(1, 1).then(o => {
+		expect(post).toHaveBeenCalledWith('/events/1/animals', { animalId: 1 }, true);
+		expect(o).toBeNull();
+	});
+});
+
+test('Remove animal from event', async () => {
+	del.mockResolvedValue(null);
+	await EventService.removeAnimal(1, 1).then(o => {
+		expect(del).toHaveBeenCalledWith('/events/1/animals/1', true);
+		expect(o).toBeNull();
+	});
 });

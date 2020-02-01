@@ -7,5 +7,7 @@ export * from './DeleteConfirmation';
 export * from './SquareImage';
 export * from './AddImage';
 export * from './Gallery';
+export * from './EventCard';
+export * from './EventForm';
 export * from './Comment';
 export * from './UserBadge';

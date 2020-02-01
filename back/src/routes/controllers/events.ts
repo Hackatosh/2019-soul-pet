@@ -159,8 +159,6 @@ const putEventChecks = [
     check('endDate').notEmpty().custom(date => isDateValid(date)).withMessage("endDate should be a valid datetime").custom((date, {req}) => isDateTimeAfter(date, req.body.beginDate)).withMessage("endDate must be after beginDate").optional(),
     check('location').notEmpty().isString().withMessage("location should be a valid string").optional(),
     check('description').notEmpty().isString().withMessage("description should be a valid string").optional(),
-    check('specieIds').isArray().withMessage("specieIds should be an array of numbers").optional(),
-    check('specieIds').custom(array => isNumericArray(array)).withMessage("specieIds should be an array of numbers").optional(),
 ];
 
 eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, res: Response) => {
@@ -171,7 +169,6 @@ eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, 
     const endDate = convertStringToDate(req.body.endDate);
     const location = req.body.location;
     const description = req.body.description;
-    const specieIds: Array<number> = req.body.specieIds ? req.body.specieIds.map((value: any) => parseInt(value)) : undefined;
     let eventFound = await PetEvent.findOne({
         where: {id: eventId},
         include: [{model: Animal, as: "attendees"}, {model: Specie, as: "authorizedSpecies"}]
@@ -183,15 +180,6 @@ eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, 
     if (eventFound.userId !== authenticatedId) {
         res.status(403).json({message: "Forbidden. You don't have access to this event."});
         return;
-    }
-    if (specieIds !== undefined) {
-        for (let specieId of specieIds) {
-            let specieFound = await Specie.findOne({where: {id: specieId}});
-            if (!specieFound) {
-                res.status(400).json({message: "You're trying to use an unexisting specie"});
-                return;
-            }
-        }
     }
     let update: any = {};
     if (name) {
@@ -210,15 +198,8 @@ eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, 
         update['description'] = description;
     }
     try {
-        await eventFound.set(update);
-        if (specieIds !== undefined) {
-            eventFound.setAuthorizedSpecies(specieIds);
-            let attendees = eventFound.attendees ? eventFound.attendees.filter((value: Animal) => specieIds.indexOf(value.specieId) !== -1) : [];
-            eventFound.setAttendees(attendees);
-            update['specieIds'] = specieIds;
-        }
-        await eventFound.save();
-        res.status(200).json(update);
+        const eventReturned = await eventFound.update(update);
+        res.status(200).json(eventReturned);
     } catch (e) {
         logger.error(e);
         res.status(400).json({message: "Unable to update the event"});

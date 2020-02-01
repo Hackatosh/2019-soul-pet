@@ -1,11 +1,19 @@
 import { Animal, Specie } from "../models";
 import { httpClient } from "../helpers";
+import { EventService } from ".";
 
 export class AnimalService {
 	private static species: Specie[] | undefined = undefined;
 	
-	private static revive(a: Animal): Animal {
+	/**
+	 * Restores properties of an animal to **instances** rather than mere types.
+	 * @param a the animal to ‘revive’
+	 * @returns the ‘revived’ animal
+	 */
+	public static async revive(a: Animal): Promise<Animal> {
 		a.birthdate = new Date(a.birthdate);
+		if (a.events !== undefined)
+			a.events = await Promise.all(a.events.map(EventService.revive));
 		return a;
 	}
 
@@ -27,7 +35,7 @@ export class AnimalService {
 	 * @returns an array containing the animals of the user
 	 */
 	static async getAll(userId: number): Promise<Animal[]> {
-		return httpClient.get<Animal[]>(`/animals/?userId=${userId}`, true).then(animals => animals.map(AnimalService.revive)).catch(() => Promise.reject('Erreur lors de la récupération des animaux'));
+		return httpClient.get<Animal[]>(`/animals/?userId=${userId}`, true).then(animals => Promise.all(animals.map(async a => await this.revive(a)))).catch(() => Promise.reject('Erreur lors de la récupération des animaux'));
 	}
 
 	/**

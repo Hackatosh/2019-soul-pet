@@ -1,7 +1,7 @@
 import { httpClient } from "../helpers";
 import { EventComment } from "../models";
-import { CommentsService } from "./comments.service";
 import { AuthenticationService } from "./authentication.service";
+import { CommentsService } from ".";
 
 const post = jest.spyOn(httpClient, "post");
 

@@ -5,7 +5,8 @@ import { UserBadge, SquareImage } from '.';
 import { PictureService } from '../services';
 
 interface EventCardProps {
-    event: PetEvent;
+	event: PetEvent;
+	small?: boolean;
 }
 
 interface EventCardState {
@@ -31,6 +32,17 @@ export class EventCard extends Component<EventCardProps, EventCardState> {
 		const {event} = this.props;
 		const isSameDay = event.beginDate.getTime() === event.endDate.getTime();
 
+		if (this.props.small)
+			return (
+				<div className="card">
+					<Link to={`/events/${event.id}`} className="stretched-link text-decoration-none text-reset">
+						<SquareImage image={this.state.picture} directory={Directory.Events} key={this.state.picture.filename} />
+						<div className="card-body">
+							<p className="card-text">{event.name}</p>
+						</div>
+					</Link>
+				</div>
+			);
         return (
             <div className="card">
 				<SquareImage image={this.state.picture} directory={Directory.Events} key={this.state.picture.filename} />

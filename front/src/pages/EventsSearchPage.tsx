@@ -1,11 +1,10 @@
 import React from 'react';
-import {EventCard} from '../components/EventCard';
 import {RouteComponentProps} from 'react-router';
 import {PetEvent} from '../models';
 import {Button} from "react-bootstrap";
-import {EventForm} from "../components/EventForm";
-import {EventService} from "../services/event.service";
 import {history} from '../helpers';
+import { EventForm, EventCard } from '../components';
+import { EventService } from '../services';
 
 interface EventsSearchPageState {
     showEventForm: boolean;

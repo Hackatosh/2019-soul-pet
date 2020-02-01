@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 import { AnimalService, AuthenticationService, PictureService } from '../services';
 import { RouteComponentProps } from 'react-router';
 import './AnimalPage.css';
-import { AnimalForm, DeleteConfirmation, SquareImage, Gallery } from '../components';
+import { AnimalForm, DeleteConfirmation, SquareImage, Gallery, EventCard, UserBadge } from '../components';
+import { Button, Form } from 'react-bootstrap';
 import { Animal, NoImage, Directory, User } from '../models';
-import { Card, Button } from 'react-bootstrap';
 import { history, titleCase, ageFromDate } from '../helpers';
-import { UserBadge } from '../components/UserBadge';
 
 export interface AnimalPageProps extends RouteComponentProps<{id: string}> {}
 
@@ -18,6 +17,7 @@ export interface AnimalPageState {
 	showAnimalDelete: boolean;
 	canModify: boolean;
 	user: User;
+	showPastEvents: boolean;
 }
 
 export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState> {
@@ -26,7 +26,9 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 		if (this.props.match.params.id === undefined || isNaN(parseInt(this.props.match.params.id)))
 			history.push('/404')
 		else
-			this.state = { error: '', id: parseInt(this.props.match.params.id), animal: undefined, showAnimalForm: false, showAnimalDelete: false, canModify: false, user: {} as User };
+			this.state = { error: '', id: parseInt(this.props.match.params.id),
+			animal: undefined, showAnimalForm: false, showAnimalDelete: false,
+			canModify: false, user: {} as User, showPastEvents: false };
 		this.loadPicture = this.loadPicture.bind(this);
 		this.deletePicture = this.deletePicture.bind(this);
 	}
@@ -87,51 +89,25 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							{this.state.error !== '' && <div className="alert alert-danger">{this.state.error}</div>}
 							<h1 className="display-3">{this.state.animal.name}</h1>
-							<p className="lead text-muted">
-								{this.state.animal.specie !== undefined ? titleCase(this.state.animal.specie?.name) : ''} né le {this.state.animal.birthdate.toLocaleDateString()} ({ageFromDate(this.state.animal.birthdate)}) &middot;&nbsp;
-								{this.state.canModify ? (
-									<React.Fragment>
-										<Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button> &middot;&nbsp;
-										<Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button>
-									</React.Fragment>
-								) : (
-									<React.Fragment>Appartient à <UserBadge user={this.state.user} /></React.Fragment>
-								)}
-							</p>
+							<p className="lead text-muted">{this.state.animal.specie !== undefined ? titleCase(this.state.animal.specie?.name) : ''} né le {this.state.animal.birthdate.toLocaleDateString()} ({ageFromDate(this.state.animal.birthdate)})</p>
+							{this.state.canModify ? (
+							<div className="btn-group btn-group-lg mb-3">
+								<Button variant="primary" onClick={() => this.showAnimalForm(true)}>Éditer</Button>
+								<Button variant="danger" onClick={() => this.showAnimalDelete(true)}>Supprimer</Button>
+							</div>) : (
+								<p>Appartient à <UserBadge user={this.state.user} /></p>
+							)}
 							<h2>Événements</h2>
+							<Form.Check type="switch" id="showPastEvents" label="Afficher les événements passés" className="text-right mb-3" value="showPastEvents"
+								onChange={(e: FormEvent<HTMLInputElement>) => this.setState({ showPastEvents: (e.target as HTMLInputElement).checked })} />
+							{this.state.animal.events === undefined || this.state.animal.events.length === 0 ? (
+							<div className="alert alert-info">Cet animal n’est inscrit à aucun événement.</div>
+							) : (
 							<div className="row row-cols-1 row-cols-md-3">
-								<div className="col mb-4">
-									<Card>
-										<Card.Body>
-											<Card.Title>Dark Vador</Card.Title>
-											<Card.Subtitle className="mb-2 text-muted">Vétérinaire</Card.Subtitle>
-											<Card.Text>Spécialisé pour nos amis canins.<br/>Fermé le lundi</Card.Text>
-											<Card.Link href="#">Voir la fiche</Card.Link>
-										</Card.Body>
-									</Card>
-								</div>
-								<div className="col mb-4">
-									<Card>
-										<Card.Body>
-											<Card.Title>Kristoff</Card.Title>
-											<Card.Subtitle className="mb-2 text-muted">Vétérinaire</Card.Subtitle>
-											<Card.Text>J’aime les rennes.<br/>Fermé l’hiver</Card.Text>
-											<Card.Link href="#">Voir la fiche</Card.Link>
-										</Card.Body>
-									</Card>
-								</div>
-								<div className="col mb-4">
-									<Card>
-										<Card.Body>
-											<Card.Title>Yennefer</Card.Title>
-											<Card.Subtitle className="mb-2 text-muted">Toiletteuse</Card.Subtitle>
-											<Card.Text>J’ai pas encore regardé mais ça ne saurait tarder.</Card.Text>
-											<Card.Link href="#">Voir la fiche</Card.Link>
-										</Card.Body>
-									</Card>
-								</div>
+								{this.state.animal.events?.filter(e => this.state.showPastEvents ? e.endDate.getTime() < Date.now() : e.endDate.getTime() >= Date.now()).map(e => <div className="col mb-4" key={e.id}><EventCard event={e} small /></div>)}
 							</div>
-							<h2>Galerie</h2>
+							)}
+							<h2 className="mt-4">Galerie</h2>
 							{this.state.animal.animalPictures !== undefined &&
 							<Gallery pictures={this.state.animal.animalPictures} directory={Directory.Animals}
 							delete={this.state.canModify ? this.deletePicture : undefined} add={this.state.canModify ? this.loadPicture : undefined} deletable={true} />}
