@@ -32,6 +32,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 
     componentDidMount() {
         EventService.get(parseInt(this.props.match.params.id)).then(event => {
+			event.eventPictures?.reverse();
 			this.setState({event: event});
 			// TODO: Retrieve the user of the event to display it
 		}).catch(() => history.push('/404'));
@@ -49,6 +50,17 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 		PictureService.postPicture(this.state.id, Directory.Events, f).then(p => {
 			p.content = URL.createObjectURL(f);
 			this.state.event?.eventPictures?.unshift(p);
+			this.setState({ event: this.state.event });
+		}).catch(e => this.setState({ error: e }));
+	}
+
+	private deletePicture(index: number) {
+		if (this.state.event?.eventPictures === undefined) {
+			this.setState({ error: 'Erreur lors de la suppression de l’image' });
+			return;
+		}
+		PictureService.deletePicture(this.state.event?.eventPictures[index], Directory.Events).then(() => {
+			this.state.event?.eventPictures?.splice(index, 1);
 			this.setState({ event: this.state.event });
 		}).catch(e => this.setState({ error: e }));
 	}
@@ -128,7 +140,10 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 						<div className="col-10 offset-1 offset-md-0 col-md-7">
 							<h2>Galerie</h2>
 							{event.eventPictures !== undefined &&
-							<Gallery pictures={event.eventPictures} directory={Directory.Events} add={this.loadPicture} />}
+							<Gallery pictures={event.eventPictures} directory={Directory.Events}
+							add={this.loadPicture} delete={this.deletePicture} 
+							deletable={event.userId === AuthenticationService.User.id ? undefined : 
+							event.eventPictures.filter(p => p.userId === AuthenticationService.User.id).map(p => p.id)}/>}
 						</div>
 					</div>
 					<EventForm show={this.state.showEventForm} event={this.state.event} onHide={() => this.showEventForm(false)} onSuccess={e => this.setState({ event: e })} />
