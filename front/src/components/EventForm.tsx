@@ -38,14 +38,18 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
     }
 
     render() {
+		const creating = this.props.event === undefined;
+
         return (
             <Modal onHide={this.props.onHide} show={this.props.show} aria-labelledby="contained-modal-title-vcenter"
                    centered>
                 <Modal.Header closeButton>
                     <Modal.Title
-                        id="contained-modal-title-vcenter">{this.props.event === undefined ? "Ajouter un événement" : "Modifier un événement"}</Modal.Title>
+                        id="contained-modal-title-vcenter">{creating ? "Ajouter un événement" : "Modifier un événement"}</Modal.Title>
                 </Modal.Header>
                 <Formik onSubmit={values => {
+					// We do not use `creating` here because if we do TypeScript does not know that
+					// this.props.event is defined.
                     const event = this.props.event === undefined ? {} as PetEvent : this.props.event;
                     event.name = values.name;
                     event.beginDate = new Date(values.beginDate);
@@ -54,7 +58,7 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                     event.specieIds = values.specieIds.map(id => parseInt(id));
                     event.location = values.location;
                     // If we are adding a new event
-                    if (this.props.event === undefined) {
+                    if (creating) {
                         event.userId = AuthenticationService.User.id;
                         EventService.add(event).then(e => {
                             this.props.onSuccess(e);
@@ -68,17 +72,17 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
                             this.props.onSuccess(e);
 							this.props.onHide();
 						}).catch(() => this.setState({error: 'Erreur lors de la mise à jour de l’événement'}));
-                }}
+				}}
 				initialValues={this.props.event === undefined ?
-					{name: '', beginDate: '', endDate: '', description: '', location:'', specieIds: []} :
-					{
-						name: this.props.event.name,
-						beginDate: this.props.event.beginDate.toISOString().substr(0, 10),
-						endDate: this.props.event.endDate.toISOString().substr(0, 10),
-						description: this.props.event.description,
-            location: this.props.event.location,
-						specieIds: this.props.event.specieIds !== undefined ?
-						this.props.event.specieIds.map(s => s.toString()) : [],
+				{name: '', beginDate: '', endDate: '', description: '', location:'', specieIds: []} :
+				{
+					name: this.props.event.name,
+					beginDate: this.props.event.beginDate.toISOString().substr(0, 10),
+					endDate: this.props.event.endDate.toISOString().substr(0, 10),
+					description: this.props.event.description,
+					location: this.props.event.location,
+					specieIds: this.props.event.specieIds !== undefined ?
+					this.props.event.specieIds.map(s => s.toString()) : [],
 				}}>
 					{props => (
 					<Form onSubmit={props.handleSubmit}>
@@ -108,25 +112,29 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
 								</div>
 							</div>
 							<div className="form-row">
-                <div className="col-md">
-                  <Form.Group controlId="eventLocation">
-                    <Form.Label>Où a lieu votre événement&nbsp;?</Form.Label>
-                    <Form.Control name="location" as="textarea"
-                            placeholder="Entrez l'adresse de l’événement"
-                            onChange={props.handleChange} value={props.values.location}
-                            required/>
-                  </Form.Group>
-                </div>
+								<div className="col-md">
+									<Form.Group controlId="eventLocation">
+										<Form.Label>Où a lieu votre événement&nbsp;?</Form.Label>
+										<Form.Control name="location" as="textarea"
+												placeholder="Entrez l'adresse de l’événement"
+												onChange={props.handleChange} value={props.values.location}
+												required/>
+									</Form.Group>
+								</div>
 								<div className="col-md">
 									<Form.Group controlId="eventSpecies">
 										<Form.Label>Quelles espèces sont les bienvenues&nbsp;?</Form.Label>
-										<Field as="select" name="specieIds" className="form-control" multiple={true} onChange={(evt: Event) => {
+										<Field as="select" name="specieIds" className="form-control custom-select" multiple={true} onChange={(evt: Event) => {
 											props.values.specieIds = Array.prototype.slice.call((evt.target as HTMLSelectElement).selectedOptions).map((option: HTMLOptionElement) => option.value);
 											props.setFieldValue("specieIds", props.values.specieIds);
-										}} value={props.values.specieIds} type="select-multiple">
+										}} value={props.values.specieIds} type="select-multiple" disabled={!creating}>
 											{this.state.species.map(specie => <option value={specie.id} key={specie.id}>{titleCase(specie.name)}</option>)}
 										</Field>
-										<small className="form-text text-muted">Utilisez <kbd>ctrl</kbd> et <kbd>maj</kbd> pour sélectionner plusieurs espèces.</small>
+										{creating ? (
+											<small className="form-text text-muted">Utilisez <kbd>ctrl</kbd> et <kbd>maj</kbd> pour sélectionner plusieurs espèces.</small>
+										) : (
+											<small className="form-text text-muted">Les espèces autorisées ne peuvent pas être modifiées <i>a posteriori</i>.</small>
+										)}
 									</Form.Group>
 								</div>
 							</div>
@@ -144,7 +152,7 @@ export class EventForm extends React.Component<EventFormProps, EventFormState> {
 						</Modal.Body>
 						<Modal.Footer>
 							<Button variant="primary"
-									type="submit">{this.props.event === undefined ? 'Ajouter' : 'Éditer'}</Button>
+									type="submit">{creating ? 'Ajouter' : 'Éditer'}</Button>
 							<Button variant="secondary" onClick={this.props.onHide}>Annuler</Button>
 						</Modal.Footer>
 					</Form>
