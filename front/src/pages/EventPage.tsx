@@ -141,7 +141,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 							{event.eventPictures !== undefined &&
 							<Gallery pictures={event.eventPictures} directory={Directory.Events}
 							add={this.loadPicture} delete={this.deletePicture} 
-							deletable={event.userId === AuthenticationService.User.id ? undefined : 
+							deletable={event.userId === AuthenticationService.User.id ? true : 
 							event.eventPictures.filter(p => p.userId === AuthenticationService.User.id).map(p => p.id)}/>}
 						</div>
 					</div>

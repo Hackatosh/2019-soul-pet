@@ -134,7 +134,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 							<h2>Galerie</h2>
 							{this.state.animal.animalPictures !== undefined &&
 							<Gallery pictures={this.state.animal.animalPictures} directory={Directory.Animals}
-							delete={this.deletePicture} add={this.state.canModify ? this.loadPicture : undefined} />}
+							delete={this.state.canModify ? this.deletePicture : undefined} add={this.state.canModify ? this.loadPicture : undefined} deletable={true} />}
 						</div>
 					</div>
 					<AnimalForm show={this.state.showAnimalForm} animal={this.state.animal} onHide={() => this.showAnimalForm(false)} onSuccess={a => this.setState({ animal: a })} />

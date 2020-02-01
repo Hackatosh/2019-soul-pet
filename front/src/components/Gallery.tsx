@@ -10,7 +10,7 @@ export interface GalleryProps {
 	directory: Directory;
 	add?: (file: File) => void;
 	delete?: (index: number) => void;
-	deletable?: number[];
+	deletable: true | number[];
 }
 
 export class Gallery extends React.Component<GalleryProps> {
@@ -27,7 +27,7 @@ export class Gallery extends React.Component<GalleryProps> {
 				</div>}
 				{this.props.pictures.map((picture: Picture, index: number) => 
 				<div className="col mb-4" key={index}>
-					{this.props.delete !== undefined && (this.props.deletable === undefined || this.props.deletable.includes(picture.id)) &&
+					{this.props.delete !== undefined && (this.props.deletable === true || this.props.deletable.includes(picture.id)) &&
 					<div className="mask-buttons">
 						<Button variant="danger" onClick={() => this.props.delete !== undefined && this.props.delete(index)}>&times;</Button>
 					</div>}
