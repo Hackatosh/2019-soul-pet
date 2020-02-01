@@ -1,6 +1,11 @@
 /**
- * Configurations of logger.
- */
+ * This files defines a logger which can be used through the whole application.
+ * In development environment, the LOG_IN_FILE env variable is usually set to false.
+ * This leads the logger to just act as console.log would.
+ * In production environment, the LOG_IN_FILE env variable must be set to true.
+ * It allows logs to be written in log files, which make them usable in production environment.
+ ***/
+
 import {env} from "../config/env";
 
 const winston = require('winston');

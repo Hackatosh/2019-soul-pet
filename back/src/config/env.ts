@@ -1,10 +1,7 @@
 /***
- * This file imports all the environment variables from process.env needed for the service.
- * It then performs test to ensure that they are correctly defined and export them through the env object.
+ * This file imports all the environment variables needed for the service from process.env.
+ * It then performs tests to ensure that they are correctly defined and export them through the env object.
  ***/
-
-if (process.env.SERVER_PORT === undefined)
-    require('dotenv').config();
 
 const SERVER_PORT = process.env.SERVER_PORT;
 const CORS_HOST = process.env.CORS_HOST;

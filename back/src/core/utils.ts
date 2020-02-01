@@ -18,7 +18,7 @@ export class HttpHeader {
 }
 
 /***
- * Flattens a list of HTTPHeader object into a OutgoingHttpHeaders object from the http module (standard NodeJS module).
+ * Flattens a list of HTTPHeader objects into a OutgoingHttpHeaders object defined in the http module (standard NodeJS module).
  ***/
 
 const objectifyHeadersArray = function (headers: Array<HttpHeader>): OutgoingHttpHeaders {

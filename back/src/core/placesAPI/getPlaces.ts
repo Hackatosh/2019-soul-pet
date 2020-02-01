@@ -22,11 +22,11 @@ const getCurrentVersion = function (): string {
 
 /***
  * Input : user position with latitude and longitude, radius in meters (ex: 10000 for 10km), placeType ('vet', 'park' or 'groom')
- * Output : Venues Search API result with type Promise (see fields in doc)
+ * Output : An array of results obtained from the Venues Search API, wrapped in a Promise (see fields in doc)
  * Doc : https://developer.foursquare.com/docs/api/venues/search
  ***/
 
-async function searchPlaces(lat: number, long: number, radius: number, placeType: string, addDetails: boolean = false): Promise<any> {
+async function searchPlaces(lat: number, long: number, radius: number, placeType: string, addDetails: boolean = false): Promise<Array<any>> {
     let currentVersion = getCurrentVersion();
     let results = await request({
         url: 'https://api.foursquare.com/v2/venues/search',
@@ -41,22 +41,23 @@ async function searchPlaces(lat: number, long: number, radius: number, placeType
             radius: radius.toString(),
         }
     });
+    const venues = results.response.venues;
     if (addDetails) {
-        await addDetailsToEachVenue(results);
+        await addDetailsToEachVenue(venues);
     }
-    return results;
+    return venues;
 }
 
 /***
  * This function enriches the results from the Search API results using the Details API.
  ***/
 
-async function addDetailsToEachVenue(results: any): Promise<any> {
+async function addDetailsToEachVenue(venues: any): Promise<Array<any>> {
     const addDetailsToVenue = async function (venue: any) {
         venue["details"] = await detailsPlace(venue.id);
     };
-    await Promise.all(results.response.venues.map(addDetailsToVenue));
-    return results;
+    await Promise.all(venues.map(addDetailsToVenue));
+    return venues;
 }
 
 /***
