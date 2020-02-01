@@ -12,11 +12,9 @@ services:
       - db
     depends_on:
       - db
-    ports:
-      - "3001:3000"
     environment:
       SERVER_PORT: 3000
-      CORS_HOST : http://soulpet.cs-campus.fr
+      CORS_HOST : https://soul-pet.cs-campus.fr
       LOG_IN_FILE: "true"
       TOKEN_LIFETIME_SEC: 600
       DB_HOST: soul-pet-prod-db
@@ -36,6 +34,7 @@ services:
     volumes:
       - ./back:/usr/app/
       - /usr/app/node_modules
+      - /usr/app/dist
   front:
     container_name: "soul-pet-prod-front"
     build:
@@ -46,12 +45,11 @@ services:
     restart: always
     environment:
       PORT: 3000
-      REACT_APP_BACK_URL: "http://soulpet.cs-campus.fr:3001/api"
-    ports:
-      - "80:3000"
+      REACT_APP_BACK_URL: "https://soul-pet.cs-campus.fr/api"
     volumes:
       - ./front:/usr/app/
       - /usr/app/node_modules
+      - /usr/app/build
   db:
     image: mariadb:10.4
     container_name: "soul-pet-prod-db"
@@ -74,6 +72,23 @@ services:
     networks:
       - inner
     command: nodejs:password:::pictures
+  letsencrypt:
+    image: linuxserver/letsencrypt
+    container_name: "soul-pet-prod-letsencrypt"
+    networks:
+      - inner
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./letsencrypt/config:/config
+    environment:
+      EMAIL: edouard.benauw@student.ecp.fr
+      URL: soul-pet.cs-campus.fr
+      VALIDATION: http
+      TZ: Europe/Paris
+      #PUID=0
+      #PGID=0
 volumes:
   db-data:
   sftp-data:
