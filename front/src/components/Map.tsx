@@ -5,9 +5,12 @@ import { iconVet, iconPark, iconGroom, imageVet, imagePark, imageGroom } from '.
 import { Form } from 'react-bootstrap';
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
+/**
+ * All the services which could be displayed and some bound properties
+ */
 const serviceTypeList = [
   	{
-	  	type:"vet",
+	  type:"vet",
 		name: "Vétérinaires",
 		icon: iconVet,
 		color: 'danger',
@@ -27,7 +30,11 @@ const serviceTypeList = [
 		color: 'info',
 		imagePath: imageGroom
 	}
-]
+];
+
+/**
+ * For star wars fans (and initial debugging). Only appears for the unlucky
+ */
 const easterEggMarkers = [
 	{
 		key: "marker1",
@@ -55,6 +62,10 @@ const easterEggMarkers = [
 	},
 ];
 
+/**
+ * A component which is used to display a map and update displayed
+ * information depending on the interaction with the user.
+ */
 class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 	constructor(props: PServicesMap){
 		super(props);
@@ -74,7 +85,10 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 		this.createMarker = this.createMarker.bind(this);
 		this.geolocate = this.geolocate.bind(this);
 	}
-
+  /**
+   * when component is done being mounted, tries to locate the user and
+   * loads the services nearby with default parameters
+   */
 	async componentDidMount() {
 		await this.geolocate();
 		await this.queryAPIServices();
@@ -97,6 +111,11 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 			newDisplay.push(event.target.value);
 		this.setState({toDisplay : newDisplay});
 	};
+
+  /**
+   * Queries the back API `places` which returns the nearby services given in
+   * list `serviceTypeList`. This updates the state of the component.
+   */
 
 	private queryAPIServices = async () => {
 		if(!this.state.isQuerying){
@@ -134,7 +153,10 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 			);
 		return null;
 	}
-
+  /**
+   * displays a map using Leaflet map, switches for each services, range input
+   * for the radius and markers on the map for each services displayed.
+   */
 	render() {
 		return(
 			<div className="container">

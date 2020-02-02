@@ -12,7 +12,10 @@ interface EventCardProps {
 interface EventCardState {
 	picture: Picture;
 }
-
+/**
+ * Component which displays details about a given event, such as beginning date,
+ * ending date, user who created it...
+ */
 export class EventCard extends Component<EventCardProps, EventCardState> {
 	constructor(props: EventCardProps) {
 		super(props);

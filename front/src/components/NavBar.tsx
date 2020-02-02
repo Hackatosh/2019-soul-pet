@@ -5,6 +5,10 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { Subscription } from 'rxjs';
 
+/**
+ * Navigation bar which allows to navigate through different sections of the
+ * as well as loggin in and router
+ */
 export class NavBar extends React.Component {
 	private authenticationSub: Subscription = new Subscription();
 

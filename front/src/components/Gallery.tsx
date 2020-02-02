@@ -12,7 +12,10 @@ export interface GalleryProps {
 	delete?: (index: number) => void;
 	deletable: true | number[];
 }
-
+/**
+ * Component which displays all pictures given in properties of the component.
+ * Used for animals in particular
+ */
 export class Gallery extends React.Component<GalleryProps> {
 	render() {
 		if (this.props.pictures.length === 0 && this.props.add === undefined)
@@ -25,7 +28,7 @@ export class Gallery extends React.Component<GalleryProps> {
 				<div className="col mb-4">
 					<AddImage exportPicture={this.props.add} />
 				</div>}
-				{this.props.pictures.map((picture: Picture, index: number) => 
+				{this.props.pictures.map((picture: Picture, index: number) =>
 				<div className="col mb-4" key={index}>
 					{this.props.delete !== undefined && (this.props.deletable === true || this.props.deletable.includes(picture.id)) &&
 					<div className="mask-buttons">

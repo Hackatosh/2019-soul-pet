@@ -13,6 +13,10 @@ export interface SquareImageState {
 	content: string;
 }
 
+/**
+ * Component which displays displays an image in a square, or a loading
+ * spinner if none
+ */
 export class SquareImage extends React.Component<SquareImageProps, SquareImageState> {
 	constructor(props: SquareImageProps) {
 		super(props);

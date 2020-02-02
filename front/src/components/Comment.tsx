@@ -6,7 +6,9 @@ import { Link } from "react-router-dom";
 export interface CommentProps {
 	comment: EventComment;
 }
-
+/**
+ * Comonent which displays a comment with eventually the username of the writer
+ */
 export class Comment extends React.Component<CommentProps> {
 	render() {
 		return (

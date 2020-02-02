@@ -4,7 +4,9 @@ import { Button } from 'react-bootstrap';
 export interface AddImageProps {
 	exportPicture: (f: File) => void,
 }
-
+/**
+ * Component which allows the user to upload a picture.
+ */
 export class AddImage extends React.Component<AddImageProps> {
 	private fileInput: React.RefObject<HTMLInputElement>;
 
