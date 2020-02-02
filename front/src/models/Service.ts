@@ -1,6 +1,11 @@
+interface Position{
+  lat: number;
+  lon: number;
+}
+
 interface SServicesMapType{
   notice: string;
-  userPosition: Array<number>;
+  userPosition: Position;
   toDisplay: Array<string>;
   radius: number;
   markers: Array<MarkerDataType>;

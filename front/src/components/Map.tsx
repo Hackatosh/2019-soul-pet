@@ -61,7 +61,10 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 		const toDisplay = serviceTypeList.map(el => (el.type));
 		this.state= {
 			notice: '',
-			userPosition: [this.props.lat, this.props.lon],
+			userPosition: {
+        lat: this.props.lat,
+        lon: this.props.lon
+      },
 			toDisplay: toDisplay,
 			radius: 5000,
 			markers: [],
@@ -78,7 +81,7 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 	}
 
 	async componentDidUpdate(prevProps:Readonly<PServicesMap>, prevState:Readonly<SServicesMap>, snapshot?:any) {
-		const isDifferent = (this.state.userPosition[0] !== prevState.userPosition[0]) || (this.state.userPosition[1] !== prevState.userPosition[1]) || (this.state.radius !== prevState.radius);
+		const isDifferent = (this.state.userPosition.lat !== prevState.userPosition.lat) || (this.state.userPosition.lon !== prevState.userPosition.lon) || (this.state.radius !== prevState.radius);
 		if(!this.state.isQuerying && isDifferent){
 			await this.queryAPIServices();
 		}
@@ -101,8 +104,8 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 			let markersAllTypes: ListMarkerData = [];
 			try {
 				for (let i = 0; i < serviceTypeList.length; i++) {
-					const markers = await GetServicesServices.get(this.props.lat,
-						this.props.lon, this.state.radius, serviceTypeList[i].type);
+					const markers = await GetServicesServices.get(this.state.userPosition.lat,
+						this.state.userPosition.lon, this.state.radius, serviceTypeList[i].type);
 					markersAllTypes = markersAllTypes.concat(markers);
 				}
 				this.setState({isQuerying: false, markers: ((markersAllTypes===[]) ? easterEggMarkers : markersAllTypes)});
@@ -115,7 +118,7 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 	private async geolocate():Promise<void> {
 		try {
 			const c = await GeolocationService.getCoordinates();
-			this.setState({ notice: '', userPosition: [c.latitude, c.longitude] });
+			this.setState({ notice: '', userPosition: {lat:c.latitude, lon:c.longitude}});
 		} catch(e){
 			this.setState({ notice: 'Impossible de récupérer votre position' });
 		}
@@ -137,12 +140,12 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 			<div className="container">
 				<div className="row">
 					<div className="col-10 offset-1 col-md-6" style={{ minHeight: '60vh' }}>
-						<LeafletMap key={this.state.userPosition.join('')} center={this.state.userPosition} zoom={this.props.zoom} style={{height: '100%', width: '100%'}}>
+						<LeafletMap key={String(this.state.userPosition.lat)+String(this.state.userPosition.lon)} center={this.state.userPosition} zoom={this.props.zoom} style={{height: '100%', width: '100%'}}>
 							<TileLayer
 								attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 								url="https://cartodb-basemaps-1.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
 							/>
-							<Marker position={this.state.userPosition}>
+							<Marker position={[this.state.userPosition.lat, this.state.userPosition.lon]}>
 								<Popup>Vous êtes ici !</Popup>
 							</Marker>
 							{this.state.markers.map(this.createMarker)}
