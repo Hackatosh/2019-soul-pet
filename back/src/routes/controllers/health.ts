@@ -7,7 +7,7 @@ const healthRouter = Router();
  ***/
 
 healthRouter.get('/', (req: Request, res: Response) => {
-    res.status(200).json({message: "WELCOME"});
+    res.status(200).json({message: "Welcome to our API !"});
 });
 
 export {healthRouter};

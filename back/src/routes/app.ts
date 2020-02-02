@@ -1,5 +1,5 @@
 /***
- * This file mounts middlewares and the routers created in the controllers into the express application
+ * This file mounts the middlewares and the routers created in the controller files into the express application.
  ***/
 
 import express, {Router, Response} from 'express';

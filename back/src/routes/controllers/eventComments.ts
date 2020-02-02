@@ -37,11 +37,14 @@ const getCommentChecks = [
 
 eventCommentsRouter.get('/:commentId', getCommentChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const commentId = parseInt(req.params.commentId);
-    const comment = await EventComment.findOne({where: {id: commentId},include:[{model:User,attributes:["username"]}]});
+    const comment = await EventComment.findOne({
+        where: {id: commentId},
+        include: [{model: User, attributes: ["username"]}]
+    });
     if (!comment) {
-        res.sendStatus(404).json({message:"Comment not found."});
+        res.sendStatus(404).json({message: "Comment not found."});
     } else if (comment.userId != req.authInfos.userId) {
-        res.sendStatus(403).json({message:"You don't have access to this comment."});
+        res.sendStatus(403).json({message: "You don't have access to this comment."});
     } else {
         res.status(200).json(comment);
     }
@@ -55,7 +58,7 @@ eventCommentsRouter.get('/:commentId', getCommentChecks, inputValidationMW, asyn
 const postCommentChecks = [
     check('userId').notEmpty().isNumeric().withMessage("userId must be a number"),
     check('eventId').notEmpty().isNumeric().withMessage("eventId must be a number"),
-    check('text').notEmpty().isString().withMessage("text must be a valid string"),
+    check('text').notEmpty().isString().isLength({max: 128}).withMessage("text must be a valid string shorter than 128 characters"),
 ];
 
 eventCommentsRouter.post('/', postCommentChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -75,7 +78,7 @@ eventCommentsRouter.post('/', postCommentChecks, inputValidationMW, async (req: 
         res.status(200).json(comment)
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Unable to create the comment"})
+        res.status(500).json({message: "Unable to create the comment"})
     }
 });
 
@@ -85,7 +88,7 @@ eventCommentsRouter.post('/', postCommentChecks, inputValidationMW, async (req: 
 
 const putCommentChecks = [
     check('commentId').notEmpty().isNumeric().withMessage("eventId must be a number"),
-    check('text').notEmpty().isString().withMessage("text must be a valid string"),
+    check('text').notEmpty().isString().isLength({max: 128}).withMessage("text must be a valid string shorter than 128 characters"),
 ];
 
 eventCommentsRouter.put('/:commentId', putCommentChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -100,7 +103,7 @@ eventCommentsRouter.put('/:commentId', putCommentChecks, inputValidationMW, asyn
         res.status(403).json({message: "Forbidden. You don't have access to this comment."});
         return;
     }
-    await commentFound.setDataValue("text",text);
+    await commentFound.setDataValue("text", text);
     await commentFound.save();
     res.status(200).json(commentFound);
 });

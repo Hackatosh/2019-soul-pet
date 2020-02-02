@@ -1,5 +1,5 @@
 /***
- * This file defines the entrypoint of the application.
+ * This file defines the entry-point of the application.
  * It represents the highest-level operations needed to launch the server.
  ***/
 

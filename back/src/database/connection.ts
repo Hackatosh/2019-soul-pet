@@ -1,5 +1,5 @@
 /***
- * This file sets up the DB connection which is used by Sequelize ORM.
+ * This file sets up the DB connection which is used by the ORM Sequelize.
  ***/
 
 import {Sequelize} from 'sequelize';
@@ -26,4 +26,4 @@ const db = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
     },
 });
 
-export { db }
+export {db}

@@ -1,5 +1,5 @@
 import {Response, Router} from "express";
-import {ContentType, deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
+import {deleteFromSFTP, Folder, pipeSFTPIntoResponse, uploadToSFTP} from "../../core/files/ftp";
 import {Animal} from "../../database/models/animal";
 import {AnimalPicture} from "../../database/models/animalPicture";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
@@ -11,7 +11,7 @@ import {logger} from "../../core/logger";
 const animalPicturesRouter = Router();
 
 /***
- * This route allows to list all the pictures for a given animal.
+ * This route allows to list all the pictures for a given animal, identified by the provided animalId.
  ***/
 
 const getAnimalPicturesChecks = [
@@ -22,7 +22,7 @@ animalPicturesRouter.get('/:animalId', getAnimalPicturesChecks, inputValidationM
     const animalId = req.params.animalId;
     const pet = await Animal.findOne({where: {id: animalId}});
     if (!pet) {
-        res.status(404).json({message: "This animal does not exist"});
+        res.status(404).json({message: "This animal does not exist."});
         return;
     }
     const pictures = await AnimalPicture.findAll({where: {animalId: animalId}});
@@ -34,26 +34,26 @@ animalPicturesRouter.get('/:animalId', getAnimalPicturesChecks, inputValidationM
  ***/
 
 const getAnimalPictureChecks = [
-    check('filename').notEmpty().isString().withMessage("filename must be a string"),
+    check('filename').notEmpty().isString().isLength({max: 128}).withMessage("filename must be a string shorter than 128 characters"),
 ];
 
 animalPicturesRouter.get('/', getAnimalPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const filename = req.query.filename;
     const file = await AnimalPicture.findOne({where: {filename: filename}});
     if (!file) {
-        res.status(404).json({message: "This file does not exist."})
+        res.status(404).json({message: "This file does not exist."});
         return;
     }
     const pet = await Animal.findOne({where: {id: file.animalId}});
     if (!pet) {
-        res.status(404).json({message: "This animal does not exist"});
+        res.status(404).json({message: "This animal does not exist."});
         return;
     }
     try {
         await pipeSFTPIntoResponse(res, Folder.AnimalPictures, filename, file.contentType);
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Problem when downloading the file"})
+        res.status(500).json({message: "Problem when downloading the file."})
     }
 });
 
@@ -74,9 +74,9 @@ animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAni
         const userId = req.authInfos.userId;
         const pet = await Animal.findOne({where: {id: animalId}});
         if (!pet) {
-            res.status(404).json({message: "This animal does not exist"})
+            res.status(404).json({message: "This animal does not exist."})
         } else if (pet.userId !== userId) {
-            res.status(403).json({message: "You don't have access to this animal"})
+            res.status(403).json({message: "You don't have access to this animal."})
         } else {
             try {
                 const filename = await uploadToSFTP(buffer, Folder.AnimalPictures);
@@ -84,12 +84,12 @@ animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAni
                 res.status(200).json(animalPicture);
             } catch (e) {
                 logger.error(e);
-                res.status(400).json({message: "Unable to save the picture"})
+                res.status(500).json({message: "Unable to save the picture."})
             }
         }
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Couldn't upload the file"})
+        res.status(500).json({message: "Couldn't upload the file."})
     }
 
 });
@@ -99,7 +99,7 @@ animalPicturesRouter.post('/:animalId', createPictureStorage("picture"), postAni
  ***/
 
 const deleteAnimalPictureChecks = [
-    check('filename').notEmpty().isString().withMessage("filename must be a string"),
+    check('filename').notEmpty().isString().isLength({max: 128}).withMessage("filename must be a string shorter than 128 characters"),
 ];
 
 animalPicturesRouter.delete('/', deleteAnimalPictureChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -107,23 +107,21 @@ animalPicturesRouter.delete('/', deleteAnimalPictureChecks, inputValidationMW, a
     const userId = req.authInfos.userId;
     const file = await AnimalPicture.findOne({where: {filename: filename}});
     if (!file) {
-        res.status(404).json({message: "This file does not exist."})
+        res.status(404).json({message: "This file does not exist."});
         return;
     }
     const pet = await Animal.findOne({where: {id: file.animalId}});
     if (!pet) {
-        res.status(404).json({message: "This animal does not exist"});
-    }
-    else if (pet.userId !== userId) {
-        res.status(403).json({message: "You don't have access to this animal"});
-    }
-    else {
+        res.status(404).json({message: "This animal does not exist."});
+    } else if (pet.userId !== userId) {
+        res.status(403).json({message: "You don't have access to this animal."});
+    } else {
         await file.destroy();
         try {
             await deleteFromSFTP(Folder.AnimalPictures, filename);
             res.status(200).json(file);
         } catch (e) {
-            res.status(400).json({message: "Problem when deleting the file : file record has been deleted from the DB but the file still exists."})
+            res.status(500).json({message: "Problem when deleting the file : file record has been deleted from the DB but the file still exists."})
         }
     }
 });

@@ -25,7 +25,6 @@ export class EventPicture extends Model {
  ***/
 
 const initEventPicturesModel = async function (): Promise<void> {
-
     EventPicture.init({
         id: {
             type: DataTypes.INTEGER.UNSIGNED,

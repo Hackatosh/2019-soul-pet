@@ -7,11 +7,10 @@ import {
     HasManyCountAssociationsMixin,
     HasManyCreateAssociationMixin,
     Association,
-    BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin, Op
+    Op
 } from 'sequelize';
 import {db} from '../connection'
 import {Animal} from "./animal";
-import {PetEvent} from "./event";
 
 /***
  * Model used to represent a specie in the DB.
@@ -40,7 +39,6 @@ export class Specie extends Model {
  ***/
 
 const initSpecieModel = async function (): Promise<void> {
-
     Specie.init({
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -58,8 +56,12 @@ const initSpecieModel = async function (): Promise<void> {
         timestamps: false,
         sequelize: db,
     });
-
 };
+
+/***
+ * Function used to fill the database with standard species.
+ * This is for development purpose and could be removed in a production environment.
+ ***/
 
 const specieModelFill = async function (): Promise<void> {
     const species: Array<{ id: number, name: string }> = [
@@ -70,12 +72,12 @@ const specieModelFill = async function (): Promise<void> {
         {id: 5, name: "Perroquet"},
         {id: 6, name: "Loutre"},
     ];
-    const addSpecie = async function(specie:{id:number,name:string}):Promise<void>{
-        const specieFound = await Specie.findOne({where: {[Op.or]: [{id:specie.id},{name:specie.name}]}});
-        if(!specieFound)
+    const addSpecie = async function (specie: { id: number, name: string }): Promise<void> {
+        const specieFound = await Specie.findOne({where: {[Op.or]: [{id: specie.id}, {name: specie.name}]}});
+        if (!specieFound)
             await Specie.create(specie);
     };
-    const promises:Array<Promise<void>> = species.map(specie => addSpecie(specie));
+    const promises: Array<Promise<void>> = species.map(specie => addSpecie(specie));
     await Promise.all(promises);
 };
 
