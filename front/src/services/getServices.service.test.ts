@@ -67,7 +67,7 @@ beforeEach(() => {
 
 
 test('Get grooms', async () => {
-  get.mockResolvedValue({response: {venues: backMarkers}});
+  get.mockResolvedValue(backMarkers);
   await GetServicesServices.get(queryTestGroom.lat, queryTestGroom.lon, queryTestGroom.radius, queryTestGroom.placeType).then(g => {
     expect(g).toStrictEqual(markerDataTestGroom);
   });
