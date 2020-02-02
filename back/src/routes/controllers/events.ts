@@ -24,7 +24,7 @@ const eventsRouter = Router();
  ***/
 
 const searchEvents = [
-    check('keywords').notEmpty().isString().withMessage("keywords must be string").optional(),
+    check('keywords').notEmpty().isString().isLength({max: 128}).withMessage("keywords must be a valid string shorter than 128 characters").optional(),
     check('beginDate').notEmpty().custom(date => isDateValid(date)).withMessage("beginDate should be a valid datetime").optional(),
     check('endDate').notEmpty().custom(date => isDateValid(date)).withMessage("endDate should be a valid datetime").optional()
 ];
@@ -57,7 +57,7 @@ eventsRouter.get('/search', searchEvents, inputValidationMW, async (req: Authent
 
     let searchResult = await PetEvent.findAll({
         where: searchRequest,
-        include: [{model: User, attributes: ["id","username"]}]
+        include: [{model: User, attributes: ["id", "username"]}]
     });
     res.status(200).json(searchResult);
 });
@@ -73,43 +73,39 @@ const getEventChecks = [
 
 eventsRouter.get('/:eventId', getEventChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
     const eventId = parseInt(req.params.eventId);
-    try {
-        let eventFound = await PetEvent.findOne({
-            where: {id: eventId},
-            include: [
-                {model: User, attributes: ["id","username"]},
-                {model: Animal, as: "attendees"},
-                {model: Specie, as: "authorizedSpecies"}, {
-                    model: EventComment,
-                    as: "eventComments",
-                    include: [{model: User, attributes: ["username"]}]
-                }, {
-                    model: EventPicture,
-                    as: "eventPictures",
-                }
-            ]
-        });
-        if (!eventFound) {
-            res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
-            return;
-        }
-        res.status(200).json(eventFound)
-    } catch (e) {
-        logger.error(e)
+    let eventFound = await PetEvent.findOne({
+        where: {id: eventId},
+        include: [
+            {model: User, attributes: ["id", "username"]},
+            {model: Animal, as: "attendees"},
+            {model: Specie, as: "authorizedSpecies"}, {
+                model: EventComment,
+                as: "eventComments",
+                include: [{model: User, attributes: ["username"]}]
+            }, {
+                model: EventPicture,
+                as: "eventPictures",
+            }
+        ]
+    });
+    if (!eventFound) {
+        res.status(404).json({message: "Not found. The event you are trying to access does not exist."});
+        return;
     }
+    res.status(200).json(eventFound)
 });
 
 /***
- * This route is used to create a new event in the DB, using the provided informations.
+ * This route is used to create a new event in the DB, using the provided information.
  ***/
 
 const postEventChecks = [
-    check('name').notEmpty().isString().withMessage("name must be a valid string"),
+    check('name').notEmpty().isString().isLength({max: 128}).withMessage("name must be a valid string shorter than 128 characters"),
     check('beginDate').notEmpty().custom(date => isDateValid(date)).withMessage("beginDate must be a valid datetime"),
     check('endDate').notEmpty().custom(date => isDateValid(date)).withMessage("endDate must be a valid datetime").custom((date, {req}) => isDateTimeAfter(date, req.body.beginDate)).withMessage("endDate must be after beginDate"),
     check('userId').notEmpty().isNumeric().withMessage("userId must be a valid number"),
-    check('location').notEmpty().isString().withMessage("location should be a valid string").optional(),
-    check('description').notEmpty().isString().withMessage("description must be a valid string"),
+    check('location').notEmpty().isString().isLength({max: 128}).isLength({max: 128}).withMessage("location should be a valid string shorter than 128 characters").optional(),
+    check('description').notEmpty().isString().isLength({max: 128}).withMessage("description must be a valid string shorter than 128 characters"),
     check('specieIds').isArray().withMessage("specieIds must be an array of number"),
     check('specieIds').custom(array => isNumericArray(array)).withMessage("specieIds must be an array of number"),
 ];
@@ -144,7 +140,7 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req: Authentic
         res.status(200).json(event)
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Unable to create this event"})
+        res.status(500).json({message: "Unable to create this event"})
     }
 });
 
@@ -154,11 +150,13 @@ eventsRouter.post('/', postEventChecks, inputValidationMW, async (req: Authentic
 
 const putEventChecks = [
     check('eventId').notEmpty().isNumeric().withMessage("eventId must be a valid number"),
-    check('name').notEmpty().isString().withMessage("name should be a valid string").optional(),
+    check('name').notEmpty().isString().isLength({max: 128}).withMessage("name should be a valid string shorter than 128 characters").optional(),
     check('beginDate').notEmpty().custom(date => isDateValid(date)).withMessage("beginDate should be a valid datetime").optional(),
     check('endDate').notEmpty().custom(date => isDateValid(date)).withMessage("endDate should be a valid datetime").custom((date, {req}) => isDateTimeAfter(date, req.body.beginDate)).withMessage("endDate must be after beginDate").optional(),
-    check('location').notEmpty().isString().withMessage("location should be a valid string").optional(),
-    check('description').notEmpty().isString().withMessage("description should be a valid string").optional(),
+    check('location').notEmpty().isString().isLength({max: 128}).withMessage("location should be a valid string shorter than 128 characters").optional(),
+    check('description').notEmpty().isString().isLength({max: 128}).withMessage("description should be a valid string shorter than 128 characters").optional(),
+    check('specieIds').isArray().withMessage("specieIds should be an array of numbers").optional(),
+    check('specieIds').custom(array => isNumericArray(array)).withMessage("specieIds should be an array of numbers").optional(),
 ];
 
 eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, res: Response) => {
@@ -169,6 +167,7 @@ eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, 
     const endDate = convertStringToDate(req.body.endDate);
     const location = req.body.location;
     const description = req.body.description;
+    const specieIds: Array<number> = req.body.specieIds ? req.body.specieIds.map((value: any) => parseInt(value)) : undefined;
     let eventFound = await PetEvent.findOne({
         where: {id: eventId},
         include: [{model: Animal, as: "attendees"}, {model: Specie, as: "authorizedSpecies"}]
@@ -180,6 +179,15 @@ eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, 
     if (eventFound.userId !== authenticatedId) {
         res.status(403).json({message: "Forbidden. You don't have access to this event."});
         return;
+    }
+    if (specieIds !== undefined) {
+        for (let specieId of specieIds) {
+            let specieFound = await Specie.findOne({where: {id: specieId}});
+            if (!specieFound) {
+                res.status(400).json({message: "You're trying to use an unexisting specie"});
+                return;
+            }
+        }
     }
     let update: any = {};
     if (name) {
@@ -198,11 +206,18 @@ eventsRouter.put('/:eventId', putEventChecks, async (req: AuthenticatedRequest, 
         update['description'] = description;
     }
     try {
-        const eventReturned = await eventFound.update(update);
-        res.status(200).json(eventReturned);
+        await eventFound.set(update);
+        if (specieIds !== undefined) {
+            eventFound.setAuthorizedSpecies(specieIds);
+            let attendees = eventFound.attendees ? eventFound.attendees.filter((value: Animal) => specieIds.indexOf(value.specieId) !== -1) : [];
+            eventFound.setAttendees(attendees);
+            update['specieIds'] = specieIds;
+        }
+        await eventFound.save();
+        res.status(200).json(update);
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Unable to update the event"});
+        res.status(500).json({message: "Unable to update the event."});
     }
 });
 

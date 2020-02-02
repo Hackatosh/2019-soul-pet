@@ -4,19 +4,17 @@ import {hashPassword} from "../../core/authentication/password";
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
 import {check} from "express-validator";
 import {inputValidationMW} from "../middlewares/inputValidation";
-import {revocateAllTokensForUser} from "../../core/authentication/tokens";
+import {revokeAllTokensForUser} from "../../core/authentication/tokens";
 import {logger} from "../../core/logger";
 import {PetEvent} from "../../database/models/event";
 import {Animal} from "../../database/models/animal";
-import {Specie} from "../../database/models/specie";
 import {EventComment} from "../../database/models/eventComment";
 import {EventPicture} from "../../database/models/eventPicture";
-import {eventsRouter} from "./events";
 
 const accountRouter = Router();
 
 /***
- * This route is used to get all public informations about a specific user, identified by the provided userId.
+ * This route is used to get all the public information about a specific user, identified by the provided userId.
  * The information includes the list of the animals belonging to the user, the events he is organizing, the comments he has posted and the pictures he has uploaded for events.
  ***/
 
@@ -32,10 +30,10 @@ accountRouter.get('/:userId', getEventChecks, inputValidationMW, async (req: Aut
             include: [{model: Animal}, {
                 model: EventComment,
                 as: "eventComments"
-            },{
+            }, {
                 model: PetEvent,
                 as: "events"
-            },{
+            }, {
                 model: EventPicture,
                 as: "eventPictures",
             }]
@@ -46,7 +44,8 @@ accountRouter.get('/:userId', getEventChecks, inputValidationMW, async (req: Aut
         }
         res.status(200).json(userFound)
     } catch (e) {
-        console.log(e)
+        console.log(e);
+        res.status(500).json({message: "Error when retrieving the user."});
     }
 });
 
@@ -57,9 +56,15 @@ accountRouter.get('/:userId', getEventChecks, inputValidationMW, async (req: Aut
 
 const putAccountChecks = [
     check('userId').notEmpty().isNumeric().withMessage("userId must be a number"),
-    check('newPassword').isString().isLength({min: 8}).withMessage("newPassword should be a valid string longer than 8 characters").optional(),
-    check('username').isString().isLength({min: 3}).withMessage("username should be a valid string longer than 3 characters").optional(),
-    check('email').notEmpty().isEmail().withMessage("email should be a valid email").optional()
+    check('newPassword').isString().isLength({
+        min: 8,
+        max: 128
+    }).withMessage("newPassword should be a valid string longer than 8 characters and shorter than 128 characters").optional(),
+    check('username').isString().isLength({
+        min: 3,
+        max: 128
+    }).withMessage("username should be a valid string longer than 3 characters and shorter than 128 characters").optional(),
+    check('email').notEmpty().isEmail().isLength({max: 128}).withMessage("email should be a valid email shorter than 128 characters").optional()
 ];
 
 accountRouter.put('/:userId', putAccountChecks, inputValidationMW, async (req: AuthenticatedRequest, res: Response) => {
@@ -87,15 +92,15 @@ accountRouter.put('/:userId', putAccountChecks, inputValidationMW, async (req: A
                 await User.update(update, {where: {id: userId}});
                 update["hashedPassword"] = null;
                 if (Object.keys(update).length != 0) {
-                    await revocateAllTokensForUser(userId);
+                    await revokeAllTokensForUser(userId);
                 }
                 res.status(200).json(update);
             } catch (e) {
                 logger.error(e);
-                res.status(400).json({message: "Unable to update the account"});
+                res.status(500).json({message: "Unable to update the account."});
             }
         } else {
-            res.status(403).json({message: "You don't have access to this user id"})
+            res.status(403).json({message: "You don't have access to this user id."})
         }
     }
 );
@@ -114,13 +119,10 @@ accountRouter.delete('/:userId', deleteAccountChecks, inputValidationMW, async (
     if (userId === authenticatedId) {
         User.destroy({where: {id: userId}});
         res.status(200).json({id: userId});
-        await revocateAllTokensForUser(userId);
-
+        await revokeAllTokensForUser(userId);
     } else {
-        res.status(403).json({message: "You don't have access to this user id"})
-
+        res.status(403).json({message: "You don't have access to this user id."});
     }
-
 });
 
 export {accountRouter};

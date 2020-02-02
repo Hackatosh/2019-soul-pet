@@ -11,9 +11,11 @@ import {ContentType} from "./ftp";
 const message = "Error: unsupported picture filetype";
 
 /***
- * Filter to only accept files corresponding to common pictures extensions : JPEG, JPG, PNG and GIF.
+ * This function acts as a filter, which only accept files corresponding to common pictures extensions : JPEG, JPG, PNG and GIF.
+ * After the comparison is done, the callback function is called.
  ***/
-const picturesFilter = function (req: Request, file: Multer.File, cb: (error: Error | null, acceptFile: boolean) => void) {
+
+const picturesFilter = function (req: Request, file: Multer.File, cb: (error: Error | null, acceptFile: boolean) => void): void {
     const filetypes = /jpeg|jpg|png|gif/;
     const mimetype = filetypes.test(file.mimetype);
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
@@ -26,6 +28,7 @@ const picturesFilter = function (req: Request, file: Multer.File, cb: (error: Er
 /***
  * Middleware used to handle the error thrown by the picturesFilter function.
  ***/
+
 const pictureErrorMW = function (err: Error, req: Request, res: Response, next: NextFunction) {
     if (err.message === message) {
         res.status(400).json({message: "Unsupported picture filetype. Please send JPEG, JPG, PNG or GIF file."})
@@ -54,14 +57,16 @@ const resolvePictureContentType = function (file: Multer.File): ContentType {
 /***
  * In memory storage : nothing is written on the disk.
  ***/
+
 const memoryStorage = multer.memoryStorage();
 const inMemoryStoragePicture = multer({fileFilter: picturesFilter, storage: memoryStorage});
 
 /***
  * Factory used to create a middleware which handle form-data POST requests which contains a picture.
  * The middleware fills the req.file attribute using the file provided in the [fieldName] field in the form.
- * The middleware handle incorrects mimetypes for pictures, such as pdf, by responding a 400 Bad Request error.
+ * The middleware handle incorrect mimetypes for pictures, such as pdf, by responding a 400 Bad Request error.
  ***/
+
 const createPictureStorage = function (fieldName: string) {
     return [inMemoryStoragePicture.single(fieldName), pictureErrorMW];
 };

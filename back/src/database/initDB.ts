@@ -16,21 +16,22 @@ import {initEventPicturesModel} from "./models/eventPicture";
 import {logger} from "../core/logger";
 
 /***
- * Loop used to wait until the DB is ready, unless the number of maxTry is reached
+ * This function is used to wait until the DB is ready, unless the number of maxTry is reached.
  ***/
-const waitForDB = async function (maxTry:number):Promise<void> {
+
+const waitForDB = async function (maxTry: number): Promise<void> {
     let isNotReady = true;
     let tryNumber = 1;
-    while(isNotReady){
-        try{
+    while (isNotReady) {
+        try {
             logger.info(`Checking if DB is ready. Try n°${tryNumber}`);
             await db.authenticate();
             isNotReady = false;
             logger.info('DB ready !')
-        }catch(e){
+        } catch (e) {
             logger.info('DB not available. Trying again in 15 seconds.');
             tryNumber++;
-            if(tryNumber>maxTry){
+            if (tryNumber > maxTry) {
                 logger.error("Max number of try to connect to DB exceded while waiting");
                 logger.error(e);
                 throw new Error("Max number of try to connect to DB exceded while waiting")
@@ -41,8 +42,11 @@ const waitForDB = async function (maxTry:number):Promise<void> {
     return;
 };
 
-/*** Wait until DB is ready and initialized all the models ***/
-const initDB = async function () {
+/***
+ * This function waits until DB is ready and initializes all the models.
+ ***/
+
+const initDB = async function (): Promise<void> {
     try {
         logger.info("Initializing DB...");
         await waitForDB(100);

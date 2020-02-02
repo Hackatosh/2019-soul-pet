@@ -1,6 +1,6 @@
-import {Request, Response, Router} from 'express';
+import {Response, Router} from 'express';
 import {AuthenticatedRequest} from "../../core/authentication/authenticationInterfaces";
-import {revocateToken} from "../../core/authentication/tokens";
+import {revokeToken} from "../../core/authentication/tokens";
 
 const logoutRouter = Router();
 
@@ -10,8 +10,8 @@ const logoutRouter = Router();
  ***/
 
 logoutRouter.post('/', async (req: AuthenticatedRequest, res: Response) => {
-    await revocateToken(req.rawToken);
-    res.status(200).json({message: "The token has been correctly deleted", rawToken: req.rawToken});
+    await revokeToken(req.rawToken);
+    res.status(200).json({message: "The token has been correctly deleted.", rawToken: req.rawToken});
 });
 
 export {logoutRouter};

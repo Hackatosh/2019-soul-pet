@@ -6,8 +6,8 @@ import { ListMarkerData, MarkerData } from '../models';
 export class GetServicesServices{
     static async get(lat: number, lon: number, radius: number, placeType: string): Promise<ListMarkerData>{
       var listMarkerData: ListMarkerData = [];
-      return httpClient.get<any>('/places/search?lat='+ lat +'&long='+ lon +'&radius='+ radius +'&placeType='+ placeType, true).then(response => {
-          listMarkerData = response.response.venues.map((venue :any) => {
+      return httpClient.get<any>('/places/search?lat='+ lat +'&long='+ lon +'&radius='+ radius +'&placeType='+ placeType, true).then(venues => {
+          listMarkerData = venues.map((venue :any) => {
             let marker: MarkerData = {
               key: venue.id,
               info: venue.name + (venue.location.address ? (', ' + venue.location.address): '') ,

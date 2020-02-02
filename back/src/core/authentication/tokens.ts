@@ -57,7 +57,7 @@ const getAuthInfosFromToken = async function (token: string): Promise<TokenPaylo
  * Revoke a given token using database persistence.
  ***/
 
-const revocateToken = async function (token: string): Promise<void> {
+const revokeToken = async function (token: string): Promise<void> {
     if (isEmptyString(token)) {
         throw new Error("Cannot revocate empty token");
     }
@@ -72,7 +72,7 @@ const revocateToken = async function (token: string): Promise<void> {
  * Revoke all tokens for a given user using database persistence.
  ***/
 
-const revocateAllTokensForUser = async function (userId: number) {
+const revokeAllTokensForUser = async function (userId: number): Promise<void> {
     try {
         await Token.destroy({where: {userId: userId}});
     } catch (e) {
@@ -80,4 +80,4 @@ const revocateAllTokensForUser = async function (userId: number) {
     }
 };
 
-export {generateTokenForUser, getAuthInfosFromToken, revocateToken, revocateAllTokensForUser}
+export {generateTokenForUser, getAuthInfosFromToken, revokeToken, revokeAllTokensForUser}

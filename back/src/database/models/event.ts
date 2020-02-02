@@ -66,7 +66,7 @@ export class PetEvent extends Model {
     public readonly attendees?: Animal[];
     public readonly authorizedSpecies?: Specie[];
     public readonly comments?: EventComment[];
-    public readonly eventPictures?:EventPicture[];
+    public readonly eventPictures?: EventPicture[];
     public readonly user?: User;
 
     public static associations: {
@@ -83,7 +83,6 @@ export class PetEvent extends Model {
  ***/
 
 const initPetEventModel = async function (): Promise<void> {
-
     PetEvent.init({
         id: {
             type: DataTypes.INTEGER.UNSIGNED,

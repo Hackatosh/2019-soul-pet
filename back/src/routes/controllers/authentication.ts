@@ -13,13 +13,19 @@ import {logger} from "../../core/logger";
 const authenticationRouter = Router();
 
 /***
- * This route allows the creation of a user in the DB, using basic information provided in the request (username, password and email).
+ * This route allows the creation of a user in the DB, using the basic information provided in the request (username, password and email).
  ***/
 
 const registerChecks = [
-    check('username').isString().isLength({min: 3}).withMessage("username must be a valid string longer than 3 characters"),
-    check('password').isString().isLength({min: 8}).withMessage("password must be a valid string longer than 8 characters"),
-    check('email').isEmail().withMessage("email must be a valid email"),
+    check('username').isString().isLength({
+        min: 3,
+        max: 128
+    }).withMessage("username must be a valid string longer than 3 characters and shorter than 128 characters"),
+    check('password').isString().isLength({
+        min: 8,
+        max: 128
+    }).withMessage("password must be a valid string longer than 8 characters and shorter than 128 characters"),
+    check('email').isEmail().isLength({max: 128}).withMessage("email must be a valid email shorter than 128 characters"),
 ];
 
 authenticationRouter.post('/register', registerChecks, inputValidationMW, async (req: Request, res: Response) => {
@@ -32,7 +38,7 @@ authenticationRouter.post('/register', registerChecks, inputValidationMW, async 
         res.status(200).json(user)
     } catch (e) {
         logger.error(e);
-        res.status(400).json({message: "Unable to register"})
+        res.status(400).json({message: "Unable to register."})
     }
 
 });
@@ -44,8 +50,11 @@ authenticationRouter.post('/register', registerChecks, inputValidationMW, async 
  ***/
 
 const loginChecks = [
-    check('password').isString().isLength({min: 8}).withMessage("password must be a valid string longer than 8 characters"),
-    check('email').isEmail().withMessage("email must be a valid email"),
+    check('password').isString().isLength({
+        min: 8,
+        max: 128
+    }).withMessage("password must be a valid string longer than 8 characters and shorter than 128 characters."),
+    check('email').isEmail().isLength({max: 128}).withMessage("email must be a valid email shorter than 128 characters."),
 ];
 
 authenticationRouter.post('/login', loginChecks, inputValidationMW, async (req: Request, res: Response) => {
@@ -53,9 +62,9 @@ authenticationRouter.post('/login', loginChecks, inputValidationMW, async (req: 
     const password = req.body.password;
     const user = await User.findOne(({where: {email: email}}));
     if (!user) {
-        res.status(401).json({message: "Authentication failed: user not found"})
+        res.status(401).json({message: "Authentication failed: user not found."})
     } else if (!(await compareUserPassword(user, password))) {
-        res.status(401).json({message: "Authentication failed: invalid password"})
+        res.status(401).json({message: "Authentication failed: invalid password."})
     } else {
         res.status(200).json({
             id: user.id,

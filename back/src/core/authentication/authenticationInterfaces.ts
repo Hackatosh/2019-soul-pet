@@ -10,8 +10,8 @@ import {Request} from 'express';
  ***/
 
 class TokenPayload {
-    userId: number;
-    iat: number;
+    public readonly userId: number;
+    public readonly iat: number; // iat stands for Issued AT
 
     constructor(userId: number, iat: number) {
         this.userId = userId;
