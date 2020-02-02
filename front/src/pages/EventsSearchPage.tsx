@@ -28,22 +28,6 @@ export class EventsSearchPage extends React.Component<RouteComponentProps, Event
     }
 
     render() {
-        /***
-        let active = 2;
-        let items = [];
-        for (let number = 1; number <= 5; number++) {
-            items.push(
-                <Pagination.Item key={number} active={number === active}>
-                    {number}
-                </Pagination.Item>,
-            );
-        }
-        const paginationBasic = (
-            <div>
-                <Pagination>{items}</Pagination>
-            </div>
-        );
-         ***/
         return (
             <div className="container">
                 {this.state.error !== '' &&

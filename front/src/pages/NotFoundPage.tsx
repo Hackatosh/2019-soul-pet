@@ -2,6 +2,10 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import notFound from '../resources/404.svg';
 
+/**
+ * Very important page which is a custom 404 error page. One of the
+ most important feature of the whole app.
+ */
 export class NotFoundPage extends React.Component<RouteComponentProps, {}> {
 	render() {
 		return (

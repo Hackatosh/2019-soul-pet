@@ -4,6 +4,9 @@ import { Formik, Field, Form } from 'formik';
 import { randomBackground, history } from '../helpers';
 import { RouteComponentProps } from 'react-router';
 
+/**
+ * Page which allows a user to register given a username, an email and a password
+ */
 export class RegisterPage extends React.Component<RouteComponentProps, {}> {
 	constructor(props: RouteComponentProps) {
 		super(props);
@@ -11,6 +14,7 @@ export class RegisterPage extends React.Component<RouteComponentProps, {}> {
 		if (AuthenticationService.isLoggedIn)
 			history.push('/');
 	}
+
 
 	render() {
 		return (

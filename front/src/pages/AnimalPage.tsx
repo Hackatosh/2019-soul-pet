@@ -19,7 +19,10 @@ export interface AnimalPageState {
 	user: User;
 	showPastEvents: boolean;
 }
-
+/**
+ * Page which displays the animals of a user. On this page one can add animals,
+ * edit profiles of animals and see the details for each animal.
+ */
 export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState> {
 	constructor(props: AnimalPageProps) {
 		super(props);
@@ -43,13 +46,13 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 				a.animalPictures = pictures.reverse()
 				this.setState({ animal: a });
 			});
-		}).catch(() => history.push('/404'));   
+		}).catch(() => history.push('/404'));
 	}
 
 	private showAnimalForm(state: boolean) {
 		this.setState({ showAnimalForm: state });
 	}
-	
+
 	private showAnimalDelete(state: boolean) {
 		this.setState({ showAnimalDelete: state });
 	}
@@ -76,7 +79,7 @@ export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState
 	render() {
 		return (
 			<div className="container">
-				{this.state.animal !== undefined && 
+				{this.state.animal !== undefined &&
 				<React.Fragment>
 					<div className="row">
 						<div className="col-10 offset-1 col-md-3">
