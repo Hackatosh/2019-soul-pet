@@ -13,6 +13,11 @@ export interface SquareImageState {
 	content: string;
 }
 
+/**
+ * Component which displays displays an image in a square, or a loading
+ * spinner if none.
+ * The component handles the call to the Picture service in order to load the picture from the back-end.
+ */
 export class SquareImage extends React.Component<SquareImageProps, SquareImageState> {
 	constructor(props: SquareImageProps) {
 		super(props);

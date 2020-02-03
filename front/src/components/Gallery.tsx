@@ -10,9 +10,13 @@ export interface GalleryProps {
 	directory: Directory;
 	add?: (file: File) => void;
 	delete?: (index: number) => void;
+	// The list of the picture ids which the user can delete.
 	deletable: true | number[];
 }
-
+/**
+ * Generic component which displays all pictures given in the props of the component.
+ * Add and delete operations are handled by the parent of this component through the props add and delete.
+ */
 export class Gallery extends React.Component<GalleryProps> {
 	render() {
 		if (this.props.pictures.length === 0 && this.props.add === undefined)
@@ -25,7 +29,7 @@ export class Gallery extends React.Component<GalleryProps> {
 				<div className="col mb-4">
 					<AddImage exportPicture={this.props.add} />
 				</div>}
-				{this.props.pictures.map((picture: Picture, index: number) => 
+				{this.props.pictures.map((picture: Picture, index: number) =>
 				<div className="col mb-4" key={index}>
 					{this.props.delete !== undefined && (this.props.deletable === true || this.props.deletable.includes(picture.id)) &&
 					<div className="mask-buttons">

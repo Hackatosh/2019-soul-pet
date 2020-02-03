@@ -4,6 +4,9 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 import { history, randomBackground } from '../helpers';
 
+/**
+ * Page on which the user can login or go to the register page if he doesn't have an account.
+ */
 export class LoginPage extends React.Component<RouteComponentProps, {}> {
 	constructor(props: RouteComponentProps) {
 		super(props);
@@ -29,8 +32,8 @@ export class LoginPage extends React.Component<RouteComponentProps, {}> {
 						}}>
 							{({ errors, status, touched, isSubmitting }) => (
 								<Form>
-									{typeof this.props.location.state !== 'undefined' && 
-									typeof this.props.location.state.fromRegistration !== 'undefined' && 
+									{typeof this.props.location.state !== 'undefined' &&
+									typeof this.props.location.state.fromRegistration !== 'undefined' &&
 									typeof this.props.location.state.fromRegistration &&
 										<div className="alert alert-success">Votre compte a bien été créé.</div>
 									}

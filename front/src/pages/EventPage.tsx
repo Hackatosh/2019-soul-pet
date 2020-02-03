@@ -21,6 +21,9 @@ export interface EventPageState {
 	possiblePets: Animal[];
 }
 
+/**
+ * Page which allows to see the details about an event, edit it, read and leave comments and register/unregister pets to this event.
+ **/
 export class EventPage extends Component<EventCardProps, EventPageState> {
 	constructor(props: EventCardProps) {
         super(props);
@@ -34,13 +37,13 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 
     componentDidMount() {
         EventService.get(parseInt(this.props.match.params.id)).then(event => {
-			this.setState({event: event});	
+			this.setState({event: event});
 			event.eventPictures?.reverse();
 			this.setState({event: event});
 			this.updatePossiblePets(event);
 		}).catch(() => history.push('/404'));
 	}
-	
+
 	private updatePossiblePets(event: PetEvent) {
 		AnimalService.getAll(AuthenticationService.User.id).then(animals => {
 			this.setState({ possiblePets: animals.filter(a => {
@@ -58,7 +61,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
     private showEventDelete(state: boolean) {
         this.setState({showEventDelete: state});
 	}
-	
+
 	private addAnimal(id: number) {
 		if (this.state.event === undefined)
 			return;
@@ -69,7 +72,7 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 		EventService.addAnimal(this.state.id, id).then(() => {
 			if (event.attendees === undefined)
 				event.attendees = [this.state.possiblePets[index]];
-			else	
+			else
 				event.attendees.push(this.state.possiblePets[index]);
 			this.setState({ event: event });
 		}).catch(e => this.setState({ error: e }));
@@ -230,8 +233,8 @@ export class EventPage extends Component<EventCardProps, EventPageState> {
 								<Tab eventKey="pictures" title="Galerie">
 									{event.eventPictures !== undefined &&
 									<Gallery pictures={event.eventPictures} directory={Directory.Events}
-										add={this.loadPicture} delete={this.deletePicture} 
-										deletable={event.userId === AuthenticationService.User.id ? true : 
+										add={this.loadPicture} delete={this.deletePicture}
+										deletable={event.userId === AuthenticationService.User.id ? true :
 										event.eventPictures.filter(p => p.userId === AuthenticationService.User.id).map(p => p.id)}/>}
 								</Tab>
 							</Tabs>

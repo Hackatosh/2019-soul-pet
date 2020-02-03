@@ -12,6 +12,11 @@ interface EventsSearchPageState {
     events: PetEvent[];
 }
 
+/***
+ * Component which displays the list of the current events.
+ * It also allows to show a form to add an event.
+ ***/
+
 export class EventsSearchPage extends React.Component<RouteComponentProps, EventsSearchPageState> {
 
     constructor(props: RouteComponentProps) {
@@ -28,22 +33,6 @@ export class EventsSearchPage extends React.Component<RouteComponentProps, Event
     }
 
     render() {
-        /***
-        let active = 2;
-        let items = [];
-        for (let number = 1; number <= 5; number++) {
-            items.push(
-                <Pagination.Item key={number} active={number === active}>
-                    {number}
-                </Pagination.Item>,
-            );
-        }
-        const paginationBasic = (
-            <div>
-                <Pagination>{items}</Pagination>
-            </div>
-        );
-         ***/
         return (
             <div className="container">
                 {this.state.error !== '' &&

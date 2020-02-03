@@ -47,8 +47,8 @@ export class GeolocationService {
 	/**
 	 * Begins watching the position of the user, regularly updating the coordinates,
 	 * which can then be retrieved with getCoordinates.
-	 * Do not forget to call stopWatchinGeoloc when you dismount your component.
-	 * @see GeolocationService.stopWatchinGeoloc
+	 * Do not forget to call stopWatchingGeoloc when you dismount your component.
+	 * @see GeolocationService.stopWatchingGeoloc
 	 */
     public static startWatchingGeoloc(): void {
         if (this.watchId === 0) {

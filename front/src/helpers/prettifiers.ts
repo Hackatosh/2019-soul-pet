@@ -1,3 +1,7 @@
+/***
+ * This file defines functions which can be used to prettify objects that will be rendered as string in React.
+ ***/
+
 /**
  * Computes the number of full years elapsed since a given date.
  * @returns a string expressing the age

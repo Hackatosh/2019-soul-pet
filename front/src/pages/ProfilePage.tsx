@@ -18,6 +18,10 @@ export interface ProfilePageState {
 	user: User;
 }
 
+/**
+ * Page which displays some information about a user such as their username and their pets.
+ * The page can be seen is proprietary mode, which allows edition, and in visitor mode.
+ */
 export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
 	constructor(props: ProfilePageProps) {
 		super(props);
@@ -37,7 +41,7 @@ export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageSt
 
 	componentDidMount() {
 		AuthenticationService.getProfile(this.state.id).then(u => this.setState({ user: u })).catch(() => this.setState({ error: 'Erreur lors de la récupération du profil' }));
-		AnimalService.getAll(this.state.id).then((animals: Animal[]) => this.setState({ animals: animals.reverse() })).catch(() => this.setState({ error: 'Erreur lors de la récupération des animaux' }));      
+		AnimalService.getAll(this.state.id).then((animals: Animal[]) => this.setState({ animals: animals.reverse() })).catch(() => this.setState({ error: 'Erreur lors de la récupération des animaux' }));
 	}
 
 	private showAnimalForm(state: boolean) {
@@ -63,7 +67,7 @@ export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageSt
 						<h1 className="display-5 text-center">{this.state.user.username}</h1>
 					</div>
 				</div>}
-				{this.state.id === AuthenticationService.User.id && !this.state.canModify && 
+				{this.state.id === AuthenticationService.User.id && !this.state.canModify &&
 				<div className="row mb-5">
 					<div className="col-sm-6 offset-sm-3">
 						<div className="alert alert-info">
@@ -72,7 +76,7 @@ export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageSt
 						</div>
 					</div>
 				</div>}
-				{this.state.animals.length === 0 && 
+				{this.state.animals.length === 0 &&
 				<div className="row mb-5">
 					<div className="col-sm-6 offset-sm-3"><div className="alert alert-primary">{this.state.canModify ? 'Vous n’avez ' : 'Cette personne n’a '} pas encore d’animaux…</div></div>
 				</div>}

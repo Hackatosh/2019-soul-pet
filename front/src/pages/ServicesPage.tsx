@@ -2,6 +2,10 @@ import React from 'react';
 import { ServicesMap } from '../components';
 import './ServicesPage.css';
 
+/**
+ * Page which displays services near the user. It mostly uses the `ServicesMap`
+ component which embeds a map and tools to interact with it.
+ */
 export class ServicesPage extends React.Component {
 	render() {
 		return (

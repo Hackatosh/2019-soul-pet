@@ -22,7 +22,7 @@ export interface AnimalFormState {
 }
 
 /**
- * A form used to add or edit an animal
+ * A form used to add or edit an animal.
  */
 export class AnimalForm extends React.Component<AnimalFormProps, AnimalFormState> {
 	constructor(props: AnimalFormProps) {

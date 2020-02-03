@@ -23,8 +23,7 @@ export interface EventFormState {
 }
 
 /**
- * A form used to add or edit an event
- * TODO: ADD LOCATION SUPPORT
+ * A form used to add or edit an event.
  */
 export class EventForm extends React.Component<EventFormProps, EventFormState> {
     constructor(props: EventFormProps) {

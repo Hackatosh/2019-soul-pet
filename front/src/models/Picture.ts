@@ -5,6 +5,10 @@ export interface Picture {
 	userId: number;
 };
 
+/***
+ * Default picture used as a filler.
+ ***/
+
 export const NoImage: Picture = {
 	id: 0,
 	filename: '',
