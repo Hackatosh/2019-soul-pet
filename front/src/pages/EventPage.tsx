@@ -22,8 +22,8 @@ export interface EventPageState {
 }
 
 /**
- * Page on which one can add an event, edit one their events leave comments,
- * read comments, and browse through existing events.*/
+ * Page which allows to see the details about an event, edit it, read and leave comments and register/unregister pets to this event.
+ **/
 export class EventPage extends Component<EventCardProps, EventPageState> {
 	constructor(props: EventCardProps) {
         super(props);

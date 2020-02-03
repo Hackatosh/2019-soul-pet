@@ -12,6 +12,11 @@ interface EventsSearchPageState {
     events: PetEvent[];
 }
 
+/***
+ * Component which displays the list of the current events.
+ * It also allows to show a form to add an event.
+ ***/
+
 export class EventsSearchPage extends React.Component<RouteComponentProps, EventsSearchPageState> {
 
     constructor(props: RouteComponentProps) {

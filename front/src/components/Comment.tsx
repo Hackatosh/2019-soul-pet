@@ -7,7 +7,8 @@ export interface CommentProps {
 	comment: EventComment;
 }
 /**
- * Comonent which displays a comment with eventually the username of the writer
+ * Component which displays a comment about an event.
+ * The comment has a direct link to the user profile which has posted it.
  */
 export class Comment extends React.Component<CommentProps> {
 	render() {

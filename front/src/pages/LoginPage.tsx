@@ -5,7 +5,7 @@ import { Formik, Field, Form } from 'formik';
 import { history, randomBackground } from '../helpers';
 
 /**
- * Page on which the user can login or go to the register page.
+ * Page on which the user can login or go to the register page if he doesn't have an account.
  */
 export class LoginPage extends React.Component<RouteComponentProps, {}> {
 	constructor(props: RouteComponentProps) {

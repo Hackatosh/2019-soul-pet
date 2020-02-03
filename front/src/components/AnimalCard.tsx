@@ -14,8 +14,8 @@ export interface AnimalCardState {
 	pictureCount: number;
 }
 /**
- * Component which displays an animal and its characteristics such as birthdate,
- * species or pictures.
+ * Component which displays an animal and its characteristics such as its birthdate,
+ * specie or the uploaded for it.
  */
 export class AnimalCard extends React.Component<AnimalCardProps, AnimalCardState> {
 	constructor(props: AnimalCardProps) {

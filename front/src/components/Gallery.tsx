@@ -10,11 +10,12 @@ export interface GalleryProps {
 	directory: Directory;
 	add?: (file: File) => void;
 	delete?: (index: number) => void;
+	// The list of the picture ids which the user can delete.
 	deletable: true | number[];
 }
 /**
- * Component which displays all pictures given in properties of the component.
- * Used for animals in particular
+ * Generic component which displays all pictures given in the props of the component.
+ * Add and delete operations are handled by the parent of this component through the props add and delete.
  */
 export class Gallery extends React.Component<GalleryProps> {
 	render() {

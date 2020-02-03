@@ -6,7 +6,7 @@ import { Form } from 'react-bootstrap';
 const { Map: LeafletMap, TileLayer, Marker, Popup } = require('react-leaflet');
 
 /**
- * All the services which could be displayed and some bound properties
+ * All the services type which can be displayed on the map and some bound properties
  */
 const serviceTypeList = [
   	{
@@ -33,7 +33,7 @@ const serviceTypeList = [
 ];
 
 /**
- * For star wars fans (and initial debugging). Only appears for the unlucky
+ * For Star Wars fans (and initial debugging). Only appears for the unlucky users.
  */
 const easterEggMarkers = [
 	{
@@ -63,8 +63,8 @@ const easterEggMarkers = [
 ];
 
 /**
- * A component which is used to display a map and update displayed
- * information depending on the interaction with the user.
+ * A component which is used to display a map with the services queried by the user.
+ * The information displayed are updated depending on the interactions with the user.
  */
 class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 	constructor(props: PServicesMap){
@@ -154,7 +154,7 @@ class ServicesMap extends React.Component<PServicesMap, SServicesMap> {
 		return null;
 	}
   /**
-   * displays a map using Leaflet map, switches for each services, range input
+   * Displays a map using Leaflet map, switches for each services, range input
    * for the radius and markers on the map for each services displayed.
    */
 	render() {

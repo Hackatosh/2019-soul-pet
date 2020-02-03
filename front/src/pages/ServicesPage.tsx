@@ -3,7 +3,7 @@ import { ServicesMap } from '../components';
 import './ServicesPage.css';
 
 /**
- * PAge which displays services near the user. It mostly uses the `ServicesMap`
+ * Page which displays services near the user. It mostly uses the `ServicesMap`
  component which embeds a map and tools to interact with it.
  */
 export class ServicesPage extends React.Component {

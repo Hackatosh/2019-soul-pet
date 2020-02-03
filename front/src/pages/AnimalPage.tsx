@@ -20,8 +20,7 @@ export interface AnimalPageState {
 	showPastEvents: boolean;
 }
 /**
- * Page which displays the animals of a user. On this page one can add animals,
- * edit profiles of animals and see the details for each animal.
+ * Page which displays the details about an animal. You can see on this page the events attended by the animal and its pictures gallery.
  */
 export class AnimalPage extends React.Component<AnimalPageProps, AnimalPageState> {
 	constructor(props: AnimalPageProps) {

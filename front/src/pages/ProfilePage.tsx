@@ -19,8 +19,8 @@ export interface ProfilePageState {
 }
 
 /**
- * Page which displays some informations about a user such as username, pets
- * and their details...
+ * Page which displays some information about a user such as their username and their pets.
+ * The page can be seen is proprietary mode, which allows edition, and in visitor mode.
  */
 export class ProfilePage extends React.Component<ProfilePageProps, ProfilePageState> {
 	constructor(props: ProfilePageProps) {

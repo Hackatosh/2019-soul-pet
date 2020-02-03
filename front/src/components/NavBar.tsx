@@ -6,8 +6,8 @@ import Nav from 'react-bootstrap/Nav';
 import { Subscription } from 'rxjs';
 
 /**
- * Navigation bar which allows to navigate through different sections of the
- * as well as loggin in and router
+ * Navigation bar which allows to navigate through the different sections of the application.
+ * The Link components can push the url indicated into the "to" props into the history object, which then triggers the Router located in App.tsx file.
  */
 export class NavBar extends React.Component {
 	private authenticationSub: Subscription = new Subscription();
