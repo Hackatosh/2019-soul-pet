@@ -42,7 +42,7 @@ export class EventsSearchPage extends React.Component<RouteComponentProps, Event
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col-3">
+                    <div className="col-md-3 mb-5">
                     <Formik onSubmit={values => {
                             EventService.search(values.keywords !== '' ? values.keywords : undefined,
                                                 values.beginDate !== '' ? new Date(values.beginDate) : undefined,
@@ -82,7 +82,7 @@ export class EventsSearchPage extends React.Component<RouteComponentProps, Event
                         }}
                     </Formik>
                     </div>
-                    <div className="col-9">
+                    <div className="col-md-9">
                         {this.state.error !== '' &&
                         <div className="row mb-5">
                             <div className="col-sm-6 offset-sm-3"><div className="alert alert-danger">{this.state.error}</div></div>
