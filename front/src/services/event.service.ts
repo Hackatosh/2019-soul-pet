@@ -29,7 +29,7 @@ export class EventService {
      * @returns an array containing the events
      */
     static async getAll(): Promise<PetEvent[]> {
-        return httpClient.get<PetEvent[]>(`/events/search`, true).then(events => Promise.all(events.map(async e => await this.revive(e)))).catch(() => Promise.reject('Erreur lors de la récupération des évènements'));
+        return this.search();
     }
 
     /**
@@ -87,5 +87,23 @@ export class EventService {
 	 */
 	static async removeAnimal(eventId: number, animalId: number): Promise<null> {
 		return httpClient.delete(`/events/${eventId}/animals/${animalId}`, true).catch(() => Promise.reject('Erreur lors de la désinscription de l’animal'));
-	}
+    }
+    
+    /**
+     * Performs an event search.
+     * @param keywords a string of keywords to find in the title or the description
+     * @param beginDate the date after which the event can begin
+     * @param endDate the date before which the event should end
+     * @returns a list of events
+     */
+    static async search(keywords?: string, beginDate?: Date, endDate?: Date): Promise<PetEvent[]> {
+        let query = keywords === undefined && beginDate === undefined && endDate === undefined ? '' : '?';
+        if (keywords !== undefined)
+            query += `&keywords=${keywords}`;
+        if (beginDate !== undefined)
+            query += `&beginDate=${beginDate.toISOString()}`;
+        if (endDate !== undefined)
+            query += `&endDate=${endDate.toISOString()}`;
+        return httpClient.get<PetEvent[]>(`/events/search${query}`, true).then(events => Promise.all(events.map(async e => await this.revive(e)))).catch(() => Promise.reject('Erreur lors de la recherche d’événements'));
+    }
 }
