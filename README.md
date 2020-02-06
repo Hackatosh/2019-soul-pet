@@ -94,6 +94,14 @@ When finished, you can stop the server using :
 docker-compose -f docker-compose-prod.yml stop
 ```
 
+## Troubleshooting
+
+If you open the file ftp/sftp.d/chown-fix.sh with a text editor on Windows, 
+the line separator can be changed to Windows-style separator "\r\n", which is different than the Linux-style separator "\n"
+which should be used.
+This cause the script to be wrongly interpreted at run-time which causes the initialization of the SFTP to fail.
+If you encounter any problem with the SFTP and uploading/downloading files, please make sure that the correct style is used for this file.
+
 ## Built With
 
 The whole project is written in [Typescript](https://www.typescriptlang.org/docs/home.html). The package management is done with [Yarn](https://yarnpkg.com/) for both the front-end and the back-end.
@@ -128,7 +136,7 @@ Contact : Edouard Benauw ([Hackatosh](https://github.com/Hackatosh))
 * **Antoine Apollis** ([apollisa](https://github.com/apollisa)) - *Front-End & CI Configuration*
 * **Edouard Benauw** ([Hackatosh](https://github.com/Hackatosh)) - *Back-End & Deployment*
 * **Benoît Damiani** ([damianib](https://github.com/damianib)) - *Back-End*
-* **Alexis Herbert** ([Raklyon](https://github.com/Raklyon)) - *Front-End*
+* **Alexis Hubert** ([Raklyon](https://github.com/Raklyon)) - *Front-End*
 * **Marine Sobas** ([Marsobad](https://github.com/Marsobad)) - *Back-End* 
 * **Adrien Videgrain** ([Zizol](https://github.com/Zizol)) - *Front-End*
 
